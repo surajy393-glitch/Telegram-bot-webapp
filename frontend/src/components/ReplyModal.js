@@ -110,11 +110,38 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
           {/* Original Post Preview */}
           <div className="bg-gray-50 rounded-2xl p-4 mb-4">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
-                <span className="text-sm">{post.user.avatar}</span>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center overflow-hidden">
+                {(() => {
+                  // Get proper avatar URL from user data
+                  const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
+                  
+                  // Check if we have a valid image URL
+                  if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:'))) {
+                    return (
+                      <img 
+                        src={avatarUrl} 
+                        alt={post.user.name} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to emoji on image load error
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    );
+                  } else {
+                    // Use emoji avatar or first letter of name
+                    const displayAvatar = post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤';
+                    return <span className="text-sm font-bold text-white">{displayAvatar}</span>;
+                  }
+                })()}
+                {/* Hidden fallback for image errors */}
+                <span className="text-sm font-bold text-white" style={{ display: 'none' }}>
+                  {post.user.name?.charAt(0)?.toUpperCase() || '👤'}
+                </span>
               </div>
               <div>
-                <p className="font-semibold text-gray-800">{post.user.name}</p>
+                <p className="font-semibold text-gray-800">{post.user.name || post.user.username || 'User'}</p>
                 <p className="text-xs text-gray-500">{post.timestamp}</p>
               </div>
             </div>
