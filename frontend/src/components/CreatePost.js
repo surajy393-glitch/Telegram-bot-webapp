@@ -129,6 +129,35 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     setSelectedImages(prev => prev.filter(img => img.id !== id));
   };
 
+  const uploadImageToBackend = async (imageObj) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', imageObj.file);
+      
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/upload-photo`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          // Include Telegram WebApp initData for authentication if available
+          ...(window.Telegram?.WebApp?.initData ? {
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+          } : {})
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      const result = await response.json();
+      return result.photo_url || result.file_id;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     if (!postText.trim() && selectedImages.length === 0) return;
 
@@ -137,6 +166,22 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     
     // Create default user if none exists
     const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
+    
+    // Upload images to backend first if any
+    let uploadedImageUrls = [];
+    if (selectedImages.length > 0) {
+      try {
+        console.log('📤 Uploading images to backend...');
+        const uploadPromises = selectedImages.map(img => uploadImageToBackend(img));
+        uploadedImageUrls = await Promise.all(uploadPromises);
+        console.log('✅ Images uploaded:', uploadedImageUrls);
+      } catch (error) {
+        console.error('❌ Image upload failed:', error);
+        setIsSubmitting(false);
+        alert('⚠️ Failed to upload images. Please try again.');
+        return;
+      }
+    }
     
     // Simulate post creation
     const newPost = {
