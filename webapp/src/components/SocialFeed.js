@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+ireturn (
+  
+  m<img
+  
+  port React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from './CreatePost';
 import Stories from './Stories';

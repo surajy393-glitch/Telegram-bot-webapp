@@ -1,22 +1,22 @@
 [
   {
-    "content": "Fix backend: Create separate /api/upload-photo and /api/upload-video endpoints",
-    "status": "completed"
+    "content": "Fix avatar display issue - using wrong field for user profile pics",
+    "status": "in_progress"
   },
   {
-    "content": "Fix frontend: Add proper MIME-type detection and separate upload functions",
-    "status": "completed"
+    "content": "Fix image display - add full screen modal and proper CSS",
+    "status": "pending"
   },
   {
-    "content": "Fix UI: Add video player components in feed and story displays",
-    "status": "completed"
+    "content": "Fix delete button functionality - add backend endpoint and frontend handler",
+    "status": "pending"
   },
   {
-    "content": "Fix error messages: Add clear Hindi error messages for different file types",
-    "status": "completed"
+    "content": "Fix reply username issue - remove random string concatenation",
+    "status": "pending"
   },
   {
-    "content": "Test complete video upload flow from frontend to backend",
-    "status": "completed"
+    "content": "Add proper error handling and fallbacks for missing data",
+    "status": "pending"
   }
 ]
