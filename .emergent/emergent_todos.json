@@ -1,7 +1,7 @@
 [
   {
     "content": "Phase 1: Increase client-side image limit from 5MB to 10MB in CreatePost.js and CreateStory.js",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 1: Update backend /api/upload-photo to use sendDocument as fallback for large images",
