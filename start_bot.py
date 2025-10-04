@@ -17,7 +17,7 @@ sys.path.insert(0, str(backend_dir))
 
 print("🚀 Starting Complete Social Platform Telegram Bot...")
 print("💕 Features: Dating/Matching, Stories, Posts, Games, Premium")
-print("🌐 Web App URL: https://luvhive-telebot.preview.emergentagent.com")
+print("🌐 Web App URL: https://telegram-dating-4.preview.emergentagent.com")
 print("🎮 Bot Features: Registration, Profile, Matching, Fun Games")
 print("=" * 60)
 
