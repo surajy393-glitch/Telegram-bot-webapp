@@ -74,8 +74,7 @@ const mockPostsData = [
       name: 'Emma Soul', 
       username: '@emma_vibes', 
       avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=center',
-      mood: 'joyful', 
-      aura: 'golden' 
+      profilePic: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=center'
     },
     content: 'Just discovered this hidden waterfall during my morning hike! Sometimes the best adventures are unplanned 🏞️✨',
     image: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400',
