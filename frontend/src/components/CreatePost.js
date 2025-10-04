@@ -122,6 +122,9 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
         break;
       }
       
+      // Get compression recommendations
+      const recommendation = getCompressionRecommendations(file);
+      
       // Read file for preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -129,13 +132,22 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
           id: Date.now() + Math.random(),
           url: e.target.result,
           file: file,
-          type: isVideo ? 'video' : 'image'
+          type: isVideo ? 'video' : 'image',
+          originalSize: file.size,
+          recommendation: recommendation,
+          compressed: false,
+          compressedFile: null
         };
         
         if (isVideo) {
           setSelectedVideos(prev => [...prev, mediaItem]);
         } else {
           setSelectedImages(prev => [...prev, mediaItem]);
+        }
+        
+        // Auto-compress if enabled and recommended
+        if (compressionSettings.autoCompress && recommendation.shouldCompress) {
+          compressMediaItem(mediaItem);
         }
       };
       reader.readAsDataURL(file);
