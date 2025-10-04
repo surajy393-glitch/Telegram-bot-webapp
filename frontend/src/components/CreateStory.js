@@ -219,7 +219,9 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     if ((selectedImage && selectedImageFile) || (selectedVideo && selectedVideoFile)) {
       try {
         console.log('📤 Uploading story media to backend...');
-        uploadedMediaUrl = await uploadImageToBackend(mediaFile);
+        // Use compressed file if available, otherwise use original
+        const fileToUpload = compressedMediaFile || mediaFile;
+        uploadedMediaUrl = await uploadImageToBackend(fileToUpload);
         console.log('✅ Story media uploaded:', uploadedMediaUrl);
       } catch (error) {
         console.error('❌ Story media upload failed:', error);
