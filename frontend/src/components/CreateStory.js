@@ -191,11 +191,20 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
         throw new Error(result.message || 'Upload failed');
       }
       
-      // media_url (or photo_url for backward compatibility) should always be present from backend
-      const mediaUrl = result.media_url || result.photo_url;
-      if (!mediaUrl) {
-        console.error('No media_url in response:', result);
-        throw new Error('Invalid server response - no media URL');
+      // Get media URL based on type
+      let mediaUrl;
+      if (file.type.startsWith('video/')) {
+        mediaUrl = result.video_url;
+        if (!mediaUrl) {
+          console.error('No video_url in response:', result);
+          throw new Error('Invalid server response - no video URL');
+        }
+      } else {
+        mediaUrl = result.photo_url;
+        if (!mediaUrl) {
+          console.error('No photo_url in response:', result);
+          throw new Error('Invalid server response - no photo URL');
+        }
       }
       
       return mediaUrl;
