@@ -9,11 +9,11 @@
   },
   {
     "content": "Fix UI: Add video player components in feed and story displays",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix error messages: Add clear Hindi error messages for different file types",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Test complete video upload flow from frontend to backend",
