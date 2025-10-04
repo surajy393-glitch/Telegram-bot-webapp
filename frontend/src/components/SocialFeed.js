@@ -48,7 +48,7 @@ const mockPostsData = [
         likes: 3
       }
     ],
-    comments_count: 1
+    comments_count: 2
   },
   {
     id: 1,
