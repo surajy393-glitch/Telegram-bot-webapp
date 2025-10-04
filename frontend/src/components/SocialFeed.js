@@ -86,7 +86,7 @@ const mockPostsData = [
       name: 'Alex Dream', 
       username: '@alex_cosmic', 
       avatar: '🌙', 
-      avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Dream&background=8b5cf6&color=fff&size=200',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=center',
       mood: 'contemplative', 
       aura: 'purple' 
     },
