@@ -288,7 +288,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     if (allMedia.length > 0) {
       try {
         console.log('📤 Uploading media to backend...');
-        const uploadPromises = allMedia.map(media => uploadImageToBackend(media));
+        const uploadPromises = allMedia.map(media => uploadMediaToBackend(media));
         const uploadResults = await Promise.all(uploadPromises);
         uploadedMediaUrls = uploadResults.map(result => result.url);
         console.log('✅ Media uploaded:', uploadedMediaUrls);
