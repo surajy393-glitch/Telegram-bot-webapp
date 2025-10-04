@@ -9,10 +9,10 @@
   },
   {
     "content": "Test both post and story creation with actual photos",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Verify created posts and stories appear correctly in feed",
-    "status": "pending"
+    "status": "completed"
   }
 ]
