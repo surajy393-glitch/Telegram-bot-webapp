@@ -69,7 +69,7 @@ const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
   const renderAvatar = (user) => {
     return (
       <div className="relative">
-        <Avatar user={user} size="sm" className="border-2 border-white shadow-lg" />
+        <Avatar user={user} size={40} />
         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
       </div>
     );
