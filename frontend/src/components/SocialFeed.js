@@ -66,6 +66,7 @@ const SocialFeed = ({ user, theme }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [fullScreenImage, setFullScreenImage] = useState(null);
 
   // Get user stories and mock stories
   const getMockStories = () => {
