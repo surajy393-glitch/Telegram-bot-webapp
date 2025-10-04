@@ -511,11 +511,34 @@ const SocialFeed = ({ user, theme }) => {
                     post.user.aura === 'purple' ? 'from-purple-400 to-indigo-500' :
                     'from-pink-400 to-purple-500'
                   }`}>
-                    {post.user.avatar && (post.user.avatar.startsWith('http') || post.user.avatar.startsWith('/')) ? (
-                      <img src={post.user.avatar} alt={post.user.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-xl">{post.user.avatar || '👤'}</span>
-                    )}
+                    {(() => {
+                      // Get proper avatar URL from user data
+                      const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
+                      
+                      // Check if we have a valid image URL
+                      if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:'))) {
+                        return (
+                          <img 
+                            src={avatarUrl} 
+                            alt={post.user.name} 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to emoji on image load error
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        );
+                      } else {
+                        // Use emoji avatar or first letter of name
+                        const displayAvatar = post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤';
+                        return <span className="text-xl font-bold text-white">{displayAvatar}</span>;
+                      }
+                    })()}
+                    {/* Hidden fallback for image errors */}
+                    <span className="text-xl font-bold text-white" style={{ display: 'none' }}>
+                      {post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤'}
+                    </span>
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
