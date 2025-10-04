@@ -12,18 +12,42 @@ const cleanupLocalStorage = () => {
       if (key) {
         try {
           const value = localStorage.getItem(key);
-          if (value && value.length > 50000) { // Remove very large items
-            console.log('Removing large localStorage item:', key);
-            localStorage.removeItem(key);
-          }
-          // Try to parse JSON to check if it's valid - preserve all LuvHive related keys
-          if (value && (key.includes('luvhive_') || key.includes('luv_hive_') || key.includes('posts') || key.includes('stories'))) {
-            JSON.parse(value);
-            console.log(`✅ Preserved LuvHive localStorage key: ${key}`);
+          
+          // Protect critical LuvHive keys from deletion
+          const isProtectedKey = key.includes('luvhive_') || key.includes('luv_hive_') || 
+                                key === 'luvhive_user' || key === 'luv_hive_user' ||
+                                key.includes('posts') || key.includes('stories');
+          
+          if (isProtectedKey) {
+            // Try to parse protected keys, but don't remove them even if parsing fails
+            try {
+              if (value) {
+                JSON.parse(value);
+                console.log(`✅ Validated protected LuvHive key: ${key}`);
+              }
+            } catch (parseError) {
+              console.log(`⚠️ Protected key has invalid JSON but keeping: ${key}`);
+            }
+          } else {
+            // For non-protected keys, remove if too large
+            if (value && value.length > 50000) {
+              console.log('Removing large localStorage item:', key);
+              localStorage.removeItem(key);
+            } else if (value) {
+              // Try to parse and remove if corrupted
+              JSON.parse(value);
+            }
           }
         } catch (error) {
-          console.log('Removing corrupted localStorage item:', key);
-          localStorage.removeItem(key);
+          // Only remove non-protected keys if corrupted
+          const isProtectedKey = key.includes('luvhive_') || key.includes('luv_hive_') || 
+                                key === 'luvhive_user' || key === 'luv_hive_user';
+          if (!isProtectedKey) {
+            console.log('Removing corrupted localStorage item:', key);
+            localStorage.removeItem(key);
+          } else {
+            console.log(`⚠️ Corrupted but protected key preserved: ${key}`);
+          }
         }
       }
     }
