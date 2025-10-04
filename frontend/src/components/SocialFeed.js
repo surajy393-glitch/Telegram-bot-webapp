@@ -468,18 +468,27 @@ const SocialFeed = ({ user, theme }) => {
     }));
   };
 
-  const handleReplySubmit = async (reply) => {
-    // save reply to backend
-    const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${selectedPost._id}/reply`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ text: reply.text })
-    });
-    // update local state
-    setPosts(posts => posts.map(post =>
-      post._id === selectedPost._id ? { ...post, replies: [...(post.replies || []), reply] } : post
-    ));
+  const handleAddComment = async (comment) => {
+    try {
+      // Save comment to backend
+      const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${selectedPost._id}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ text: comment.text })
+      });
+      
+      // Update local state
+      setPosts(posts => posts.map(post =>
+        post._id === selectedPost._id ? { 
+          ...post, 
+          comments: [...(post.comments || []), comment],
+          comments_count: (post.comments_count || 0) + 1
+        } : post
+      ));
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
   if (loading) {
