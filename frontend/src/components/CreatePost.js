@@ -6,6 +6,13 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [compressionSettings, setCompressionSettings] = useState({
+    enabled: true,
+    imageQuality: 0.8,
+    videoQuality: 28,
+    autoCompress: true
+  });
+  const [isCompressing, setIsCompressing] = useState(false);
   const [mood, setMood] = useState('happy');
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState('');
