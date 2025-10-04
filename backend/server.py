@@ -289,52 +289,33 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
 
 @app.post("/api/upload-photo")
 async def upload_photo(file: UploadFile = File(...)):
-    """Upload photo to Telegram and return file_id."""
+    """Upload photo and return URL - saves to backend for now."""
     try:
-        if not MEDIA_SINK_CHAT_ID:
-            raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
+        # Generate unique filename
+        file_extension = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+        unique_filename = f"{uuid.uuid4()}.{file_extension}"
         
-        # Read file content
-        file_content = await file.read()
+        # Create uploads directory if doesn't exist
+        uploads_dir = PathLib("/app/backend/uploads")
+        uploads_dir.mkdir(exist_ok=True)
         
-        # Upload to Telegram using Bot API
-        async with aiohttp.ClientSession() as session:
-            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
-            
-            # Create multipart form data
-            form_data = aiohttp.FormData()
-            form_data.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
-            form_data.add_field('photo', file_content, filename=file.filename, content_type=file.content_type)
-            
-            async with session.post(url, data=form_data) as resp:
-                result = await resp.json()
-                logging.info(f"Telegram API response: {result}")
-                
-                if not result.get('ok'):
-                    error_msg = result.get('description', 'Unknown error')
-                    logging.error(f"Telegram API error: {result}")
-                    raise HTTPException(status_code=500, detail=f"Telegram error: {error_msg}")
-                
-                # Get file_id from the largest photo
-                photos = result['result']['photo']
-                largest_photo = max(photos, key=lambda p: p['file_size'])
-                file_id = largest_photo['file_id']
-                
-                # Get file_path to construct URL
-                file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
-                async with session.get(file_info_url) as file_resp:
-                    file_data = await file_resp.json()
-                    if file_data.get('ok'):
-                        file_path = file_data['result']['file_path']
-                        photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
-                    else:
-                        photo_url = None
-                
-                return {
-                    "success": True,
-                    "file_id": file_id,
-                    "photo_url": photo_url
-                }
+        # Save file
+        file_path = uploads_dir / unique_filename
+        content = await file.read()
+        
+        with open(file_path, 'wb') as f:
+            f.write(content)
+        
+        # Return URL to access the file
+        photo_url = f"{EXTERNAL_URL}/uploads/{unique_filename}"
+        
+        logging.info(f"Photo saved: {unique_filename}, size: {len(content)} bytes")
+        
+        return {
+            "success": True,
+            "file_id": unique_filename,
+            "photo_url": photo_url
+        }
     
     except Exception as e:
         logging.error(f"Upload error: {e}")
