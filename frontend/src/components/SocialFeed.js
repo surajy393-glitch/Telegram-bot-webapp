@@ -359,7 +359,7 @@ const SocialFeed = ({ user, theme }) => {
           method: 'DELETE', 
           headers: { Authorization: `Bearer ${token}` }
         });
-        setPosts(posts => posts.filter(p => (p._id || p.id) !== (post._id || post.id)));
+        setPosts(posts => posts.filter(p => p.id !== post.id));
         alert('Post deleted successfully!');
       } catch (error) {
         console.error('Delete error:', error);
