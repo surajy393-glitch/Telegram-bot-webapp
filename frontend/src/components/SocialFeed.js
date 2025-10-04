@@ -563,6 +563,15 @@ const SocialFeed = ({ user, theme }) => {
     }
   };
 
+  // Function to sync user profile updates across posts
+  const updateUserAvatarInPosts = (userId, newAvatarUrl) => {
+    setPosts(posts.map(p => 
+      p.user.id === userId || p.user.username === userId || p.user.name === userId
+        ? { ...p, user: { ...p.user, avatarUrl: newAvatarUrl } }
+        : p
+    ));
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
