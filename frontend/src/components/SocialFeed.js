@@ -11,6 +11,24 @@ import ReplyModal from './ReplyModal';
 import CommentsModal from './CommentsModal';
 import Avatar from './ui/Avatar';
 
+// Helper function to format time in IST
+const formatTimeIST = (timestamp) => {
+  const now = new Date();
+  const postTime = new Date(timestamp);
+  const diffMs = now - postTime;
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffMinutes < 60) {
+    return `${diffMinutes}m ago`;
+  } else if (diffHours < 24) {
+    return `${diffHours}h ago`;
+  } else {
+    return `${diffDays}d ago`;
+  }
+};
+
 // Mock posts data outside component to avoid dependency issues
 const mockPostsData = [
   {
