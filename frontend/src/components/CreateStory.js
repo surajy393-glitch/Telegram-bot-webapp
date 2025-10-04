@@ -101,6 +101,35 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     }
   };
 
+  const uploadImageToBackend = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/upload-photo`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          // Include Telegram WebApp initData for authentication if available
+          ...(window.Telegram?.WebApp?.initData ? {
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+          } : {})
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      const result = await response.json();
+      return result.photo_url || result.file_id;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     if ((storyType === 'text' && !storyText.trim()) || (storyType === 'image' && !selectedImage)) {
       return;
