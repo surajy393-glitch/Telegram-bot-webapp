@@ -27,10 +27,20 @@ function App() {
 
     // Check if user is already registered
     const savedUser = localStorage.getItem('luvhive_user');
+    console.log('🔍 Checking for existing user in localStorage:', savedUser ? 'Found' : 'Not found');
+    
     if (savedUser) {
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
-      setIsRegistered(true);
+      try {
+        const userData = JSON.parse(savedUser);
+        console.log('✅ Loading existing user:', userData.name || userData.username);
+        setUser(userData);
+        setIsRegistered(true);
+      } catch (error) {
+        console.error('❌ Error parsing saved user data:', error);
+        localStorage.removeItem('luvhive_user'); // Remove corrupted data
+      }
+    } else {
+      console.log('🆕 No existing user found, user needs to register');
     }
   }, []);
 
