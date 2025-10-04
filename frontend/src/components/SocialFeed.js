@@ -352,45 +352,22 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   const handlePostAction = async (actionId, post) => {
-    console.log('🔥 handlePostAction called:', actionId, post);
-    
     if (actionId === 'delete') {
-      console.log('🗑️ Delete action triggered for post:', post.id);
-      
       // Confirmation dialog
       const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
       
-      // Use simple confirm for debugging
       // eslint-disable-next-line no-restricted-globals
       const confirmed = confirm(confirmMessage);
-      console.log('✅ User confirmed delete:', confirmed);
       
       if (confirmed) {
         try {
-          console.log('🚀 Starting delete process...');
-          
-          // For mock posts, just remove from state (no backend call needed)
-          console.log('📄 Current posts count:', posts.length);
-          
-          const postToDelete = posts.find(p => p.id === post.id);
-          console.log('🎯 Post to delete found:', postToDelete ? 'YES' : 'NO');
-          
-          // Remove from posts array
-          const newPosts = posts.filter(p => p.id !== post.id);
-          console.log('📄 Posts after filter:', newPosts.length);
-          
-          setPosts(newPosts);
-          console.log('✅ setPosts called with new array');
-          
+          // Remove post from state
+          setPosts(posts => posts.filter(p => p.id !== post.id));
           alert('Post deleted successfully!');
-          console.log('🎉 Delete process completed');
-          
         } catch (error) {
-          console.error('❌ Delete error:', error);
+          console.error('Delete error:', error);
           alert('Failed to delete post: ' + error.message);
         }
-      } else {
-        console.log('❌ User cancelled delete');
       }
       return;
     }
