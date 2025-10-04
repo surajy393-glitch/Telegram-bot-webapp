@@ -466,17 +466,17 @@ const SocialFeed = ({ user, theme }) => {
     }));
   };
 
-  const handleReply = async (postId, reply) => {
+  const handleReplySubmit = async (reply) => {
     // save reply to backend
     const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${postId}/reply`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${selectedPost._id}/reply`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ text: reply.text })
     });
     // update local state
     setPosts(posts => posts.map(post =>
-      post._id === postId ? { ...post, replies: [...post.replies, reply] } : post
+      post._id === selectedPost._id ? { ...post, replies: [...(post.replies || []), reply] } : post
     ));
   };
 
