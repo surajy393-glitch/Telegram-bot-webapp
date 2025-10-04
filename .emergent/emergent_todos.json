@@ -5,11 +5,11 @@
   },
   {
     "content": "Phase 1: Update backend /api/upload-photo to use sendDocument as fallback for large images",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 2: Add video file detection and validation in frontend components",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 2: Implement sendVideo support in backend for videos up to 50MB",
