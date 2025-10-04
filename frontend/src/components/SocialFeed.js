@@ -844,9 +844,10 @@ const SocialFeed = ({ user, theme }) => {
                 <div className="rounded-2xl overflow-hidden mb-3">
                   <video 
                     src={post.video} 
-                    className="w-full h-64 object-cover"
+                    className="w-full h-64 object-cover cursor-pointer"
                     controls
                     preload="metadata"
+                    onClick={() => setFullScreenImage({ url: post.video, alt: `${post.user.name}'s video`, isVideo: true })}
                   />
                 </div>
               )}
