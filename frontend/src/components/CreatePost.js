@@ -226,33 +226,6 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     setSelectedMusic(null);
     setSelectedLocation(null);
     setIsSubmitting(false);
-
-    // Force attach event handler directly to DOM
-    const attachShareHandler = () => {
-      const shareBtn = document.getElementById('post-share-btn');
-      if (shareBtn) {
-        console.log('🔧 Direct DOM handler attached to Post Share button');
-        shareBtn.addEventListener('click', (e) => {
-          console.log('🔥 DIRECT DOM CLICK HANDLER TRIGGERED FOR POST!');
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // Get current text from textarea
-          const currentText = document.querySelector('textarea').value;
-          console.log('📝 Current post text:', currentText);
-          
-          if (!currentText.trim()) {
-            console.log('❌ Post validation failed - no text content');
-            return;
-          }
-          console.log('🚀 Calling post handleSubmit directly');
-          handleSubmit();
-        });
-      }
-    };
-    
-    // Attach handler with delay to ensure DOM is ready
-    setTimeout(attachShareHandler, 1000);
   }, []);
 
   const handleMusicSelect = (music) => {
