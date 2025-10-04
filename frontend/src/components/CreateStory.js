@@ -167,7 +167,7 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
       },
       content: storyType === 'image' ? {
         type: 'image',
-        url: selectedImage,
+        url: uploadedImageUrl || selectedImage,
         text: storyText
       } : {
         type: 'text',
