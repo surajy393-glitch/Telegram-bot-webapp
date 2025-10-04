@@ -15,14 +15,13 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
     }
   };
 
-  // For debugging - always show delete option
-  const isOwnPost = true; // Debug: Always allow delete for testing
-  
-  console.log('🔍 PostOptionsModal Debug:', {
-    currentUser,
-    postUser: post.user,
-    isOwnPost
-  });
+  // Show delete option for own posts or if no user is logged in (for testing)
+  const isOwnPost = currentUser ? (
+    post.user.name === currentUser.name || 
+    post.user.username === currentUser.username ||
+    (currentUser.username && post.user.username && post.user.username.includes(currentUser.username)) ||
+    (currentUser.name && post.user.name.includes(currentUser.name))
+  ) : true; // Allow delete when no user logged in (testing mode)
 
   const options = [
     { id: 'delete', title: 'Delete Post', icon: '🗑️', color: 'text-red-500', bgColor: 'hover:bg-red-100', show: isOwnPost },
