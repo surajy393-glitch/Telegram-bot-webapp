@@ -62,18 +62,7 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
           {/* Original Post Preview */}
           <div className="bg-gray-50 rounded-2xl p-4 mb-4">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center overflow-hidden">
-                {(() => {
-                  const avatarUrl = post.user.avatarUrl || post.user.profilePic;
-                  const displayAvatarLetter = post.user.name?.charAt(0).toUpperCase();
-
-                  return avatarUrl ? (
-                    <img src={avatarUrl} alt={`${post.user.name} avatar`} className="w-8 h-8 rounded-full object-cover" />
-                  ) : (
-                    <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 text-white">{displayAvatarLetter}</span>
-                  );
-                })()}
-              </div>
+              <Avatar user={post.user} size={32} />
               <div>
                 <p className="font-semibold text-gray-800">{post.user.name || post.user.username || 'User'}</p>
                 <p className="text-xs text-gray-500">{post.timestamp}</p>
