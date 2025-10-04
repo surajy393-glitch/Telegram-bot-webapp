@@ -9,11 +9,11 @@
   },
   {
     "content": "Fix avatar display with proper fallback logic",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Add full-screen media view modal",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix duplicate like system with proper state management",
