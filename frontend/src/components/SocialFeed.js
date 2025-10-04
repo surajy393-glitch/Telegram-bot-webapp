@@ -809,7 +809,7 @@ const SocialFeed = ({ user, theme }) => {
                         {post.user.mood}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500">{post.user.username} • {post.timestamp}</p>
+                    <p className="text-sm text-gray-500">{post.user.username} • {post.createdAt ? formatTimeIST(post.createdAt) : post.timestamp}</p>
                   </div>
                 </div>
                 
