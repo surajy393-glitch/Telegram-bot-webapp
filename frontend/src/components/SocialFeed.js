@@ -674,10 +674,12 @@ const SocialFeed = ({ user, theme }) => {
                     'from-pink-400 to-purple-500'
                   }`}>
                     {(() => {
-                      // Get proper avatar URL from user data
+                      // Get avatar from user data with priority order
                       const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
+                      const avatarEmoji = post.user.avatar;
+                      const userName = post.user.name || 'User';
                       
-                      // Check if we have a valid image URL (exclude avataaars strings)
+                      // First priority: Check for valid image URL (exclude avataaars strings)
                       if (avatarUrl && 
                           (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:')) &&
                           !avatarUrl.includes('avataaars/svg?') && 
@@ -686,19 +688,23 @@ const SocialFeed = ({ user, theme }) => {
                         return (
                           <img 
                             src={avatarUrl} 
-                            alt={post.user.name} 
+                            alt={userName} 
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              // Fallback to emoji on image load error
+                              // Fallback to initials on image load error
                               e.target.style.display = 'none';
                               e.target.nextSibling.style.display = 'flex';
                             }}
                           />
                         );
-                      } else {
-                        // Generate a nice avatar based on user name
-                        const name = post.user.name || 'User';
-                        const initials = name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+                      }
+                      // Second priority: Use emoji if available and valid
+                      else if (avatarEmoji && avatarEmoji.length <= 4 && /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
+                        return <span className="text-2xl">{avatarEmoji}</span>;
+                      }
+                      // Third priority: Generate initials from name
+                      else {
+                        const initials = userName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
                         return <span className="text-xl font-bold text-white">{initials || '👤'}</span>;
                       }
                     })()}
