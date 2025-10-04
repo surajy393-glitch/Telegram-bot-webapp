@@ -21,15 +21,15 @@
   },
   {
     "content": "Phase 3: Add client-side image compression library (compressorjs)",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 3: Add client-side video compression library (browser-video-compression)",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 3: Implement compression options in UI with user controls",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Comprehensive testing of all upload features",
