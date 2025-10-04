@@ -220,7 +220,11 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
       },
       content: storyType === 'image' ? {
         type: 'image',
-        url: uploadedImageUrl || selectedImage,
+        url: uploadedMediaUrl || selectedImage,
+        text: storyText
+      } : storyType === 'video' ? {
+        type: 'video',
+        url: uploadedMediaUrl || selectedVideo,
         text: storyText
       } : {
         type: 'text',
