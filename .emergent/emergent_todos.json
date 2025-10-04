@@ -1,22 +1,18 @@
 [
   {
-    "content": "Fix avatar display issue - using wrong field for user profile pics",
-    "status": "completed"
+    "content": "Check onboarding registration flow - button not working",
+    "status": "in_progress"
   },
   {
-    "content": "Fix image display - add full screen modal and proper CSS",
-    "status": "completed"
+    "content": "Fix backend registration API endpoint",
+    "status": "pending"
   },
   {
-    "content": "Fix delete button functionality - add backend endpoint and frontend handler",
-    "status": "completed"
+    "content": "Fix frontend registration form submission",
+    "status": "pending"
   },
   {
-    "content": "Fix reply username issue - remove random string concatenation",
-    "status": "completed"
-  },
-  {
-    "content": "Add proper error handling and fallbacks for missing data",
-    "status": "completed"
+    "content": "Test complete registration workflow",
+    "status": "pending"
   }
 ]
