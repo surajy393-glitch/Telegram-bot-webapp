@@ -1050,11 +1050,11 @@ const SocialFeed = ({ user, theme }) => {
         <ReplyModal
           post={selectedPost}
           currentUser={user}
+          onReply={reply => handleReply(selectedPost._id || selectedPost.id, reply)}
           onClose={() => {
             setShowReplyModal(false);
             setSelectedPost(null);
           }}
-          onReply={handleReplySubmit}
         />
       )}
 
