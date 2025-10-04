@@ -292,7 +292,13 @@ const SocialFeed = ({ user, theme }) => {
         }
       },
       delete: async () => {
-        const isOwnPost = user && (post.user.name === user.name || post.user.username === user.username);
+        // More comprehensive user matching for delete functionality
+        const isOwnPost = user && (
+          post.user.name === user.name || 
+          post.user.username === user.username ||
+          (user.username && post.user.username && post.user.username.includes(user.username)) ||
+          (user.name && post.user.name && post.user.name.includes(user.name))
+        );
         
         if (!isOwnPost) {
           alert("❌ आप केवल अपनी पोस्ट डिलीट कर सकते हैं।");
