@@ -737,15 +737,20 @@ const SocialFeed = ({ user, theme }) => {
                       const avatarEmoji = post.user.avatar;
                       const userName = post.user.name || 'User';
                       
-                      // First priority: Use emoji if available and is a valid emoji (not string like 'L')
-                      if (avatarEmoji && 
-                          avatarEmoji.length <= 4 && 
-                          avatarEmoji !== 'L' && 
-                          avatarEmoji !== 'U' && 
-                          /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
-                        return <span className="text-2xl">{avatarEmoji}</span>;
+                      // Special handling for Luvsociety
+                      if (userName.toLowerCase() === 'luvsociety') {
+                        return (
+                          <img 
+                            src="https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true&rounded=true"
+                            alt="Luvsociety" 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.outerHTML = '<div class="w-full h-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-bold">💜</div>';
+                            }}
+                          />
+                        );
                       }
-                      // Second priority: Check for valid image URL (exclude avataaars and weird strings)
+                      // First priority: Check for valid image URL (exclude avataaars and weird strings)
                       else if (avatarUrl && 
                           (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:')) &&
                           !avatarUrl.includes('avataaars/svg?') && 
@@ -764,6 +769,14 @@ const SocialFeed = ({ user, theme }) => {
                             }}
                           />
                         );
+                      }
+                      // Second priority: Use emoji if available and is a valid emoji (not string like 'L')
+                      else if (avatarEmoji && 
+                          avatarEmoji.length <= 4 && 
+                          avatarEmoji !== 'L' && 
+                          avatarEmoji !== 'U' && 
+                          /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
+                        return <span className="text-2xl">{avatarEmoji}</span>;
                       }
                       // Third priority: Generate initials from name
                       else {
