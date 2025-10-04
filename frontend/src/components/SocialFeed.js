@@ -559,6 +559,20 @@ const SocialFeed = ({ user, theme }) => {
     }));
   };
 
+  const handleReply = async (postId, reply) => {
+    try {
+      const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${postId}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ text: reply.text })
+      });
+      setPosts(posts => posts.map(p => p._id === postId || p.id === postId ? { ...p, replies: [...(p.replies || []), reply] } : p));
+    } catch (error) {
+      console.error('Error adding reply:', error);
+    }
+  };
+
   const handleAddComment = async (comment) => {
     try {
       // Save comment to backend
@@ -571,7 +585,7 @@ const SocialFeed = ({ user, theme }) => {
       
       // Update local state
       setPosts(posts => posts.map(post =>
-        post.id === selectedPost.id ? { 
+        (post.id === selectedPost.id || post._id === selectedPost._id) ? { 
           ...post, 
           comments: [...(post.comments || []), comment],
           comments_count: (post.comments_count || 0) + 1
