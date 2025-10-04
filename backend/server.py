@@ -177,6 +177,32 @@ async def get_current_user(request: Request) -> dict:
 async def root():
     return {"message": "Social Platform API"}
 
+@app.get("/api/test-telegram")
+async def test_telegram():
+    """Test Telegram connection and permissions."""
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Test bot info
+            async with session.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getMe") as resp:
+                bot_info = await resp.json()
+            
+            # Test send message
+            async with session.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={"chat_id": MEDIA_SINK_CHAT_ID, "text": "🧪 API Test"}
+            ) as resp:
+                msg_result = await resp.json()
+            
+            return {
+                "bot_working": bot_info.get('ok'),
+                "bot_username": bot_info.get('result', {}).get('username'),
+                "can_send_messages": msg_result.get('ok'),
+                "chat_id": MEDIA_SINK_CHAT_ID,
+                "message": "✅ Telegram connection working!" if msg_result.get('ok') else "❌ Cannot send to chat"
+            }
+    except Exception as e:
+        return {"error": str(e), "message": "❌ Telegram connection failed"}
+
 @app.get("/uploads/{filename}")
 async def serve_upload(filename: str):
     """Serve uploaded images."""
