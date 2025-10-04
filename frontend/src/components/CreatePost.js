@@ -375,9 +375,9 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
           <button
             id="post-share-btn"
             onClick={handleSubmit}
-            disabled={(!postText.trim() && selectedImages.length === 0) || isSubmitting}
+            disabled={(!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) || isSubmitting}
             className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              (!postText.trim() && selectedImages.length === 0) || isSubmitting
+              (!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) || isSubmitting
                 ? 'bg-gray-200 text-gray-400'
                 : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:shadow-lg'
             }`}
