@@ -534,8 +534,8 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
             </div>
           </div>
 
-          {/* Caption Input for Image Stories */}
-          {storyType === 'image' && selectedImage && (
+          {/* Caption Input for Media Stories */}
+          {((storyType === 'image' && selectedImage) || (storyType === 'video' && selectedVideo)) && (
             <div className="mb-4">
               <label className="text-sm font-medium text-gray-700 mb-2 block">Add Caption</label>
               <textarea
