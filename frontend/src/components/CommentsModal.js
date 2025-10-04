@@ -74,12 +74,14 @@ const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
     if (userName.toLowerCase() === 'luvsociety') {
       return (
         <div className="relative">
-          <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full border-2 border-gray-200 shadow-lg" style={{fontFamily: 'Arial, sans-serif'}}>
-            <div className="text-center">
-              <div style={{fontSize: '6px', lineHeight: '1', fontWeight: 'bold'}}>LUV</div>
-              <div style={{fontSize: '6px', lineHeight: '1', fontWeight: 'bold'}}>SOCIETY</div>
-            </div>
-          </div>
+          <img 
+            src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center"
+            alt="Luvsociety avatar" 
+            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 shadow-lg"
+            onError={(e) => {
+              e.target.outerHTML = '<div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full border-2 border-gray-200 shadow-lg"></div>';
+            }}
+          />
           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
         </div>
       );
