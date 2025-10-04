@@ -740,22 +740,12 @@ const SocialFeed = ({ user, theme }) => {
                       // Special handling for Luvsociety
                       if (userName.toLowerCase() === 'luvsociety') {
                         return (
-                          <img 
-                            src="https://cdn.jsdelivr.net/gh/luvsociety/assets@main/logo-circle.png"
-                            alt="Luvsociety" 
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // Fallback to a better logo design
-                              e.target.outerHTML = `
-                                <div class="w-full h-full flex items-center justify-center bg-black text-white text-xs font-bold rounded-full" style="font-family: Arial, sans-serif;">
-                                  <div class="text-center">
-                                    <div style="font-size: 8px; line-height: 1;">LUV</div>
-                                    <div style="font-size: 8px; line-height: 1;">SOCIETY</div>
-                                  </div>
-                                </div>
-                              `;
-                            }}
-                          />
+                          <div className="w-full h-full flex items-center justify-center bg-black text-white rounded-full" style={{fontFamily: 'Arial, sans-serif'}}>
+                            <div className="text-center">
+                              <div style={{fontSize: '8px', lineHeight: '1', fontWeight: 'bold'}}>LUV</div>
+                              <div style={{fontSize: '8px', lineHeight: '1', fontWeight: 'bold'}}>SOCIETY</div>
+                            </div>
+                          </div>
                         );
                       }
                       // First priority: Check for valid image URL (exclude avataaars and weird strings)
