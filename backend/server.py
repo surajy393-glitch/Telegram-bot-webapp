@@ -432,6 +432,122 @@ async def upload_photo(file: UploadFile = File(...)):
         logging.error(f"❌ Upload error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/upload-video")
+async def upload_video(file: UploadFile = File(...)):
+    """Upload video to Telegram chat and return file info."""
+    try:
+        if not MEDIA_SINK_CHAT_ID:
+            raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
+        
+        if not BOT_TOKEN:
+            raise HTTPException(status_code=500, detail="BOT_TOKEN not configured")
+        
+        # Read file content
+        content = await file.read()
+        file_size_mb = len(content) / (1024 * 1024)
+        logging.info(f"📤 Uploading video: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
+        
+        # Validate video file type
+        if not file.content_type or not file.content_type.startswith('video/'):
+            raise HTTPException(status_code=400, detail="केवल वीडियो फाइलें (MP4, MOV, AVI, WebM) समर्थित हैं।")
+        
+        # Check file size (50MB max for videos)
+        if file_size_mb > 50:
+            raise HTTPException(status_code=400, detail="वीडियो बहुत बड़ा है। अधिकतम 50MB समर्थित है।")
+        
+        async with aiohttp.ClientSession() as session:
+            # Use sendVideo for videos (up to 50MB)
+            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendVideo"
+            form = aiohttp.FormData()
+            form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+            form.add_field('video', content, filename=file.filename, content_type=file.content_type)
+            form.add_field('caption', f'🎥 {file.filename}')
+            logging.info(f"📤 Using sendVideo for {file.filename} ({file_size_mb:.2f}MB)")
+            
+            async with session.post(url, data=form, timeout=60) as resp:  # Longer timeout for videos
+                resp_text = await resp.text()
+                logging.info(f"Telegram video response (status {resp.status}): {resp_text[:500]}")
+                try:
+                    result = await resp.json() if resp.content_type == 'application/json' else {"ok": False, "description": resp_text}
+                except:
+                    result = {"ok": False, "description": resp_text}
+                logging.info(f"Telegram video parsed response: {result}")
+                
+                if not result.get('ok'):
+                    error_desc = result.get('description', 'Unknown error')
+                    logging.error(f"❌ Telegram video error: {error_desc}")
+                    
+                    # User-friendly error messages
+                    if 'too big' in error_desc.lower() or 'too large' in error_desc.lower():
+                        raise HTTPException(status_code=400, detail="वीडियो बहुत बड़ा है। कृपया 50MB से कम साइज़ का वीडियो चुनें।")
+                    elif 'wrong file' in error_desc.lower() or 'invalid' in error_desc.lower():
+                        raise HTTPException(status_code=400, detail="केवल MP4, MOV, AVI, WebM वीडियो समर्थित हैं।")
+                    elif 'duration' in error_desc.lower():
+                        raise HTTPException(status_code=400, detail="वीडियो बहुत लंबा है। कृपया छोटा वीडियो चुनें।")
+                    else:
+                        raise HTTPException(status_code=500, detail=f"Telegram error: {error_desc}")
+                
+                # Get file_id from video
+                if 'video' in result['result']:
+                    video_info = result['result']['video']
+                    file_id = video_info['file_id']
+                    
+                    # Get video thumbnail if available
+                    thumb_file_id = None
+                    if 'thumb' in video_info:
+                        thumb_file_id = video_info['thumb']['file_id']
+                    
+                    logging.info(f"✅ sendVideo successful, file_id: {file_id}")
+                else:
+                    raise HTTPException(status_code=500, detail="No video in Telegram response")
+                
+                # Get video URL - MUST succeed
+                file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
+                async with session.get(file_info_url) as file_resp:
+                    file_data = await file_resp.json()
+                    if not file_data.get('ok'):
+                        logging.error(f"Failed to get video file info: {file_data}")
+                        raise HTTPException(status_code=500, detail="Failed to get video URL from Telegram")
+                    
+                    file_path = file_data['result']['file_path']
+                    video_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
+                
+                # Get thumbnail URL if available
+                thumb_url = None
+                if thumb_file_id:
+                    thumb_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={thumb_file_id}"
+                    try:
+                        async with session.get(thumb_info_url) as thumb_resp:
+                            thumb_data = await thumb_resp.json()
+                            if thumb_data.get('ok'):
+                                thumb_path = thumb_data['result']['file_path']
+                                thumb_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{thumb_path}"
+                    except:
+                        pass  # Thumbnail is optional
+                
+                logging.info(f"✅ Video uploaded to Telegram: {file_id}, URL: {video_url[:80]}...")
+                
+                return {
+                    "success": True,
+                    "file_id": file_id,
+                    "video_url": video_url,
+                    "thumb_url": thumb_url,
+                    "media_type": "video",
+                    "duration": video_info.get('duration', 0),
+                    "width": video_info.get('width', 0),
+                    "height": video_info.get('height', 0),
+                    "message_id": result['result'].get('message_id')
+                }
+    
+    except HTTPException:
+        raise
+    except aiohttp.ClientError as e:
+        logging.error(f"❌ Network error: {e}")
+        raise HTTPException(status_code=500, detail="नेटवर्क एरर। कृपया फिर से प्रयास करें।")
+    except Exception as e:
+        logging.error(f"❌ Video upload error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/stories")
 async def get_stories(user: dict = Depends(get_current_user)):
     """Get active stories."""
