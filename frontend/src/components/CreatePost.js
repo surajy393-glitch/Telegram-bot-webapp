@@ -160,6 +160,8 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       isSparkPost: false
     };
 
+    let saveSuccess = false;
+    
     // Save post to user's profile with storage management
     try {
       const userPostsKey = `luvhive_posts_${defaultUser.username}`;
@@ -176,19 +178,21 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
       console.log('📝 Posts after save:', existingPosts.length);
       console.log('📝 Saved post data:', newPost);
+      saveSuccess = true;
     } catch (error) {
       console.log('Storage error:', error);
       // If localStorage is full, clear old data
       if (error.name === 'QuotaExceededError') {
         try {
+          console.log('⚠️ Storage quota exceeded, clearing old data...');
           // Clear old stories and posts to make space
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && (key.includes('luvhive_posts_') || key.includes('luvhive_stories_'))) {
               const data = JSON.parse(localStorage.getItem(key) || '[]');
-              if (data.length > 10) {
-                // Keep only 10 most recent items
-                localStorage.setItem(key, JSON.stringify(data.slice(0, 10)));
+              if (data.length > 5) {
+                // Keep only 5 most recent items
+                localStorage.setItem(key, JSON.stringify(data.slice(0, 5)));
               }
             }
           }
@@ -197,25 +201,36 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
           const existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
           existingPosts.unshift(newPost);
           localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
+          console.log('✅ Saved post after cleanup');
+          saveSuccess = true;
         } catch (retryError) {
-          console.log('Failed to save post even after cleanup');
+          console.log('❌ Failed to save post even after cleanup:', retryError);
+          setIsSubmitting(false);
+          alert('⚠️ Failed to save post. Image might be too large. Try with smaller image or without image.');
+          return; // Exit early - don't call onPostCreated
         }
+      } else {
+        setIsSubmitting(false);
+        alert('⚠️ Failed to save post: ' + error.message);
+        return; // Exit early - don't call onPostCreated
       }
     }
 
-    // Add to feed (in real app, send to backend)
-    setTimeout(() => {
-      console.log('✅ Post created successfully:', newPost);
-      onPostCreated && onPostCreated(newPost);
-      onClose && onClose();
-      
-      // Show success feedback
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert('✨ Post shared successfully!');
-      } else {
-        alert('✨ Post shared successfully!');
-      }
-    }, 1500);
+    // Only proceed if save was successful
+    if (saveSuccess) {
+      setTimeout(() => {
+        console.log('✅ Post created successfully:', newPost);
+        onPostCreated && onPostCreated(newPost);
+        onClose && onClose();
+        
+        // Show success feedback
+        if (window.Telegram?.WebApp?.showAlert) {
+          window.Telegram.WebApp.showAlert('✨ Post shared successfully!');
+        } else {
+          alert('✨ Post shared successfully!');
+        }
+      }, 1500);
+    }
   };
 
   useEffect(() => {
