@@ -17,10 +17,10 @@
   },
   {
     "content": "Ensure consistent 'luvhive_user' key usage everywhere",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Force complete rebuild and redeploy",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
