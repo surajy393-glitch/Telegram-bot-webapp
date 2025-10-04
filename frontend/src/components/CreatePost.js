@@ -183,7 +183,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       }
     }
     
-    // Simulate post creation
+    // Simulate post creation with uploaded image URLs
     const newPost = {
       id: Date.now(),
       user: {
@@ -194,7 +194,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
         aura: getAuraByMood(mood)
       },
       content: postText,
-      images: selectedImages.map(img => img.url),
+      images: uploadedImageUrls, // Use uploaded URLs instead of Base64
       mood: mood,
       music: selectedMusic,
       location: selectedLocation || null,
