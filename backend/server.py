@@ -322,9 +322,9 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
     
     return {"success": True, "post_id": str(result.inserted_id)}
 
-@app.post("/api/upload-media")
-async def upload_media(file: UploadFile = File(...)):
-    """Upload media (photo/video) to Telegram chat and return file info."""
+@app.post("/api/upload-photo")
+async def upload_photo(file: UploadFile = File(...)):
+    """Upload photo to Telegram chat and return file info."""
     try:
         if not MEDIA_SINK_CHAT_ID:
             raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
