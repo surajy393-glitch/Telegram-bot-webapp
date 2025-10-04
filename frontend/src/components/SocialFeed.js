@@ -207,50 +207,54 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   useEffect(() => {
-    if (user) {
-      const loadPosts = () => {
-        try {
-          // Load user's own posts from localStorage
-          let userPosts = [];
-          const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
-          const userPostsKey = `luvhive_posts_${defaultUser.username}`;
-          userPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
-          
-          // Combine with mock posts
-          const allPosts = [...userPosts, ...mockPostsData];
-          
-          // Merge currentUser avatar with posts user - CLIENT-SIDE FIX
-          const postsWithUpdatedAvatars = allPosts.map(p => {
-            // If this post belongs to current user, update avatar from current user data
-            if (user && (
-              p.user.id === user.id || 
-              p.user.username === user.username || 
-              p.user.name === user.name
-            )) {
-              return {
-                ...p,
-                user: {
-                  ...p.user,
-                  avatarUrl: user.avatarUrl || user.profilePic || p.user.avatarUrl
-                }
-              };
-            }
-            return p;
-          });
-          
-          console.log('📄 Loaded posts with updated avatars:', postsWithUpdatedAvatars.length);
-          setPosts(postsWithUpdatedAvatars);
-        } catch (error) {
-          console.error('❌ Error loading posts:', error);
-          setPosts(mockPostsData);
-        }
-      };
-      
-      loadPosts();
-    } else {
-      setPosts(mockPostsData);
-    }
-  }, [user, loading]);
+    const loadPosts = () => {
+      try {
+        // Create default user for fallback
+        const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
+        
+        // Load user's own posts from localStorage
+        let userPosts = [];
+        const userPostsKey = `luvhive_posts_${defaultUser.username}`;
+        userPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
+        
+        // Combine with mock posts
+        const allPosts = [...userPosts, ...mockPostsData];
+        
+        // Merge currentUser avatar with posts user - CLIENT-SIDE FIX
+        const postsWithUpdatedAvatars = allPosts.map(p => {
+          // If this post belongs to current user, update avatar from current user data
+          if (user && (
+            p.user.id === user.id || 
+            p.user.username === user.username || 
+            p.user.name === user.name ||
+            p.user.username === 'testuser' || 
+            p.user.name === 'Test User'
+          )) {
+            return {
+              ...p,
+              user: {
+                ...p.user,
+                avatarUrl: user.avatarUrl || user.profilePic || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=center'
+              }
+            };
+          }
+          return p;
+        });
+        
+        console.log('📄 Loaded posts with updated avatars:', postsWithUpdatedAvatars.length);
+        setPosts(postsWithUpdatedAvatars);
+        setStories(getMockStories());
+        setLoading(false); // Important: Set loading to false
+      } catch (error) {
+        console.error('❌ Error loading posts:', error);
+        setPosts(mockPostsData);
+        setStories(getMockStories());
+        setLoading(false); // Important: Set loading to false even on error
+      }
+    };
+    
+    loadPosts();
+  }, []); // Remove dependencies to prevent infinite loops
 
   const handlePostCreated = (newPost) => {
     setPosts(prev => [newPost, ...prev]);
