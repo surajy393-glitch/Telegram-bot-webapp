@@ -67,37 +67,9 @@ const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
   };
 
   const renderAvatar = (user) => {
-    const avatarUrl = user.avatarUrl || user.profilePic;
-    const userName = user.name || 'User';
-    const displayLetter = userName?.charAt(0).toUpperCase() || '👤';
-
-    // Special handling for Luvsociety
-    if (userName.toLowerCase() === 'luvsociety') {
-      return (
-        <div className="relative">
-          <img 
-            src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center"
-            alt="Luvsociety avatar" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 shadow-lg"
-            onError={(e) => {
-              e.target.outerHTML = '<div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full border-2 border-gray-200 shadow-lg"></div>';
-            }}
-          />
-          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
-        </div>
-      );
-    }
-
-    return avatarUrl ? (
+    return (
       <div className="relative">
-        <img src={avatarUrl} alt={`${userName} avatar`} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-lg" />
-        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
-      </div>
-    ) : (
-      <div className="relative">
-        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 text-white text-sm font-bold shadow-lg">
-          {displayLetter}
-        </div>
+        <Avatar user={user} size="sm" className="border-2 border-white shadow-lg" />
         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
       </div>
     );
