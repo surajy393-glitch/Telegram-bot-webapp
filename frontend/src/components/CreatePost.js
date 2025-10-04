@@ -79,49 +79,38 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     return matchesSearch && matchesGenre;
   });
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
+    const maxFileSize = 5 * 1024 * 1024; // 5MB limit
     
-    // Check Telegram WebApp capabilities
-    if (window.Telegram?.WebApp) {
-      // Telegram WebApp has file size limitations
-      const maxFileSize = 10 * 1024 * 1024; // 10MB limit for Telegram
-      const validFiles = files.filter(file => file.size <= maxFileSize);
-      
-      if (validFiles.length !== files.length) {
-        if (window.Telegram.WebApp.showAlert) {
-          window.Telegram.WebApp.showAlert("Some files were too large. Max 10MB per image.");
-        }
+    for (const file of files) {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('केवल इमेज फाइल्स (JPEG/PNG) समर्थित हैं।');
+        continue;
       }
       
-      validFiles.forEach(file => {
-        if (selectedImages.length < 3) { // Reduce to 3 images for Telegram
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setSelectedImages(prev => [...prev, {
-              id: Date.now() + Math.random(),
-              url: e.target.result,
-              file: file
-            }]);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    } else {
-      // Normal web browser
-      files.forEach(file => {
-        if (selectedImages.length < 4) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setSelectedImages(prev => [...prev, {
-              id: Date.now() + Math.random(),
-              url: e.target.result,
-              file: file
-            }]);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+      // Check file size before upload
+      if (file.size > maxFileSize) {
+        alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 5MB से कम साइज की इमेज चुनें।`);
+        continue;
+      }
+      
+      if (selectedImages.length >= 4) {
+        alert('अधिकतम 4 इमेज अपलोड की जा सकती हैं।');
+        break;
+      }
+      
+      // Read file for preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImages(prev => [...prev, {
+          id: Date.now() + Math.random(),
+          url: e.target.result,
+          file: file
+        }]);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
