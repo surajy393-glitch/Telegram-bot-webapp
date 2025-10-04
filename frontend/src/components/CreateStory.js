@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { compressImage, compressVideo, getCompressionRecommendations, formatFileSize } from '../utils/compression';
 
 const CreateStory = ({ user, onClose, onStoryCreated }) => {
   const [storyType, setStoryType] = useState('text'); // 'image', 'video', or 'text'
