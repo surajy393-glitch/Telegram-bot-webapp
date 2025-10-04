@@ -141,6 +141,8 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
     };
 
+    let saveSuccess = false;
+    
     // Save to localStorage for persistence with error handling
     try {
       const userStoriesKey = `luvhive_stories_${defaultUser.username}`;
@@ -157,18 +159,20 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
       localStorage.setItem(userStoriesKey, JSON.stringify(existingStories));
       console.log('📚 Stories after save:', existingStories.length);
       console.log('📚 Saved story data:', newStory);
+      saveSuccess = true;
     } catch (error) {
       console.log('Story storage error:', error);
       // If localStorage is full, clear old data
       if (error.name === 'QuotaExceededError') {
         try {
+          console.log('⚠️ Storage quota exceeded, clearing old data...');
           // Clear old data to make space
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.includes('luvhive_stories_')) {
               const data = JSON.parse(localStorage.getItem(key) || '[]');
-              if (data.length > 5) {
-                localStorage.setItem(key, JSON.stringify(data.slice(0, 5)));
+              if (data.length > 3) {
+                localStorage.setItem(key, JSON.stringify(data.slice(0, 3)));
               }
             }
           }
@@ -177,25 +181,36 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
           const existingStories = JSON.parse(localStorage.getItem(userStoriesKey) || '[]');
           existingStories.unshift(newStory);
           localStorage.setItem(userStoriesKey, JSON.stringify(existingStories));
+          console.log('✅ Saved story after cleanup');
+          saveSuccess = true;
         } catch (retryError) {
-          console.log('Failed to save story even after cleanup');
+          console.log('❌ Failed to save story even after cleanup:', retryError);
+          setIsSubmitting(false);
+          alert('⚠️ Failed to save story. Image might be too large. Try with smaller image or text-only story.');
+          return; // Exit early - don't call onStoryCreated
         }
+      } else {
+        setIsSubmitting(false);
+        alert('⚠️ Failed to save story: ' + error.message);
+        return; // Exit early - don't call onStoryCreated
       }
     }
 
-    // Simulate story creation
-    setTimeout(() => {
-      console.log('✅ Story created successfully:', newStory);
-      onStoryCreated && onStoryCreated(newStory);
-      onClose && onClose();
-      
-      // Show success feedback
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert('✨ Story shared successfully!');
-      } else {
-        alert('✨ Story shared successfully!');
-      }
-    }, 1500);
+    // Only proceed if save was successful
+    if (saveSuccess) {
+      setTimeout(() => {
+        console.log('✅ Story created successfully:', newStory);
+        onStoryCreated && onStoryCreated(newStory);
+        onClose && onClose();
+        
+        // Show success feedback
+        if (window.Telegram?.WebApp?.showAlert) {
+          window.Telegram.WebApp.showAlert('✨ Story shared successfully!');
+        } else {
+          alert('✨ Story shared successfully!');
+        }
+      }, 1500);
+    }
   };
 
   const handleMusicSelect = (music) => {
