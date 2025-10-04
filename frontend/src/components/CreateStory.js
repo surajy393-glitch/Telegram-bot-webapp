@@ -367,6 +367,35 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     }
   };
 
+  const compressCurrentMedia = async (file, mediaType) => {
+    if (!compressionSettings.enabled) return;
+    
+    setIsCompressing(true);
+    try {
+      let compressedFile;
+      
+      if (mediaType === 'video') {
+        console.log('🎬 Compressing story video...');
+        compressedFile = await compressVideo(file, {
+          quality: compressionSettings.videoQuality,
+          scale: '720:-2'
+        });
+      } else {
+        console.log('📷 Compressing story image...');
+        compressedFile = await compressImage(file, compressionSettings.imageQuality);
+      }
+      
+      setCompressedMediaFile(compressedFile);
+      
+      console.log(`✅ Story compression completed: ${formatFileSize(file.size)} → ${formatFileSize(compressedFile.size)}`);
+    } catch (error) {
+      console.error('❌ Story compression failed:', error);
+      alert('⚠️ Compression failed. Using original file.');
+    } finally {
+      setIsCompressing(false);
+    }
+  };
+
   useEffect(() => {
     // Reset form when modal opens
     setStoryType('text');
