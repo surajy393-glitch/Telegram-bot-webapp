@@ -5,11 +5,11 @@
   },
   {
     "content": "Fix frontend: Add proper MIME-type detection and separate upload functions",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix UI: Add video player components in feed and story displays",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix error messages: Add clear Hindi error messages for different file types",
