@@ -9,10 +9,10 @@
   },
   {
     "content": "Fix frontend registration form submission",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Test complete registration workflow",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
