@@ -21,6 +21,8 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   ];
 
   const musicOptions = [
+selectedImages
+ selectedImages
     // Popular Hits
     { id: '1', name: 'Anti-Hero', artist: 'Taylor Swift', duration: '3:20', genre: 'Pop' },
     { id: '2', name: 'Flowers', artist: 'Miley Cyrus', duration: '3:20', genre: 'Pop' },
