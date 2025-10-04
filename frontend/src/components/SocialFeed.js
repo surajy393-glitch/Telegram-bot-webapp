@@ -679,11 +679,20 @@ const SocialFeed = ({ user, theme }) => {
                       const avatarEmoji = post.user.avatar;
                       const userName = post.user.name || 'User';
                       
-                      // First priority: Check for valid image URL (exclude avataaars strings)
-                      if (avatarUrl && 
+                      // First priority: Use emoji if available and is a valid emoji (not string like 'L')
+                      if (avatarEmoji && 
+                          avatarEmoji.length <= 4 && 
+                          avatarEmoji !== 'L' && 
+                          avatarEmoji !== 'U' && 
+                          /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
+                        return <span className="text-2xl">{avatarEmoji}</span>;
+                      }
+                      // Second priority: Check for valid image URL (exclude avataaars and weird strings)
+                      else if (avatarUrl && 
                           (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:')) &&
                           !avatarUrl.includes('avataaars/svg?') && 
                           !avatarUrl.includes('n/7.x/') &&
+                          !avatarUrl.includes('undefined') &&
                           avatarUrl.length > 10) {
                         return (
                           <img 
@@ -697,10 +706,6 @@ const SocialFeed = ({ user, theme }) => {
                             }}
                           />
                         );
-                      }
-                      // Second priority: Use emoji if available and valid
-                      else if (avatarEmoji && avatarEmoji.length <= 4 && /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
-                        return <span className="text-2xl">{avatarEmoji}</span>;
                       }
                       // Third priority: Generate initials from name
                       else {
