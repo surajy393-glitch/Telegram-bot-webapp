@@ -313,9 +313,10 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     // Reset form when modal opens
     setPostText('');
     setSelectedImages([]);
-    setMood('Happy');
+    setSelectedVideos([]);
+    setMood('happy');
     setSelectedMusic(null);
-    setSelectedLocation(null);
+    setSelectedLocation('');
     setIsSubmitting(false);
   }, []);
 
