@@ -390,17 +390,18 @@ async def upload_photo(file: UploadFile = File(...)):
                 else:
                     raise HTTPException(status_code=500, detail="No file in Telegram response")
                 
-                # Get file URL
+                # Get file URL - MUST succeed
                 file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
                 async with session.get(file_info_url) as file_resp:
                     file_data = await file_resp.json()
-                    if file_data.get('ok'):
-                        file_path = file_data['result']['file_path']
-                        photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
-                    else:
-                        photo_url = None
+                    if not file_data.get('ok'):
+                        logging.error(f"Failed to get file info: {file_data}")
+                        raise HTTPException(status_code=500, detail="Failed to get file URL from Telegram")
+                    
+                    file_path = file_data['result']['file_path']
+                    photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
                 
-                logging.info(f"✅ Photo uploaded to Telegram: {file_id}")
+                logging.info(f"✅ Photo uploaded to Telegram: {file_id}, URL: {photo_url[:80]}...")
                 
                 return {
                     "success": True,
