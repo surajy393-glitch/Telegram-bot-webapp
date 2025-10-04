@@ -587,6 +587,44 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
             </div>
           </div>
 
+          {/* Compression Settings for Media Stories */}
+          {((storyType === 'image' && selectedImage) || (storyType === 'video' && selectedVideo)) && (
+            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-2xl p-3">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-semibold text-blue-800">📦 Compression</h4>
+                <div className="flex items-center space-x-2">
+                  {compressedMediaFile && (
+                    <span className="text-xs text-green-600 font-medium">
+                      {formatFileSize((selectedImageFile || selectedVideoFile)?.size || 0)} → {formatFileSize(compressedMediaFile.size)}
+                    </span>
+                  )}
+                  {mediaRecommendation?.shouldCompress && !compressedMediaFile && (
+                    <button
+                      onClick={() => compressCurrentMedia(selectedImageFile || selectedVideoFile, storyType)}
+                      disabled={isCompressing}
+                      className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors disabled:opacity-50"
+                    >
+                      {isCompressing ? 'Compressing...' : 'Compress'}
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              {mediaRecommendation?.shouldCompress && (
+                <div className="text-xs text-blue-700 mb-2">
+                  💡 {mediaRecommendation.reason}
+                </div>
+              )}
+              
+              {isCompressing && (
+                <div className="flex items-center space-x-2 text-blue-600">
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-xs">Compressing {storyType}...</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Caption Input for Media Stories */}
           {((storyType === 'image' && selectedImage) || (storyType === 'video' && selectedVideo)) && (
             <div className="mb-4">
