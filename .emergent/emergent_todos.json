@@ -13,10 +13,10 @@
   },
   {
     "content": "Fix reply username issue - remove random string concatenation",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Add proper error handling and fallbacks for missing data",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
