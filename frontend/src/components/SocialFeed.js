@@ -1012,6 +1012,7 @@ const SocialFeed = ({ user, theme }) => {
             setShowCommentsModal(false);
             setSelectedPost(null);
           }}
+          onAddComment={handleAddComment}
         />
       )}
 
