@@ -307,17 +307,30 @@ async def upload_photo(file: UploadFile = File(...)):
         
         # Read file content
         content = await file.read()
-        logging.info(f"📤 Uploading photo: {file.filename}, size: {len(content)} bytes")
+        file_size_mb = len(content) / (1024 * 1024)
+        logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB")
         
-        # Upload to Telegram using sendDocument (more reliable than sendPhoto)
+        # Check file size (Telegram limit is 10MB for photos, 20MB for documents)
+        if file_size_mb > 10:
+            raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। अधिकतम 10MB समर्थित है।")
+        
+        # Check if it's an image
+        is_image = file.content_type and file.content_type.startswith('image/')
+        
         async with aiohttp.ClientSession() as session:
-            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
-            
-            # Create form data
-            form = aiohttp.FormData()
-            form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
-            form.add_field('document', content, filename=file.filename, content_type=file.content_type or 'image/jpeg')
-            form.add_field('caption', f'Uploaded: {file.filename}')
+            # Use sendPhoto for images (auto-compresses), sendDocument for others
+            if is_image:
+                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+                form = aiohttp.FormData()
+                form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+                form.add_field('photo', content, filename=file.filename, content_type=file.content_type)
+                form.add_field('caption', f'📷 {file.filename}')
+            else:
+                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
+                form = aiohttp.FormData()
+                form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+                form.add_field('document', content, filename=file.filename, content_type=file.content_type or 'application/octet-stream')
+                form.add_field('caption', f'📎 {file.filename}')
             
             async with session.post(url, data=form, timeout=30) as resp:
                 result = await resp.json()
@@ -326,37 +339,49 @@ async def upload_photo(file: UploadFile = File(...)):
                 if not result.get('ok'):
                     error_desc = result.get('description', 'Unknown error')
                     logging.error(f"❌ Telegram error: {error_desc}")
-                    raise HTTPException(status_code=500, detail=f"Telegram: {error_desc}")
+                    
+                    # User-friendly error messages
+                    if 'too big' in error_desc.lower() or 'too large' in error_desc.lower():
+                        raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। कृपया छोटी इमेज चुनें।")
+                    elif 'wrong file' in error_desc.lower() or 'invalid' in error_desc.lower():
+                        raise HTTPException(status_code=400, detail="केवल JPEG/PNG इमेज समर्थित हैं।")
+                    else:
+                        raise HTTPException(status_code=500, detail=f"Telegram error: {error_desc}")
                 
-                # Get file_id from document
-                document = result['result'].get('document')
-                if document:
-                    file_id = document['file_id']
-                    
-                    # Get file info to construct URL
-                    file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
-                    async with session.get(file_info_url) as file_resp:
-                        file_data = await file_resp.json()
-                        if file_data.get('ok'):
-                            file_path = file_data['result']['file_path']
-                            photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
-                        else:
-                            photo_url = None
-                    
-                    logging.info(f"✅ Photo uploaded to Telegram: {file_id}")
-                    
-                    return {
-                        "success": True,
-                        "file_id": file_id,
-                        "photo_url": photo_url,
-                        "message_id": result['result'].get('message_id')
-                    }
+                # Get file_id from photo or document
+                if is_image and 'photo' in result['result']:
+                    photos = result['result']['photo']
+                    largest_photo = max(photos, key=lambda p: p.get('file_size', 0))
+                    file_id = largest_photo['file_id']
+                elif 'document' in result['result']:
+                    file_id = result['result']['document']['file_id']
                 else:
-                    raise HTTPException(status_code=500, detail="No document in Telegram response")
+                    raise HTTPException(status_code=500, detail="No file in Telegram response")
+                
+                # Get file URL
+                file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
+                async with session.get(file_info_url) as file_resp:
+                    file_data = await file_resp.json()
+                    if file_data.get('ok'):
+                        file_path = file_data['result']['file_path']
+                        photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
+                    else:
+                        photo_url = None
+                
+                logging.info(f"✅ Photo uploaded to Telegram: {file_id}")
+                
+                return {
+                    "success": True,
+                    "file_id": file_id,
+                    "photo_url": photo_url,
+                    "message_id": result['result'].get('message_id')
+                }
     
+    except HTTPException:
+        raise
     except aiohttp.ClientError as e:
         logging.error(f"❌ Network error: {e}")
-        raise HTTPException(status_code=500, detail=f"Network error: {str(e)}")
+        raise HTTPException(status_code=500, detail="नेटवर्क एरर। कृपया फिर से प्रयास करें।")
     except Exception as e:
         logging.error(f"❌ Upload error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
