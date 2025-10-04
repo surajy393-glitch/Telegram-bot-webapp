@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Send, Heart, MessageCircle, Sparkles } from 'lucide-react';
+import Avatar from './ui/Avatar';
 
 const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
   const [commentText, setCommentText] = useState('');
