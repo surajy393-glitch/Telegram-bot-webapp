@@ -196,18 +196,20 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     // Create default user if none exists
     const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
     
-    // Upload images to backend first if any
-    let uploadedImageUrls = [];
-    if (selectedImages.length > 0) {
+    // Upload all media to backend first if any
+    let uploadedMediaUrls = [];
+    const allMedia = [...selectedImages, ...selectedVideos];
+    if (allMedia.length > 0) {
       try {
-        console.log('📤 Uploading images to backend...');
-        const uploadPromises = selectedImages.map(img => uploadImageToBackend(img));
-        uploadedImageUrls = await Promise.all(uploadPromises);
-        console.log('✅ Images uploaded:', uploadedImageUrls);
+        console.log('📤 Uploading media to backend...');
+        const uploadPromises = allMedia.map(media => uploadImageToBackend(media));
+        const uploadResults = await Promise.all(uploadPromises);
+        uploadedMediaUrls = uploadResults.map(result => result.url);
+        console.log('✅ Media uploaded:', uploadedMediaUrls);
       } catch (error) {
-        console.error('❌ Image upload failed:', error);
+        console.error('❌ Media upload failed:', error);
         setIsSubmitting(false);
-        alert('⚠️ Failed to upload images. Please try again.');
+        alert('⚠️ Failed to upload media. Please try again.');
         return;
       }
     }
