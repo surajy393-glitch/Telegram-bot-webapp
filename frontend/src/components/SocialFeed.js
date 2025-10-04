@@ -569,7 +569,19 @@ const SocialFeed = ({ user, theme }) => {
             <div className="p-4">
               <p className="text-gray-800 leading-relaxed mb-3">{post.content}</p>
               
-              {post.image && (
+              {/* Render images array */}
+              {post.images && post.images.length > 0 && (
+                <div className={`grid gap-2 mb-3 ${post.images.length === 1 ? 'grid-cols-1' : post.images.length === 2 ? 'grid-cols-2' : 'grid-cols-2'}`}>
+                  {post.images.slice(0, 4).map((imageUrl, idx) => (
+                    <div key={idx} className="rounded-2xl overflow-hidden">
+                      <img src={imageUrl} alt={`Post image ${idx + 1}`} className="w-full h-64 object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Fallback for old single image format */}
+              {!post.images && post.image && (
                 <div className="rounded-2xl overflow-hidden mb-3">
                   <img src={post.image} alt="Post content" className="w-full h-64 object-cover" />
                 </div>
