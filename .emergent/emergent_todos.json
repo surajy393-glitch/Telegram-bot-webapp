@@ -13,7 +13,7 @@
   },
   {
     "content": "Phase 2: Implement sendVideo support in backend for videos up to 50MB",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 2: Update CreatePost and CreateStory UI to handle video uploads",
