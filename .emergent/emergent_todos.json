@@ -1,26 +1,18 @@
 [
   {
-    "content": "Search entire codebase for all localStorage key variations",
-    "status": "completed"
+    "content": "Fix delete button functionality in PostOptionsModal and SocialFeed",
+    "status": "in_progress"
   },
   {
-    "content": "Fix corrupted localStorage code in webapp folder",
-    "status": "completed"
+    "content": "Fix reply functionality - add onReply callback and proper integration",
+    "status": "pending"
   },
   {
-    "content": "Fix cleanupLocalStorage function properly",
-    "status": "completed"
+    "content": "Fix avatar display issue - show images instead of raw strings",
+    "status": "pending"
   },
   {
-    "content": "Remove all setTimeout delays in registration",
-    "status": "completed"
-  },
-  {
-    "content": "Ensure consistent 'luvhive_user' key usage everywhere",
-    "status": "completed"
-  },
-  {
-    "content": "Force complete rebuild and redeploy",
-    "status": "completed"
+    "content": "Fix multiple like buttons and reaction state management",
+    "status": "pending"
   }
 ]
