@@ -90,6 +90,7 @@ const SocialFeed = ({ user, theme }) => {
   const [showPostOptions, setShowPostOptions] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
 
