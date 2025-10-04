@@ -50,27 +50,86 @@ const RegistrationFlow = ({ onComplete }) => {
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Starting registration process...', formData);
     setIsSubmitting(true);
+    
     try {
+      // Validate required fields
+      if (!formData.name.trim() || !formData.username.trim() || !formData.age || !formData.gender) {
+        throw new Error('सभी आवश्यक फील्ड भरें।');
+      }
+
       // Create user profile
       const userData = {
-        ...formData,
+        id: `user_${Date.now()}`,
+        name: formData.name.trim(),
+        username: formData.username.trim(),
+        age: parseInt(formData.age),
+        gender: formData.gender,
+        bio: formData.bio.trim() || '',
         profilePic: profilePicPreview || generateAvatar(formData.name),
+        avatarUrl: profilePicPreview || generateAvatar(formData.name),
         joinDate: new Date().toISOString(),
-        stats: { posts: 0, followers: 0, following: 0, sparks: 0 }
+        stats: { posts: 0, followers: 0, following: 0, sparks: 0 },
+        mood: 'joyful',
+        aura: 'purple'
       };
       
-      // Save to localStorage for now (in real app, save to backend)
+      console.log('✅ User data created:', userData);
+      
+      // Try to register with backend
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const response = await fetch(`${backendUrl}/api/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Include Telegram WebApp initData for authentication if available
+            ...(window.Telegram?.WebApp?.initData ? {
+              'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+            } : {})
+          },
+          body: JSON.stringify(userData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('✅ Backend registration successful:', result);
+        } else {
+          console.log('⚠️ Backend registration failed, using localStorage');
+        }
+      } catch (backendError) {
+        console.log('⚠️ Backend not available, using localStorage:', backendError.message);
+      }
+      
+      // Save to localStorage as fallback/primary storage
       localStorage.setItem('luvhive_user', JSON.stringify(userData));
+      console.log('✅ User saved to localStorage');
+      
+      // Show success message
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert('🎉 स्वागत है LuvHive में! आपका प्रोफाइल बन गया है।');
+      }
       
       // Complete registration
       setTimeout(() => {
+        console.log('🎯 Completing registration and navigating to feed');
         onComplete(userData);
         navigate('/feed');
       }, 1500);
+      
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('❌ Registration error:', error);
       setIsSubmitting(false);
+      
+      // Show user-friendly error
+      const errorMessage = error.message || 'रजिस्ट्रेशन में समस्या हुई। कृपया फिर से प्रयास करें।';
+      
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert(`❌ ${errorMessage}`);
+      } else {
+        alert(`❌ ${errorMessage}`);
+      }
     }
   };
 
