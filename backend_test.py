@@ -290,6 +290,123 @@ class BackendTester:
         except Exception as e:
             self.log_result("Post Interactions", False, f"Error: {str(e)}")
 
+    async def test_telegram_connection(self):
+        """Test Telegram bot connection and permissions"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/test-telegram", headers=self.headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("bot_working") and data.get("can_send_messages"):
+                        self.log_result("Telegram Connection", True, f"Bot: @{data.get('bot_username', 'unknown')}, Chat ID: {data.get('chat_id')}")
+                        return True
+                    else:
+                        self.log_result("Telegram Connection", False, f"Bot issues: {data.get('message', 'Unknown error')}")
+                        return False
+                else:
+                    self.log_result("Telegram Connection", False, f"HTTP {response.status}")
+                    return False
+        except Exception as e:
+            self.log_result("Telegram Connection", False, f"Error: {str(e)}")
+            return False
+
+    async def test_media_upload_image(self):
+        """Test image upload to Telegram via /api/upload-media"""
+        try:
+            # Create a small test image (1x1 pixel PNG)
+            import base64
+            # 1x1 transparent PNG
+            png_data = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAI9jU77yQAAAABJRU5ErkJggg==')
+            
+            # Create form data for file upload
+            form_data = aiohttp.FormData()
+            form_data.add_field('file', png_data, filename='test_image.png', content_type='image/png')
+            
+            # Upload headers without Content-Type (let aiohttp set it for multipart)
+            upload_headers = {
+                "X-Dev-User": str(self.test_user_id)
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/upload-media", 
+                                       headers=upload_headers, 
+                                       data=form_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success") and data.get("media_url"):
+                        self.log_result("Image Upload API", True, f"Image uploaded: {data.get('file_id', 'unknown')}")
+                        return data["media_url"]
+                    else:
+                        self.log_result("Image Upload API", False, f"Upload failed: {data}")
+                        return None
+                else:
+                    response_text = await response.text()
+                    self.log_result("Image Upload API", False, f"HTTP {response.status}: {response_text[:200]}")
+                    return None
+        except Exception as e:
+            self.log_result("Image Upload API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_media_upload_video(self):
+        """Test video upload to Telegram via /api/upload-media"""
+        try:
+            # Create a minimal MP4 video (just headers, won't actually play but should be accepted)
+            # This is a minimal MP4 file structure
+            mp4_data = b'\x00\x00\x00\x20ftypmp41\x00\x00\x00\x00mp41isom\x00\x00\x00\x08free'
+            
+            # Create form data for file upload
+            form_data = aiohttp.FormData()
+            form_data.add_field('file', mp4_data, filename='test_video.mp4', content_type='video/mp4')
+            
+            # Upload headers without Content-Type (let aiohttp set it for multipart)
+            upload_headers = {
+                "X-Dev-User": str(self.test_user_id)
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/upload-media", 
+                                       headers=upload_headers, 
+                                       data=form_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success") and data.get("media_url"):
+                        self.log_result("Video Upload API", True, f"Video uploaded: {data.get('file_id', 'unknown')}")
+                        return data["media_url"]
+                    else:
+                        self.log_result("Video Upload API", False, f"Upload failed: {data}")
+                        return None
+                else:
+                    response_text = await response.text()
+                    self.log_result("Video Upload API", False, f"HTTP {response.status}: {response_text[:200]}")
+                    return None
+        except Exception as e:
+            self.log_result("Video Upload API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_media_upload_size_limits(self):
+        """Test media upload size limit validation"""
+        try:
+            # Test oversized image (simulate 25MB file)
+            large_data = b'0' * (25 * 1024 * 1024)  # 25MB of zeros
+            
+            form_data = aiohttp.FormData()
+            form_data.add_field('file', large_data, filename='large_image.jpg', content_type='image/jpeg')
+            
+            upload_headers = {
+                "X-Dev-User": str(self.test_user_id)
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/upload-media", 
+                                       headers=upload_headers, 
+                                       data=form_data) as response:
+                if response.status == 400:
+                    response_text = await response.text()
+                    if "बहुत बड़ी" in response_text or "too big" in response_text.lower():
+                        self.log_result("Size Limit Validation", True, "Large file correctly rejected")
+                    else:
+                        self.log_result("Size Limit Validation", False, f"Unexpected error message: {response_text}")
+                else:
+                    self.log_result("Size Limit Validation", False, f"Expected 400, got {response.status}")
+        except Exception as e:
+            self.log_result("Size Limit Validation", False, f"Error: {str(e)}")
+
     async def test_status_endpoints(self):
         """Test status check endpoints"""
         try:
