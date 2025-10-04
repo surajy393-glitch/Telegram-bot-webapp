@@ -67,11 +67,29 @@ const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
 
   const renderAvatar = (user) => {
     const avatarUrl = user.avatarUrl || user.profilePic;
-    const displayLetter = user.name?.charAt(0).toUpperCase() || '👤';
+    const userName = user.name || 'User';
+    const displayLetter = userName?.charAt(0).toUpperCase() || '👤';
+
+    // Special handling for Luvsociety
+    if (userName.toLowerCase() === 'luvsociety') {
+      return (
+        <div className="relative">
+          <img 
+            src="https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true&rounded=true"
+            alt="Luvsociety avatar" 
+            className="w-10 h-10 rounded-full object-cover border-2 border-purple-300 shadow-lg"
+            onError={(e) => {
+              e.target.outerHTML = '<div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 text-white text-lg font-bold shadow-lg border-2 border-purple-300">💜</div>';
+            }}
+          />
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+      );
+    }
 
     return avatarUrl ? (
       <div className="relative">
-        <img src={avatarUrl} alt={`${user.name} avatar`} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-lg" />
+        <img src={avatarUrl} alt={`${userName} avatar`} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-lg" />
         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
       </div>
     ) : (
