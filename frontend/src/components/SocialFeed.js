@@ -13,7 +13,14 @@ import ReplyModal from './ReplyModal';
 const mockPostsData = [
   {
     id: 1,
-    user: { name: 'Emma Soul', username: '@emma_vibes', avatar: '🌸', mood: 'joyful', aura: 'golden' },
+    user: { 
+      name: 'Emma Soul', 
+      username: '@emma_vibes', 
+      avatar: '🌸', 
+      avatarUrl: 'https://ui-avatars.com/api/?name=Emma+Soul&background=f472b6&color=fff&size=200',
+      mood: 'joyful', 
+      aura: 'golden' 
+    },
     content: 'Just discovered this hidden waterfall during my morning hike! Sometimes the best adventures are unplanned 🏞️✨',
     image: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400',
     mood: 'adventurous',
@@ -26,7 +33,14 @@ const mockPostsData = [
   },
   {
     id: 2,
-    user: { name: 'Alex Dream', username: '@alex_cosmic', avatar: '🌙', mood: 'contemplative', aura: 'purple' },
+    user: { 
+      name: 'Alex Dream', 
+      username: '@alex_cosmic', 
+      avatar: '🌙', 
+      avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Dream&background=8b5cf6&color=fff&size=200',
+      mood: 'contemplative', 
+      aura: 'purple' 
+    },
     content: 'Tonight\'s meditation brought me such clarity. We\'re all stardust experiencing itself subjectively 🌌',
     mood: 'philosophical',
     vibeScore: 88,
@@ -39,7 +53,14 @@ const mockPostsData = [
   },
   {
     id: 3,
-    user: { name: 'Zara Wild', username: '@zara_free', avatar: '🦋', mood: 'energetic', aura: 'rainbow' },
+    user: { 
+      name: 'Zara Wild', 
+      username: '@zara_free', 
+      avatar: '🦋', 
+      avatarUrl: 'https://ui-avatars.com/api/?name=Zara+Wild&background=ec4899&color=fff&size=200',
+      mood: 'energetic', 
+      aura: 'rainbow' 
+    },
     content: 'Dancing in my kitchen to 90s music because life is too short not to be silly sometimes! 💃',
     video: true,
     mood: 'playful',
