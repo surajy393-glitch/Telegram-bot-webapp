@@ -1,11 +1,11 @@
 [
   {
     "content": "Analyze the uploaded LuvHive zip file and extract all frontend components",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Set up the correct LuvHive frontend with Feed page (Following/Discover/Vibes/Sparks tabs)",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Implement story circles feature (Your Story, Luna, River, Nova)",
