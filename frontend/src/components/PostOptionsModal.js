@@ -1,3 +1,4 @@
+UserProfile.js
 import React, { useState } from 'react';
 
 const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {

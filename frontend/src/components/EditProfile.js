@@ -38,6 +38,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
       }
 
       const reader = new FileReader();
+ handleSave
       reader.onload = (e) => {
         setNewProfileImage(e.target.result);
         setProfilePic(e.target.result);

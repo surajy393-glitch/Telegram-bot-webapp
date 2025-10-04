@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+iavatar
+mport React, { useState, useEffect } from 'react';
 import { showAlert, closeTelegramWebApp } from '../utils/telegram';
 
 const ViewUserProfile = ({ targetUser, currentUser, onClose }) => {
