@@ -181,7 +181,9 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
   };
 
   const handleSubmit = async () => {
-    if ((storyType === 'text' && !storyText.trim()) || (storyType === 'image' && !selectedImage)) {
+    if ((storyType === 'text' && !storyText.trim()) || 
+        (storyType === 'image' && !selectedImage) || 
+        (storyType === 'video' && !selectedVideo)) {
       return;
     }
 
