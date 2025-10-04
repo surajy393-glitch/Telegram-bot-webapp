@@ -353,6 +353,8 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     setStoryText('');
     setSelectedImage(null);
     setSelectedImageFile(null);
+    setSelectedVideo(null);
+    setSelectedVideoFile(null);
     setMood('');
     setSelectedMusic(null);
     setSelectedLocation('');
