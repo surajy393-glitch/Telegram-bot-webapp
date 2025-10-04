@@ -8,6 +8,7 @@ import ViewUserProfile from './ViewUserProfile';
 import PostOptionsModal from './PostOptionsModal';
 import ShareModal from './ShareModal';
 import ReplyModal from './ReplyModal';
+import CommentsModal from './CommentsModal';
 
 // Mock posts data outside component to avoid dependency issues
 const mockPostsData = [
