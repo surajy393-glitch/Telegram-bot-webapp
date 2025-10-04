@@ -335,8 +335,13 @@ async def upload_photo(file: UploadFile = File(...)):
                 form.add_field('caption', f'📎 {file.filename}')
             
             async with session.post(url, data=form, timeout=30) as resp:
-                result = await resp.json()
-                logging.info(f"Telegram response: {result}")
+                resp_text = await resp.text()
+                logging.info(f"Telegram raw response (status {resp.status}): {resp_text[:500]}")
+                try:
+                    result = await resp.json() if resp.content_type == 'application/json' else {"ok": False, "description": resp_text}
+                except:
+                    result = {"ok": False, "description": resp_text}
+                logging.info(f"Telegram parsed response: {result}")
                 
                 if not result.get('ok'):
                     error_desc = result.get('description', 'Unknown error')
