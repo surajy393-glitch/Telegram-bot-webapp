@@ -109,7 +109,6 @@ const mockPostsData = [
     user: { 
       name: 'Zara Wild', 
       username: '@zara_free', 
-      avatar: '🦋', 
       avatarUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=center',
       mood: 'energetic', 
       aura: 'rainbow' 
