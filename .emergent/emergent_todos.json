@@ -13,10 +13,10 @@
   },
   {
     "content": "Fix error messages: Add clear Hindi error messages for different file types",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Test complete video upload flow from frontend to backend",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
