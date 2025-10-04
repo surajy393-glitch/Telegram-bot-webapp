@@ -208,7 +208,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
-  const uploadImageToBackend = async (mediaObj) => {
+  const uploadMediaToBackend = async (mediaObj) => {
     try {
       const formData = new FormData();
       // Use compressed file if available, otherwise use original
@@ -216,7 +216,11 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       formData.append('file', fileToUpload);
       
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(`${backendUrl}/api/upload-media`, {
+      
+      // Choose correct endpoint based on media type
+      const endpoint = mediaObj.type === 'video' ? '/api/upload-video' : '/api/upload-photo';
+      
+      const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -228,29 +232,43 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       });
       
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Upload failed');
       }
       
       const result = await response.json();
       
-      // Ensure we always return a valid image URL
+      // Ensure we always return a valid response
       if (!result.success) {
         throw new Error(result.message || 'Upload failed');
       }
       
-      // media_url (or photo_url for backward compatibility) should always be present from backend
-      const mediaUrl = result.media_url || result.photo_url;
-      if (!mediaUrl) {
-        console.error('No media_url in response:', result);
-        throw new Error('Invalid server response - no media URL');
+      // Get media URL based on type
+      let mediaUrl;
+      if (mediaObj.type === 'video') {
+        mediaUrl = result.video_url;
+        if (!mediaUrl) {
+          console.error('No video_url in response:', result);
+          throw new Error('Invalid server response - no video URL');
+        }
+      } else {
+        mediaUrl = result.photo_url;
+        if (!mediaUrl) {
+          console.error('No photo_url in response:', result);
+          throw new Error('Invalid server response - no photo URL');
+        }
       }
       
       return {
         url: mediaUrl,
-        type: result.media_type || 'image'
+        type: result.media_type || mediaObj.type,
+        thumb_url: result.thumb_url || null,
+        duration: result.duration || 0,
+        width: result.width || 0,
+        height: result.height || 0
       };
     } catch (error) {
-      console.error('Image upload error:', error);
+      console.error('Media upload error:', error);
       throw error;
     }
   };
