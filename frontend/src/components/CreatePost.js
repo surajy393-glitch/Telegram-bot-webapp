@@ -609,6 +609,79 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
             </button>
           </div>
 
+          {/* Compression Settings */}
+          {(selectedImages.length > 0 || selectedVideos.length > 0) && (
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-semibold text-blue-800">📦 Compression Settings</h4>
+                <button
+                  onClick={() => setCompressionSettings(prev => ({ ...prev, enabled: !prev.enabled }))}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    compressionSettings.enabled 
+                      ? 'bg-blue-500 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                  }`}
+                >
+                  {compressionSettings.enabled ? 'ON' : 'OFF'}
+                </button>
+              </div>
+              
+              {compressionSettings.enabled && (
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="autoCompress"
+                      checked={compressionSettings.autoCompress}
+                      onChange={(e) => setCompressionSettings(prev => ({ ...prev, autoCompress: e.target.checked }))}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                    <label htmlFor="autoCompress" className="text-xs text-blue-700">
+                      Auto-compress large files
+                    </label>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-blue-700">Image Quality:</label>
+                      <input
+                        type="range"
+                        min="0.1"
+                        max="1"
+                        step="0.1"
+                        value={compressionSettings.imageQuality}
+                        onChange={(e) => setCompressionSettings(prev => ({ ...prev, imageQuality: parseFloat(e.target.value) }))}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-center text-blue-600">{Math.round(compressionSettings.imageQuality * 100)}%</div>
+                    </div>
+                    
+                    <div>
+                      <label className="text-xs text-blue-700">Video Quality:</label>
+                      <input
+                        type="range"
+                        min="18"
+                        max="35"
+                        step="1"
+                        value={compressionSettings.videoQuality}
+                        onChange={(e) => setCompressionSettings(prev => ({ ...prev, videoQuality: parseInt(e.target.value) }))}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-center text-blue-600">CRF {compressionSettings.videoQuality}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {isCompressing && (
+                <div className="flex items-center space-x-2 mt-2 text-blue-600">
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-xs">Compressing media...</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Character Count */}
           <div className="text-right">
             <span className={`text-sm ${postText.length > 280 ? 'text-red-500' : 'text-gray-400'}`}>
