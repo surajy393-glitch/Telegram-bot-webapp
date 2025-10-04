@@ -17,11 +17,11 @@
   },
   {
     "content": "Phase 2: Update CreatePost and CreateStory UI to handle video uploads",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Phase 3: Add client-side image compression library (compressorjs)",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Phase 3: Add client-side video compression library (browser-video-compression)",
