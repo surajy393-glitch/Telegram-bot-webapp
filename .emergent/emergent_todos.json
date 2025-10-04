@@ -1,11 +1,11 @@
 [
   {
     "content": "Fix Story Share button - Add proper ShareModal integration",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Test both Post and Story share buttons thoroughly",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Verify share functionality works correctly",
