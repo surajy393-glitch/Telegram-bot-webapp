@@ -337,22 +337,37 @@ async def upload_photo(file: UploadFile = File(...)):
         file_size_mb = len(content) / (1024 * 1024)
         logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
         
-        # Check file size (Telegram limit is 10MB for photos, 20MB for documents)
-        if file_size_mb > 10:
-            raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। अधिकतम 10MB समर्थित है।")
+        # Check file size (Telegram limit is 20MB for documents, 10MB for photos)
+        if file_size_mb > 20:
+            raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। अधिकतम 20MB समर्थित है।")
         
         # Check if it's an image
         is_image = file.content_type and file.content_type.startswith('image/')
         
         async with aiohttp.ClientSession() as session:
-            # Use sendPhoto for images (auto-compresses), sendDocument for others
-            if is_image:
+            # For images: Try sendPhoto first (up to 10MB), fallback to sendDocument (up to 20MB)
+            use_send_document = False
+            
+            if is_image and file_size_mb <= 10:
+                # Try sendPhoto for smaller images (better compression)
                 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
                 form = aiohttp.FormData()
                 form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
                 form.add_field('photo', content, filename=file.filename, content_type=file.content_type)
                 form.add_field('caption', f'📷 {file.filename}')
+                logging.info(f"📤 Trying sendPhoto for {file.filename} ({file_size_mb:.2f}MB)")
+            elif is_image and file_size_mb > 10:
+                # Use sendDocument for large images (10-20MB)
+                use_send_document = True
+                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
+                form = aiohttp.FormData()
+                form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+                form.add_field('document', content, filename=file.filename, content_type=file.content_type)
+                form.add_field('caption', f'📷 Large Image: {file.filename}')
+                logging.info(f"📤 Using sendDocument for large image {file.filename} ({file_size_mb:.2f}MB)")
             else:
+                # Non-image files use sendDocument
+                use_send_document = True
                 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
                 form = aiohttp.FormData()
                 form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
