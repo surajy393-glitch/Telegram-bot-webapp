@@ -35,7 +35,7 @@ const mockPostsData = [
     comments: [
       {
         id: 1,
-        user: { name: 'Emma Soul', username: '@emma_vibes', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=center' },
+        user: { name: 'Alex Dream', username: '@alex_cosmic', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=center' },
         text: 'Looks delicious! 🤤',
         timestamp: '2m ago',
         likes: 2
