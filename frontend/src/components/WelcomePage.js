@@ -52,7 +52,9 @@ const WelcomePage = ({ user, theme, onEnterLuvHive }) => {
   }, [features.length]);
 
   const handleGetStarted = () => {
+    console.log('🚀 Enter LuvHive button clicked on WelcomePage');
     const destination = onEnterLuvHive();
+    console.log('🎯 Navigation destination:', destination);
     navigate(destination);
   };
 
