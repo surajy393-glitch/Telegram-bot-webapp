@@ -807,6 +807,7 @@ const SocialFeed = ({ user, theme }) => {
                             controls
                             preload="metadata"
                             poster={mediaUrl.replace('video', 'thumb')} // Try to get thumbnail
+                            onClick={() => setFullScreenImage({ url: mediaUrl, alt: `${post.user.name}'s video`, isVideo: true })}
                           />
                         ) : (
                           <img 
