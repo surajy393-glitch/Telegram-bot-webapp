@@ -193,6 +193,13 @@ async def register_user(user_data: dict):
         if existing_user:
             raise HTTPException(status_code=409, detail="यह यूजरनेम पहले से उपयोग में है।")
         
+        # Generate default avatar if none provided
+        avatar_url = user_data.get('avatarUrl') or user_data.get('profilePic')
+        if not avatar_url:
+            # Generate a default avatar based on name
+            safe_name = user_data['name'].replace(' ', '+')
+            avatar_url = f"https://ui-avatars.com/api/?name={safe_name}&background=random&color=fff&size=200"
+        
         # Create user document
         user_doc = {
             "tg_user_id": user_data.get('id', f"user_{int(time.time())}"),
@@ -201,7 +208,7 @@ async def register_user(user_data: dict):
             "age": int(user_data['age']),
             "gender": user_data['gender'],
             "bio": user_data.get('bio', ''),
-            "avatar_url": user_data.get('avatarUrl') or user_data.get('profilePic'),
+            "avatar_url": avatar_url,
             "mood": user_data.get('mood', 'joyful'),
             "aura": user_data.get('aura', 'purple'),
             "stats": user_data.get('stats', {"posts": 0, "followers": 0, "following": 0, "sparks": 0}),
