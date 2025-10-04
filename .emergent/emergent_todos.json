@@ -5,11 +5,11 @@
   },
   {
     "content": "Fix ReplyModal onReply callback integration in SocialFeed",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix avatar display with proper fallback logic",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Add full-screen media view modal",
