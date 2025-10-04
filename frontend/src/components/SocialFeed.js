@@ -740,12 +740,15 @@ const SocialFeed = ({ user, theme }) => {
                       // Special handling for Luvsociety
                       if (userName.toLowerCase() === 'luvsociety') {
                         return (
-                          <div className="w-full h-full flex items-center justify-center bg-black text-white rounded-full" style={{fontFamily: 'Arial, sans-serif'}}>
-                            <div className="text-center">
-                              <div style={{fontSize: '8px', lineHeight: '1', fontWeight: 'bold'}}>LUV</div>
-                              <div style={{fontSize: '8px', lineHeight: '1', fontWeight: 'bold'}}>SOCIETY</div>
-                            </div>
-                          </div>
+                          <img 
+                            src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center"
+                            alt="Luvsociety" 
+                            className="w-full h-full object-cover rounded-full"
+                            onError={(e) => {
+                              // Fallback to a solid color circle without text
+                              e.target.outerHTML = '<div class="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600 rounded-full"></div>';
+                            }}
+                          />
                         );
                       }
                       // First priority: Check for valid image URL (exclude avataaars and weird strings)
