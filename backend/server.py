@@ -175,6 +175,14 @@ async def get_current_user(request: Request) -> dict:
 async def root():
     return {"message": "Social Platform API"}
 
+@app.get("/uploads/{filename}")
+async def serve_upload(filename: str):
+    """Serve uploaded images."""
+    file_path = PathLib(f"/app/backend/uploads/{filename}")
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    return Response(content=file_path.read_bytes(), media_type="image/jpeg")
+
 @app.get("/api/status", response_model=List[StatusCheck])
 async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
