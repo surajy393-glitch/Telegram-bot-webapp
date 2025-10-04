@@ -60,16 +60,14 @@ const RegistrationFlow = ({ onComplete }) => {
         stats: { posts: 0, followers: 0, following: 0, sparks: 0 }
       };
       
-      // Save to localStorage for now (in real app, save to backend)
-      localStorage.setItem('luvhluvhive_user
-        ihandleRegistrationComplete
-        ve_user', JSON.stringify(userData));
+      // Save to localStorage with consistent key
+      localStorage.setItem('luvhive_user', JSON.stringify(userData));
+      console.log('✅ User saved to localStorage with key: luvhive_user');
       
-      // Complete registration
-      setTimeout(() => {
-        onComplete(userData);
-        navigate('/feed');
-      }, 1500);
+      // Complete registration immediately (no setTimeout delay)
+      console.log('🎯 Completing registration and navigating to feed');
+      onComplete(userData);
+      navigate('/feed', { replace: true });
     } catch (error) {
       console.error('Registration error:', error);
       setIsSubmitting(false);
