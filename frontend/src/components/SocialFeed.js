@@ -982,12 +982,22 @@ const SocialFeed = ({ user, theme }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <img
-              src={fullScreenImage.url}
-              alt={fullScreenImage.alt}
-              className="max-w-full max-h-full object-contain rounded-lg"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {fullScreenImage.isVideo ? (
+              <video
+                src={fullScreenImage.url}
+                className="max-w-full max-h-full object-contain rounded-lg"
+                controls
+                autoPlay
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <img
+                src={fullScreenImage.url}
+                alt={fullScreenImage.alt}
+                className="max-w-full max-h-full object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
           </div>
         </div>
       )}
