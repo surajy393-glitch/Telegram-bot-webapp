@@ -164,7 +164,12 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
       formData.append('file', file);
       
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(`${backendUrl}/api/upload-media`, {
+      
+      // Determine file type
+      const isVideo = file.type.startsWith('video/');
+      const endpoint = isVideo ? '/api/upload-video' : '/api/upload-photo';
+      
+      const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         body: formData,
         headers: {
