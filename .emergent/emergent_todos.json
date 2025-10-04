@@ -13,11 +13,11 @@
   },
   {
     "content": "Remove all setTimeout delays in registration",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Ensure consistent 'luvhive_user' key usage everywhere",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Force complete rebuild and redeploy",
