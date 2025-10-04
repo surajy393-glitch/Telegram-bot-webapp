@@ -709,11 +709,18 @@ const SocialFeed = ({ user, theme }) => {
                       }
                     })()}
                     {/* Hidden fallback for image errors */}
-                    <span className="text-xl font-bold text-white" style={{ display: 'none' }}>
+                    <span className="text-xl font-bold text-white flex items-center justify-center w-full h-full" style={{ display: 'none' }}>
                       {(() => {
-                        const name = post.user.name || 'User';
-                        const initials = name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
-                        return initials || '👤';
+                        const userName = post.user.name || 'User';
+                        const avatarEmoji = post.user.avatar;
+                        
+                        // Use emoji if valid, otherwise initials
+                        if (avatarEmoji && avatarEmoji.length <= 4 && /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
+                          return avatarEmoji;
+                        } else {
+                          const initials = userName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+                          return initials || '👤';
+                        }
                       })()}
                     </span>
                   </div>
