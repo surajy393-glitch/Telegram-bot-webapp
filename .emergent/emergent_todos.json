@@ -9,10 +9,10 @@
   },
   {
     "content": "Verify registration completion state management",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Clear cache and test complete registration flow",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
