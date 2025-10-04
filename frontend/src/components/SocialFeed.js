@@ -13,6 +13,36 @@ import CommentsModal from './CommentsModal';
 // Mock posts data outside component to avoid dependency issues
 const mockPostsData = [
   {
+    id: 0,
+    user: { 
+      name: 'Luvsociety', 
+      username: '@luvsociety', 
+      avatar: '💜', 
+      avatarUrl: 'https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true&rounded=true',
+      mood: 'happy', 
+      aura: 'purple' 
+    },
+    content: 'So yummy 😋',
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center',
+    mood: 'happy',
+    vibeScore: 88,
+    sparkCount: 0,
+    glowCount: 1,
+    userReactions: { spark: false, glow: false },
+    timestamp: 'Just now',
+    isSparkPost: false,
+    comments: [
+      {
+        id: 1,
+        user: { name: 'Emma Soul', username: '@emma_vibes', avatarUrl: 'https://ui-avatars.com/api/?name=Emma+Soul&background=f472b6&color=fff&size=200' },
+        text: 'Looks delicious! 🤤',
+        timestamp: '2m ago',
+        likes: 2
+      }
+    ],
+    comments_count: 1
+  },
+  {
     id: 1,
     user: { 
       name: 'Emma Soul', 
