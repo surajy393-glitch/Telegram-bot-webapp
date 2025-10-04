@@ -19,8 +19,7 @@ const mockPostsData = [
       name: 'Test User', 
       username: 'testuser', 
       avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=center',
-      mood: 'happy', 
-      aura: 'blue' 
+      profilePic: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=center'
     },
     content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨',
     image: null,
@@ -40,8 +39,7 @@ const mockPostsData = [
       name: 'Luvsociety', 
       username: '@luvsociety', 
       avatarUrl: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center',
-      mood: 'happy', 
-      aura: 'purple' 
+      profilePic: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center'
     },
     content: 'So yummy 😋',
     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop&crop=center',
