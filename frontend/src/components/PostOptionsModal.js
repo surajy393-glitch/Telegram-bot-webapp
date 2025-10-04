@@ -24,6 +24,7 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
   );
 
   const options = [
+    { id: 'delete', title: 'Delete Post', icon: '🗑️', color: 'text-red-500', bgColor: 'hover:bg-red-100', show: post.user.id === currentUser.id },
     {
       id: 'report',
       title: 'Report Post',
@@ -59,15 +60,6 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
       bgColor: 'hover:bg-purple-50',
       description: 'Copy post link to share',
       show: true
-    },
-    {
-      id: 'delete',
-      title: 'Delete Post',
-      icon: '🗑️',
-      color: 'text-red-600',
-      bgColor: 'hover:bg-red-50',
-      description: 'Permanently delete this post',
-      show: isOwnPost
     },
     {
       id: 'block',
