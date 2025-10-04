@@ -506,12 +506,16 @@ const SocialFeed = ({ user, theme }) => {
                   className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-2xl p-2 -m-2 transition-colors"
                   onClick={() => handleUserClick(post.user)}
                 >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r ${
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-r ${
                     post.user.aura === 'golden' ? 'from-yellow-400 to-orange-500' :
                     post.user.aura === 'purple' ? 'from-purple-400 to-indigo-500' :
                     'from-pink-400 to-purple-500'
                   }`}>
-                    <span className="text-xl">{post.user.avatar}</span>
+                    {post.user.avatar && (post.user.avatar.startsWith('http') || post.user.avatar.startsWith('/')) ? (
+                      <img src={post.user.avatar} alt={post.user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xl">{post.user.avatar || '👤'}</span>
+                    )}
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
