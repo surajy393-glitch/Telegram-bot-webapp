@@ -573,14 +573,29 @@ const SocialFeed = ({ user, theme }) => {
             <div className="p-4">
               <p className="text-gray-800 leading-relaxed mb-3">{post.content}</p>
               
-              {/* Render images array */}
+              {/* Render media array (images and videos) */}
               {post.images && post.images.length > 0 && (
                 <div className={`grid gap-2 mb-3 ${post.images.length === 1 ? 'grid-cols-1' : post.images.length === 2 ? 'grid-cols-2' : 'grid-cols-2'}`}>
-                  {post.images.slice(0, 4).map((imageUrl, idx) => (
-                    <div key={idx} className="rounded-2xl overflow-hidden">
-                      <img src={imageUrl} alt={`Post image ${idx + 1}`} className="w-full h-64 object-cover" />
-                    </div>
-                  ))}
+                  {post.images.slice(0, 4).map((mediaUrl, idx) => {
+                    // Detect if this is a video URL (basic check)
+                    const isVideo = mediaUrl.includes('video') || mediaUrl.includes('.mp4') || mediaUrl.includes('.mov') || mediaUrl.includes('.webm');
+                    
+                    return (
+                      <div key={idx} className="rounded-2xl overflow-hidden relative">
+                        {isVideo ? (
+                          <video 
+                            src={mediaUrl} 
+                            className="w-full h-64 object-cover"
+                            controls
+                            preload="metadata"
+                            poster={mediaUrl.replace('video', 'thumb')} // Try to get thumbnail
+                          />
+                        ) : (
+                          <img src={mediaUrl} alt={`Post media ${idx + 1}`} className="w-full h-64 object-cover" />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
               
@@ -591,11 +606,15 @@ const SocialFeed = ({ user, theme }) => {
                 </div>
               )}
               
+              {/* Fallback for old video format */}
               {post.video && (
-                <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-8 text-center mb-3">
-                  <div className="text-4xl mb-2">🎬</div>
-                  <p className="text-gray-600 font-medium">Video Content</p>
-                  <p className="text-sm text-gray-500">Tap to play dance video</p>
+                <div className="rounded-2xl overflow-hidden mb-3">
+                  <video 
+                    src={post.video} 
+                    className="w-full h-64 object-cover"
+                    controls
+                    preload="metadata"
+                  />
                 </div>
               )}
             </div>
