@@ -855,12 +855,17 @@ const SocialFeed = ({ user, theme }) => {
                   <span className="text-sm font-medium">{post.glowCount || 0}</span>
                 </button>
                 
-                <button 
-                  onClick={() => handleReply(post.id)}
+                <button
+                  onClick={() => {
+                    setSelectedPost(post);
+                    setShowCommentsModal(true);
+                  }}
                   className="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded-full transition-all duration-200"
                 >
                   <span>💬</span>
-                  <span className="text-sm font-medium">Reply</span>
+                  <span className="text-sm font-medium">
+                    Comments {post.comments?.length ? `(${post.comments.length})` : ''}
+                  </span>
                 </button>
                 
                 <button 
