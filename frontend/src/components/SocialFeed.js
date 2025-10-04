@@ -995,6 +995,17 @@ const SocialFeed = ({ user, theme }) => {
         />
       )}
 
+      {showCommentsModal && selectedPost && (
+        <CommentsModal
+          post={selectedPost}
+          currentUser={user}
+          onClose={() => {
+            setShowCommentsModal(false);
+            setSelectedPost(null);
+          }}
+        />
+      )}
+
       {showCreatePost && (
         <CreatePost
           user={user || { name: 'Test User', username: 'testuser', profilePic: '🌟' }}
