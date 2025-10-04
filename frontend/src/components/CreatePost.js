@@ -208,10 +208,12 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
-  const uploadImageToBackend = async (imageObj) => {
+  const uploadImageToBackend = async (mediaObj) => {
     try {
       const formData = new FormData();
-      formData.append('file', imageObj.file);
+      // Use compressed file if available, otherwise use original
+      const fileToUpload = mediaObj.compressedFile || mediaObj.file;
+      formData.append('file', fileToUpload);
       
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
       const response = await fetch(`${backendUrl}/api/upload-media`, {
