@@ -4,6 +4,7 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
   const [storyType, setStoryType] = useState('image'); // 'image' or 'text'
   const [storyText, setStoryText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState('from-pink-400 to-purple-600');
   const [mood, setMood] = useState(''); // Empty by default (optional)
   const [selectedMusic, setSelectedMusic] = useState(null);
