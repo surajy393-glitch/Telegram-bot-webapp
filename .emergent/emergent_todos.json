@@ -5,11 +5,11 @@
   },
   {
     "content": "Fix reply functionality - add onReply callback and proper integration",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix avatar display issue - show images instead of raw strings",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix multiple like buttons and reaction state management",
