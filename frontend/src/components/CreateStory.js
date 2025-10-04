@@ -92,7 +92,7 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     const file = event.target.files[0];
     if (!file) return;
     
-    const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+    const maxFileSize = 10 * 1024 * 1024; // 10MB limit (Telegram sendPhoto limit)
     
     // Check file type
     if (!file.type.startsWith('image/')) {
