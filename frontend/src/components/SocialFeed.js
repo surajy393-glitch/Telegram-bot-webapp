@@ -390,7 +390,7 @@ const SocialFeed = ({ user, theme }) => {
         if (confirm(confirmMessage)) {
           try {
             const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${post._id || post.id}`, { 
               method: 'DELETE', 
               headers: { Authorization: `Bearer ${token}` }
             });
