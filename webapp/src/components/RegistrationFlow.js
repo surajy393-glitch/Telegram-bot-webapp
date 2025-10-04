@@ -61,7 +61,9 @@ const RegistrationFlow = ({ onComplete }) => {
       };
       
       // Save to localStorage for now (in real app, save to backend)
-      localStorage.setItem('luvhive_user', JSON.stringify(userData));
+      localStorage.setItem('luvhluvhive_user
+        ihandleRegistrationComplete
+        ve_user', JSON.stringify(userData));
       
       // Complete registration
       setTimeout(() => {

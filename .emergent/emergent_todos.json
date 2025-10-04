@@ -1,18 +1,22 @@
 [
   {
-    "content": "Fix setTimeout delay in registration completion",
-    "status": "completed"
+    "content": "Search entire codebase for all localStorage key variations",
+    "status": "in_progress"
   },
   {
-    "content": "Ensure localStorage key consistency across all files",
-    "status": "completed"
+    "content": "Fix cleanupLocalStorage function properly",
+    "status": "pending"
   },
   {
-    "content": "Verify cleanup function behavior",
-    "status": "completed"
+    "content": "Remove all setTimeout delays in registration",
+    "status": "pending"
   },
   {
-    "content": "Clear build cache and restart services",
-    "status": "completed"
+    "content": "Ensure consistent 'luvhive_user' key usage everywhere",
+    "status": "pending"
+  },
+  {
+    "content": "Force complete rebuild and redeploy",
+    "status": "pending"
   }
 ]

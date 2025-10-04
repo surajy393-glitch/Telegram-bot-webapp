@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+ihandleRegistrationComplete
+mhandleRegistrationComplete
+phandleEnterLuv
+ort React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WelcomePage from './components/WelcomePage';
 import SocialFeed from './components/SocialFeed';
