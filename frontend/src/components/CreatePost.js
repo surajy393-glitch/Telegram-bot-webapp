@@ -92,7 +92,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       
       // Check file size before upload
       if (file.size > maxFileSize) {
-        alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 5MB से कम साइज की इमेज चुनें।`);
+        alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 10MB से कम साइज की इमेज चुनें।`);
         continue;
       }
       
