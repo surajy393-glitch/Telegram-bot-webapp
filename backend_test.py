@@ -310,7 +310,7 @@ class BackendTester:
             return False
 
     async def test_media_upload_image(self):
-        """Test image upload to Telegram via /api/upload-media"""
+        """Test image upload to Telegram via /api/upload-photo"""
         try:
             # Create a small test image (1x1 pixel PNG)
             import base64
@@ -326,14 +326,14 @@ class BackendTester:
                 "X-Dev-User": str(self.test_user_id)
             }
             
-            async with self.session.post(f"{BACKEND_URL}/upload-media", 
+            async with self.session.post(f"{BACKEND_URL}/upload-photo", 
                                        headers=upload_headers, 
                                        data=form_data) as response:
                 if response.status == 200:
                     data = await response.json()
-                    if data.get("success") and data.get("media_url"):
+                    if data.get("success") and data.get("photo_url"):
                         self.log_result("Image Upload API", True, f"Image uploaded: {data.get('file_id', 'unknown')}")
-                        return data["media_url"]
+                        return data["photo_url"]
                     else:
                         self.log_result("Image Upload API", False, f"Upload failed: {data}")
                         return None
