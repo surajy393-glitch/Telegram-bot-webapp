@@ -36,51 +36,18 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+              <div className="flex items-center">
                 {(() => {
-                  // Get proper avatar URL from user data
-                  const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
-                  const avatarEmoji = post.user.avatar;
-                  const userName = post.user.name || 'User';
-                  
-                  // First priority: Use emoji if available and is a valid emoji (not string like 'L')
-                  if (avatarEmoji && 
-                      avatarEmoji.length <= 4 && 
-                      avatarEmoji !== 'L' && 
-                      avatarEmoji !== 'U' && 
-                      /^[\u{1f600}-\u{1f64f}\u{1f300}-\u{1f5ff}\u{1f680}-\u{1f6ff}\u{1f1e0}-\u{1f1ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}]$/u.test(avatarEmoji)) {
-                    return <span className="text-lg">{avatarEmoji}</span>;
-                  }
-                  // Second priority: Check for valid image URL
-                  else if (avatarUrl && 
-                          (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:')) &&
-                          !avatarUrl.includes('avataaars/svg?') && 
-                          !avatarUrl.includes('n/7.x/') &&
-                          !avatarUrl.includes('undefined') &&
-                          avatarUrl.length > 10) {
-                    return (
-                      <img 
-                        src={avatarUrl} 
-                        alt={userName} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // Fallback to initials on image load error
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    );
-                  } 
-                  // Third priority: Generate initials from name
-                  else {
-                    const initials = userName.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
-                    return <span className="text-lg font-bold text-white">{initials || '👤'}</span>;
-                  }
+                  const avatarUrl = post.user.avatarUrl || post.user.profilePic;
+                  const displayAvatarLetter = post.user.name?.charAt(0).toUpperCase();
+
+                  return avatarUrl ? (
+                    <img src={avatarUrl} alt={`${post.user.name} avatar`} className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 text-white">{displayAvatarLetter}</span>
+                  );
                 })()}
-                {/* Hidden fallback for image errors */}
-                <span className="text-lg font-bold text-white" style={{ display: 'none' }}>
-                  {post.user.name?.charAt(0)?.toUpperCase() || '👤'}
-                </span>
+                <span className="ml-2 font-semibold">{post.user.name}</span>
               </div>
               <div>
                 <h2 className="text-lg font-bold text-gray-800">Reply to {post.user.name || post.user.username || 'User'}</h2>
