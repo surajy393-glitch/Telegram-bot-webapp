@@ -9,10 +9,10 @@
   },
   {
     "content": "Fix avatar display issue - show images instead of raw strings",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix multiple like buttons and reaction state management",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
