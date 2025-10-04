@@ -5,11 +5,11 @@
   },
   {
     "content": "Fix backend registration API endpoint",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix frontend registration form submission",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Test complete registration workflow",
