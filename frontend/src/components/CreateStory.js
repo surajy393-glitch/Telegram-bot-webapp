@@ -295,6 +295,7 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     setStoryType('text');
     setStoryText('');
     setSelectedImage(null);
+    setSelectedImageFile(null);
     setMood('');
     setSelectedMusic(null);
     setSelectedLocation('');
