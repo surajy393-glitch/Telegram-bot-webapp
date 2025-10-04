@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+iupload
+
+muploadImageToBackendAsync
+pvideoQuality
+ort React, { useState, useEffect } from 'react';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [postText, setPostText] = useState('');

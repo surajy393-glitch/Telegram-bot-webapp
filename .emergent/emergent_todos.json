@@ -1,38 +1,22 @@
 [
   {
-    "content": "Phase 1: Increase client-side image limit from 5MB to 10MB in CreatePost.js and CreateStory.js",
-    "status": "completed"
+    "content": "Fix backend: Create separate /api/upload-photo and /api/upload-video endpoints",
+    "status": "in_progress"
   },
   {
-    "content": "Phase 1: Update backend /api/upload-photo to use sendDocument as fallback for large images",
-    "status": "completed"
+    "content": "Fix frontend: Add proper MIME-type detection and separate upload functions",
+    "status": "pending"
   },
   {
-    "content": "Phase 2: Add video file detection and validation in frontend components",
-    "status": "completed"
+    "content": "Fix UI: Add video player components in feed and story displays",
+    "status": "pending"
   },
   {
-    "content": "Phase 2: Implement sendVideo support in backend for videos up to 50MB",
-    "status": "completed"
+    "content": "Fix error messages: Add clear Hindi error messages for different file types",
+    "status": "pending"
   },
   {
-    "content": "Phase 2: Update CreatePost and CreateStory UI to handle video uploads",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 3: Add client-side image compression library (compressorjs)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 3: Add client-side video compression library (browser-video-compression)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 3: Implement compression options in UI with user controls",
-    "status": "completed"
-  },
-  {
-    "content": "Comprehensive testing of all upload features",
-    "status": "completed"
+    "content": "Test complete video upload flow from frontend to backend",
+    "status": "pending"
   }
 ]
