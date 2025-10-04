@@ -5,18 +5,18 @@
   },
   {
     "content": "Restart backend and test Telegram upload with real image",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Verify image appears in Telegram chat -1003138482795",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Test full flow: webapp photo upload -> backend -> Telegram chat",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Confirm posts/stories work end-to-end with photos",
-    "status": "pending"
+    "status": "completed"
   }
 ]
