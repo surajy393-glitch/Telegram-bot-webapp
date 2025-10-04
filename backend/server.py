@@ -1,4 +1,6 @@
-import os
+import ossend_photo
+
+sendPhoto
 import logging
 import asyncio
 import datetime

@@ -23,7 +23,12 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   const musicOptions = [
 selectedImages
  selectedImages
-    // Popular Hits
+  5*1024*1024
+   1024 * 1024
+    फाइल
+    /upload-photo
+    /file.size
+     Popular Hits
     { id: '1', name: 'Anti-Hero', artist: 'Taylor Swift', duration: '3:20', genre: 'Pop' },
     { id: '2', name: 'Flowers', artist: 'Miley Cyrus', duration: '3:20', genre: 'Pop' },
     { id: '3', name: 'As It Was', artist: 'Harry Styles', duration: '2:47', genre: 'Pop Rock' },
