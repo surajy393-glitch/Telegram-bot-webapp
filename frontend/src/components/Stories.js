@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import ShareModal from './ShareModal';
 
 const Stories = ({ user, onClose, targetUser = null }) => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Get stories based on target user or use mock data
   const getStoriesData = () => {
@@ -223,19 +225,8 @@ const Stories = ({ user, onClose, targetUser = null }) => {
           {/* Share Button - Always visible */}
           <button 
             onClick={() => {
-              // Open share modal
-              const shareData = {
-                title: `${currentStory.user.name}'s Story on LuvHive`,
-                text: currentStory.content.text || `Check out ${currentStory.user.name}'s story!`,
-                url: `${window.location.origin}/story/${currentStory.id}`
-              };
-              
-              if (navigator.share) {
-                navigator.share(shareData).catch(err => console.log('Share cancelled'));
-              } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(shareData.url);
-                alert('Story link copied to clipboard!');
-              }
+              console.log('Story Share button clicked');
+              setShowShareModal(true);
             }}
             className="p-3 bg-black/40 hover:bg-black/60 rounded-full backdrop-blur-sm transition-colors"
           >
@@ -253,6 +244,19 @@ const Stories = ({ user, onClose, targetUser = null }) => {
             </button>
           )}
         </div>
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <ShareModal
+            post={{
+              id: currentStory.id,
+              user: currentStory.user,
+              content: currentStory.content.text || 'Check out this story!',
+              type: 'story'
+            }}
+            onClose={() => setShowShareModal(false)}
+          />
+        )}
       </div>
     </div>
   );
