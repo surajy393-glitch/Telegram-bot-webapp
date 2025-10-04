@@ -19,6 +19,15 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
   const [showPoll, setShowPoll] = useState(false);
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
+  const [compressionSettings, setCompressionSettings] = useState({
+    enabled: true,
+    imageQuality: 0.8,
+    videoQuality: 28,
+    autoCompress: true
+  });
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [mediaRecommendation, setMediaRecommendation] = useState(null);
+  const [compressedMediaFile, setCompressedMediaFile] = useState(null);
 
   const backgrounds = [
     'from-pink-400 to-purple-600',
