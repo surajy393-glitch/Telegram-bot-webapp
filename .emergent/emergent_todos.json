@@ -5,11 +5,11 @@
   },
   {
     "content": "Fix corrupted localStorage code in webapp folder",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix cleanupLocalStorage function properly",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Remove all setTimeout delays in registration",
