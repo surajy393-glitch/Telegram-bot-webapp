@@ -466,51 +466,18 @@ const SocialFeed = ({ user, theme }) => {
     }));
   };
 
-  const handleReplySubmit = async (reply) => {
-    try {
-      console.log('Reply submitted:', reply);
-      
-      // Add reply to posts state immediately
-      setPosts(prevPosts => prevPosts.map(post => 
-        post.id === selectedPost.id 
-          ? { 
-              ...post, 
-              replies: [...(post.replies || []), reply],
-              comments_count: (post.comments_count || 0) + 1
-            }
-          : post
-      ));
-      
-      // Try to save to backend (optional - will work even if backend fails)
-      try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-        const response = await fetch(`${backendUrl}/api/posts/${selectedPost.id}/comments`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(window.Telegram?.WebApp?.initData ? {
-              'X-Telegram-Init-Data': window.Telegram.WebApp.initData
-            } : {})
-          },
-          body: JSON.stringify({
-            content: reply.content,
-            type: reply.type || 'text'
-          })
-        });
-        
-        if (response.ok) {
-          console.log('✅ Reply saved to backend successfully');
-        } else {
-          console.log('⚠️ Backend save failed, but reply added to UI');
-        }
-      } catch (backendError) {
-        console.log('⚠️ Backend not available, but reply added to UI:', backendError.message);
-      }
-      
-    } catch (error) {
-      console.error('❌ Error submitting reply:', error);
-      throw error; // Re-throw so ReplyModal can handle it
-    }
+  const handleReply = async (postId, reply) => {
+    // save reply to backend
+    const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${postId}/reply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ text: reply.text })
+    });
+    // update local state
+    setPosts(posts => posts.map(post =>
+      post._id === postId ? { ...post, replies: [...post.replies, reply] } : post
+    ));
   };
 
   if (loading) {
