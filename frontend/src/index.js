@@ -16,9 +16,10 @@ const cleanupLocalStorage = () => {
             console.log('Removing large localStorage item:', key);
             localStorage.removeItem(key);
           }
-          // Try to parse JSON to check if it's valid
-          if (value && (key.includes('luvhive_') || key.includes('posts') || key.includes('stories'))) {
+          // Try to parse JSON to check if it's valid - preserve all LuvHive related keys
+          if (value && (key.includes('luvhive_') || key.includes('luv_hive_') || key.includes('posts') || key.includes('stories'))) {
             JSON.parse(value);
+            console.log(`✅ Preserved LuvHive localStorage key: ${key}`);
           }
         } catch (error) {
           console.log('Removing corrupted localStorage item:', key);
