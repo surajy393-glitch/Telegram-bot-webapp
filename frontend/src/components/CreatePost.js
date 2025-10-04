@@ -162,6 +162,52 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
+  const compressMediaItem = async (mediaItem) => {
+    if (!compressionSettings.enabled) return;
+    
+    setIsCompressing(true);
+    try {
+      let compressedFile;
+      
+      if (mediaItem.type === 'video') {
+        console.log('🎬 Compressing video...');
+        compressedFile = await compressVideo(mediaItem.file, {
+          quality: compressionSettings.videoQuality,
+          scale: '720:-2'
+        });
+      } else {
+        console.log('📷 Compressing image...');
+        compressedFile = await compressImage(mediaItem.file, compressionSettings.imageQuality);
+      }
+      
+      // Update the media item with compressed file
+      const updateMediaItems = (items) => 
+        items.map(item => 
+          item.id === mediaItem.id 
+            ? { 
+                ...item, 
+                compressed: true, 
+                compressedFile,
+                compressedSize: compressedFile.size 
+              } 
+            : item
+        );
+      
+      if (mediaItem.type === 'video') {
+        setSelectedVideos(updateMediaItems);
+      } else {
+        setSelectedImages(updateMediaItems);
+      }
+      
+      console.log(`✅ Compression completed: ${formatFileSize(mediaItem.originalSize)} → ${formatFileSize(compressedFile.size)}`);
+    } catch (error) {
+      console.error('❌ Compression failed:', error);
+      alert('⚠️ Compression failed. Using original file.');
+    } finally {
+      setIsCompressing(false);
+    }
+  };
+
   const uploadImageToBackend = async (imageObj) => {
     try {
       const formData = new FormData();
