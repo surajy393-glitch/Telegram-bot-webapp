@@ -516,8 +516,13 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
                     className="w-full h-32 object-cover rounded-2xl"
                   />
                   <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
-                    📷 Photo
+                    📷 {image.compressed ? '✅' : ''} Photo
                   </div>
+                  {image.compressed && (
+                    <div className="absolute bottom-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                      {formatFileSize(image.originalSize)} → {formatFileSize(image.compressedSize)}
+                    </div>
+                  )}
                   <button
                     onClick={() => removeMedia(image.id, 'image')}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
