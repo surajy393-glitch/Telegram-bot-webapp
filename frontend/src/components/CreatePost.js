@@ -80,36 +80,55 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     return matchesSearch && matchesGenre;
   });
 
-  const handleImageUpload = async (event) => {
+  const handleMediaUpload = async (event) => {
     const files = Array.from(event.target.files);
-    const maxFileSize = 10 * 1024 * 1024; // 10MB limit (Telegram sendPhoto limit)
     
     for (const file of files) {
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      
       // Check file type
-      if (!file.type.startsWith('image/')) {
-        alert('केवल इमेज फाइल्स (JPEG/PNG) समर्थित हैं।');
+      if (!isImage && !isVideo) {
+        alert('केवल इमेज और वीडियो फाइलें समर्थित हैं।');
         continue;
       }
       
-      // Check file size before upload
-      if (file.size > maxFileSize) {
-        alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 10MB से कम साइज की इमेज चुनें।`);
+      // Check file size limits
+      const maxImageSize = 20 * 1024 * 1024; // 20MB for images
+      const maxVideoSize = 50 * 1024 * 1024; // 50MB for videos
+      
+      if (isImage && file.size > maxImageSize) {
+        alert(`इमेज बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 20MB से कम साइज की इमेज चुनें।`);
         continue;
       }
       
-      if (selectedImages.length >= 4) {
-        alert('अधिकतम 4 इमेज अपलोड की जा सकती हैं।');
+      if (isVideo && file.size > maxVideoSize) {
+        alert(`वीडियो बहुत बड़ा है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 50MB से कम साइज का वीडियो चुनें।`);
+        continue;
+      }
+      
+      // Check total media limit (combined images + videos)
+      const totalMedia = selectedImages.length + selectedVideos.length;
+      if (totalMedia >= 4) {
+        alert('अधिकतम 4 मीडिया फाइलें (इमेज + वीडियो) अपलोड की जा सकती हैं।');
         break;
       }
       
       // Read file for preview
       const reader = new FileReader();
       reader.onload = (e) => {
-        setSelectedImages(prev => [...prev, {
+        const mediaItem = {
           id: Date.now() + Math.random(),
           url: e.target.result,
-          file: file
-        }]);
+          file: file,
+          type: isVideo ? 'video' : 'image'
+        };
+        
+        if (isVideo) {
+          setSelectedVideos(prev => [...prev, mediaItem]);
+        } else {
+          setSelectedImages(prev => [...prev, mediaItem]);
+        }
       };
       reader.readAsDataURL(file);
     }
