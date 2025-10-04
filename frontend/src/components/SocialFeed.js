@@ -14,6 +14,27 @@ import Avatar from './ui/Avatar';
 // Mock posts data outside component to avoid dependency issues
 const mockPostsData = [
   {
+    id: 'user_post_1',
+    user: { 
+      name: 'Test User', 
+      username: 'testuser', 
+      avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=center',
+      mood: 'happy', 
+      aura: 'blue' 
+    },
+    content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨',
+    image: null,
+    mood: 'excited',
+    vibeScore: 95,
+    sparkCount: 12,
+    glowCount: 8,
+    userReactions: { spark: false, glow: false },
+    timestamp: '5m ago',
+    isSparkPost: false,
+    comments: [],
+    comments_count: 0
+  },
+  {
     id: 0,
     user: { 
       name: 'Luvsociety', 
