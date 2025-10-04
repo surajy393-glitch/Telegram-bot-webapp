@@ -186,38 +186,50 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   useEffect(() => {
-    console.log('🔄 SocialFeed useEffect running, loading state:', loading);
-    
-    if (loading) { // Only run if we're actually in loading state
+    if (user) {
       const loadPosts = () => {
-        console.log('📚 loadPosts function executing');
         try {
-          // Create a default user if none exists
-          const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
-          
+          // Load user's own posts from localStorage
           let userPosts = [];
+          const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
           const userPostsKey = `luvhive_posts_${defaultUser.username}`;
           userPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
           
-          // Combine user posts with mock posts (user posts first)
+          // Combine with mock posts
           const allPosts = [...userPosts, ...mockPostsData];
-          setPosts(allPosts);
-          setStories(getMockStories());
-          setLoading(false);
-          console.log('✅ Loading completed successfully');
+          
+          // Merge currentUser avatar with posts user - CLIENT-SIDE FIX
+          const postsWithUpdatedAvatars = allPosts.map(p => {
+            // If this post belongs to current user, update avatar from current user data
+            if (user && (
+              p.user.id === user.id || 
+              p.user.username === user.username || 
+              p.user.name === user.name
+            )) {
+              return {
+                ...p,
+                user: {
+                  ...p.user,
+                  avatarUrl: user.avatarUrl || user.profilePic || p.user.avatarUrl
+                }
+              };
+            }
+            return p;
+          });
+          
+          console.log('📄 Loaded posts with updated avatars:', postsWithUpdatedAvatars.length);
+          setPosts(postsWithUpdatedAvatars);
         } catch (error) {
-          console.error('❌ Error in loadPosts:', error);
-          // Still show the feed even if there's an error
+          console.error('❌ Error loading posts:', error);
           setPosts(mockPostsData);
-          setStories(getMockStories());
-          setLoading(false);
         }
       };
-
-      // Immediate load without timeout to fix loading issues
+      
       loadPosts();
+    } else {
+      setPosts(mockPostsData);
     }
-  }, []); // Only run once on mount
+  }, [user, loading]);
 
   const handlePostCreated = (newPost) => {
     setPosts(prev => [newPost, ...prev]);
