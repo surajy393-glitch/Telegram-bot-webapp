@@ -429,10 +429,19 @@ const RegistrationFlow = ({ onComplete }) => {
               </div>
 
               <button
-                onClick={handleNext}
-                className="w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  console.log('🔥 Join LuvHive Community button clicked!');
+                  handleNext();
+                }}
+                disabled={isSubmitting}
+                className={`w-full py-4 rounded-2xl font-semibold text-lg transform transition-all duration-200 ${
+                  isSubmitting 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-pink-500 to-orange-500 text-white hover:shadow-lg hover:scale-105'
+                }`}
               >
-                🚀 Join LuvHive Community
+                {isSubmitting ? '⏳ कृपया प्रतीक्षा करें...' : '🚀 Join LuvHive Community'}
               </button>
             </div>
           </div>
