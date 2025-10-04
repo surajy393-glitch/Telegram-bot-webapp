@@ -308,10 +308,12 @@ async def upload_photo(file: UploadFile = File(...)):
             
             async with session.post(url, data=form_data) as resp:
                 result = await resp.json()
+                logging.info(f"Telegram API response: {result}")
                 
                 if not result.get('ok'):
+                    error_msg = result.get('description', 'Unknown error')
                     logging.error(f"Telegram API error: {result}")
-                    raise HTTPException(status_code=500, detail="Failed to upload to Telegram")
+                    raise HTTPException(status_code=500, detail=f"Telegram error: {error_msg}")
                 
                 # Get file_id from the largest photo
                 photos = result['result']['photo']
