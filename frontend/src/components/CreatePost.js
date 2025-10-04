@@ -81,7 +81,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
 
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
-    const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+    const maxFileSize = 10 * 1024 * 1024; // 10MB limit (Telegram sendPhoto limit)
     
     for (const file of files) {
       // Check file type
