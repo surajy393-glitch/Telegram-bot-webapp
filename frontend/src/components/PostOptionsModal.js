@@ -15,7 +15,13 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
     }
   };
 
-  const isOwnPost = currentUser && post.user.name === currentUser.name;
+  // More comprehensive user matching for delete functionality
+  const isOwnPost = currentUser && (
+    post.user.name === currentUser.name || 
+    post.user.username === currentUser.username ||
+    (currentUser.username && post.user.username && post.user.username.includes(currentUser.username)) ||
+    (currentUser.name && post.user.name.includes(currentUser.name))
+  );
 
   const options = [
     {
