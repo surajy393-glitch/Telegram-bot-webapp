@@ -734,7 +734,7 @@ const SocialFeed = ({ user, theme }) => {
                   className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-2xl p-2 -m-2 transition-colors"
                   onClick={() => handleUserClick(post.user)}
                 >
-                  <Avatar user={post.user} size="md" />
+                  <Avatar user={post.user} size={48} />
                   <div>
                     <div className="flex items-center space-x-2">
                       <h3 className="font-semibold text-gray-800 hover:text-purple-600 transition-colors">
