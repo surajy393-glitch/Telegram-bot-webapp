@@ -436,9 +436,10 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
             rows="4"
           />
 
-          {/* Image Preview */}
-          {selectedImages.length > 0 && (
+          {/* Media Preview */}
+          {(selectedImages.length > 0 || selectedVideos.length > 0) && (
             <div className="grid grid-cols-2 gap-2">
+              {/* Images */}
               {selectedImages.map((image) => (
                 <div key={image.id} className="relative">
                   <img
@@ -446,8 +447,41 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
                     alt="Upload preview"
                     className="w-full h-32 object-cover rounded-2xl"
                   />
+                  <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
+                    📷 Photo
+                  </div>
                   <button
-                    onClick={() => removeImage(image.id)}
+                    onClick={() => removeMedia(image.id, 'image')}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+              
+              {/* Videos */}
+              {selectedVideos.map((video) => (
+                <div key={video.id} className="relative">
+                  <video
+                    src={video.url}
+                    className="w-full h-32 object-cover rounded-2xl"
+                    controls={false}
+                    muted
+                  />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center rounded-2xl">
+                    <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-gray-800 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
+                    🎥 Video
+                  </div>
+                  <button
+                    onClick={() => removeMedia(video.id, 'video')}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
