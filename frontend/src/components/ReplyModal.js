@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Avatar from './ui/Avatar';
 
 const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
   const [replyText, setReplyText] = useState('');
