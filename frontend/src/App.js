@@ -40,11 +40,15 @@ function App() {
   };
 
   const handleEnterLuvHive = () => {
+    console.log('🎯 handleEnterLuvHive called. isRegistered:', isRegistered, 'user:', user);
+    
     if (isRegistered && user) {
       // User is registered, go to feed
+      console.log('✅ User already registered, redirecting to feed');
       return '/feed';
     } else {
       // User needs to register
+      console.log('📝 User not registered, redirecting to registration');
       return '/register';
     }
   };
