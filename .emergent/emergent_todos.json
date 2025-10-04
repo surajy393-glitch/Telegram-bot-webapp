@@ -5,14 +5,14 @@
   },
   {
     "content": "Update CreatePost to use backend upload API instead of localStorage",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Update CreateStory to use backend upload API instead of localStorage",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Test photo upload with actual Telegram bot integration",
-    "status": "pending"
+    "status": "completed"
   }
 ]
