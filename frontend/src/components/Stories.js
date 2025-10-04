@@ -221,7 +221,7 @@ const Stories = ({ user, onClose, targetUser = null }) => {
         )}
 
         {/* Story Actions - Share & More */}
-        <div className="absolute bottom-12 right-4 flex items-center space-x-2">
+        <div className="absolute bottom-12 right-4 flex items-center space-x-2 z-20">
           {/* Share Button - Always visible */}
           <button 
             onClick={() => {
