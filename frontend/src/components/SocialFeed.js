@@ -829,18 +829,26 @@ const SocialFeed = ({ user, theme }) => {
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => handleSpark(post.id)}
-                  className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-200 ${
+                    post.userReactions?.spark 
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg scale-105' 
+                      : 'bg-gray-100 hover:bg-yellow-100 text-yellow-600 hover:text-yellow-700'
+                  }`}
                 >
                   <span>✨</span>
-                  <span className="text-sm font-medium">{post.sparkCount}</span>
+                  <span className="text-sm font-medium">{post.sparkCount || 0}</span>
                 </button>
                 
                 <button
                   onClick={() => handleGlow(post.id)}
-                  className="flex items-center space-x-1 bg-gradient-to-r from-pink-400 to-purple-500 text-white px-3 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-200 ${
+                    post.userReactions?.glow 
+                      ? 'bg-gradient-to-r from-pink-400 to-purple-500 text-white shadow-lg scale-105' 
+                      : 'bg-gray-100 hover:bg-pink-100 text-pink-600 hover:text-pink-700'
+                  }`}
                 >
                   <span>💫</span>
-                  <span className="text-sm font-medium">{post.glowCount}</span>
+                  <span className="text-sm font-medium">{post.glowCount || 0}</span>
                 </button>
                 
                 <button 
