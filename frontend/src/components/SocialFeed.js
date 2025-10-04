@@ -699,7 +699,16 @@ const SocialFeed = ({ user, theme }) => {
               {/* Fallback for old single image format */}
               {!post.images && post.image && (
                 <div className="rounded-2xl overflow-hidden mb-3">
-                  <img src={post.image} alt="Post content" className="w-full h-64 object-cover" />
+                  <img 
+                    src={post.image} 
+                    alt="Post content" 
+                    className="w-full h-64 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+                    onClick={() => setFullScreenImage({ url: post.image, alt: `${post.user.name}'s photo` })}
+                    onError={(e) => {
+                      // Hide broken image
+                      e.target.style.display = 'none';
+                    }}
+                  />
                 </div>
               )}
               
