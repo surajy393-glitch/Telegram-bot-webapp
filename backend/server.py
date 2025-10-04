@@ -288,7 +288,7 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
     return {"success": True, "post_id": str(result.inserted_id)}
 
 @app.post("/api/upload-photo")
-async def upload_photo(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+async def upload_photo(file: UploadFile = File(...)):
     """Upload photo to Telegram and return file_id."""
     try:
         if not MEDIA_SINK_CHAT_ID:
