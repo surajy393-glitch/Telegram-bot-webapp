@@ -1,11 +1,11 @@
 [
   {
     "content": "Fix backend: Create separate /api/upload-photo and /api/upload-video endpoints",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix frontend: Add proper MIME-type detection and separate upload functions",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix UI: Add video player components in feed and story displays",
