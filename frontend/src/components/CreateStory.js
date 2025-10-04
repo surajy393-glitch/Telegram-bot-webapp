@@ -166,13 +166,14 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
         throw new Error(result.message || 'Upload failed');
       }
       
-      // photo_url should always be present from backend
-      if (!result.photo_url) {
-        console.error('No photo_url in response:', result);
-        throw new Error('Invalid server response - no photo URL');
+      // media_url (or photo_url for backward compatibility) should always be present from backend
+      const mediaUrl = result.media_url || result.photo_url;
+      if (!mediaUrl) {
+        console.error('No media_url in response:', result);
+        throw new Error('Invalid server response - no media URL');
       }
       
-      return result.photo_url;
+      return mediaUrl;
     } catch (error) {
       console.error('Image upload error:', error);
       throw error;
