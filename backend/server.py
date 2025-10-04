@@ -310,7 +310,7 @@ async def upload_photo(file: UploadFile = File(...)):
         # Read file content
         content = await file.read()
         file_size_mb = len(content) / (1024 * 1024)
-        logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB")
+        logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
         
         # Check file size (Telegram limit is 10MB for photos, 20MB for documents)
         if file_size_mb > 10:
