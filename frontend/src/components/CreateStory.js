@@ -412,6 +412,9 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     setBackgroundColor('from-pink-400 to-purple-600');
     setPollOptions(['', '']);
     setIsSubmitting(false);
+    setIsCompressing(false);
+    setMediaRecommendation(null);
+    setCompressedMediaFile(null);
   }, []);
   return (
     <div 
