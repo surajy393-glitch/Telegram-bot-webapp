@@ -29,10 +29,10 @@
   },
   {
     "content": "Phase 3: Implement compression options in UI with user controls",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Comprehensive testing of all upload features",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
