@@ -127,8 +127,7 @@ const mockPostsData = [
       name: 'Zara Wild', 
       username: '@zara_free', 
       avatarUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=center',
-      mood: 'energetic', 
-      aura: 'rainbow' 
+      profilePic: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=center'
     },
     content: 'Dancing in my kitchen to 90s music because life is too short not to be silly sometimes! 💃',
     video: true,
