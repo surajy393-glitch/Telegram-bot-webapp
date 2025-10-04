@@ -297,36 +297,68 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
 
 @app.post("/api/upload-photo")
 async def upload_photo(file: UploadFile = File(...)):
-    """Upload photo and return URL - saves to backend for now."""
+    """Upload photo to Telegram chat and return file info."""
     try:
-        # Generate unique filename
-        file_extension = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
-        unique_filename = f"{uuid.uuid4()}.{file_extension}"
+        if not MEDIA_SINK_CHAT_ID:
+            raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
         
-        # Create uploads directory if doesn't exist
-        uploads_dir = PathLib("/app/backend/uploads")
-        uploads_dir.mkdir(exist_ok=True)
+        if not BOT_TOKEN:
+            raise HTTPException(status_code=500, detail="BOT_TOKEN not configured")
         
-        # Save file
-        file_path = uploads_dir / unique_filename
+        # Read file content
         content = await file.read()
+        logging.info(f"📤 Uploading photo: {file.filename}, size: {len(content)} bytes")
         
-        with open(file_path, 'wb') as f:
-            f.write(content)
-        
-        # Return URL to access the file
-        photo_url = f"{EXTERNAL_URL}/uploads/{unique_filename}"
-        
-        logging.info(f"Photo saved: {unique_filename}, size: {len(content)} bytes")
-        
-        return {
-            "success": True,
-            "file_id": unique_filename,
-            "photo_url": photo_url
-        }
+        # Upload to Telegram using sendDocument (more reliable than sendPhoto)
+        async with aiohttp.ClientSession() as session:
+            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
+            
+            # Create form data
+            form = aiohttp.FormData()
+            form.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+            form.add_field('document', content, filename=file.filename, content_type=file.content_type or 'image/jpeg')
+            form.add_field('caption', f'Uploaded: {file.filename}')
+            
+            async with session.post(url, data=form, timeout=30) as resp:
+                result = await resp.json()
+                logging.info(f"Telegram response: {result}")
+                
+                if not result.get('ok'):
+                    error_desc = result.get('description', 'Unknown error')
+                    logging.error(f"❌ Telegram error: {error_desc}")
+                    raise HTTPException(status_code=500, detail=f"Telegram: {error_desc}")
+                
+                # Get file_id from document
+                document = result['result'].get('document')
+                if document:
+                    file_id = document['file_id']
+                    
+                    # Get file info to construct URL
+                    file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
+                    async with session.get(file_info_url) as file_resp:
+                        file_data = await file_resp.json()
+                        if file_data.get('ok'):
+                            file_path = file_data['result']['file_path']
+                            photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
+                        else:
+                            photo_url = None
+                    
+                    logging.info(f"✅ Photo uploaded to Telegram: {file_id}")
+                    
+                    return {
+                        "success": True,
+                        "file_id": file_id,
+                        "photo_url": photo_url,
+                        "message_id": result['result'].get('message_id')
+                    }
+                else:
+                    raise HTTPException(status_code=500, detail="No document in Telegram response")
     
+    except aiohttp.ClientError as e:
+        logging.error(f"❌ Network error: {e}")
+        raise HTTPException(status_code=500, detail=f"Network error: {str(e)}")
     except Exception as e:
-        logging.error(f"Upload error: {e}")
+        logging.error(f"❌ Upload error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/stories")
