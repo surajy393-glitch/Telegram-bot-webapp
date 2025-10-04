@@ -357,41 +357,23 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   const handlePostAction = async (actionId, post) => {
+    if (actionId === 'delete') {
+      try {
+        const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
+          method: 'DELETE', 
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setPosts(posts => posts.filter(p => p._id !== post._id && p.id !== post.id));
+        alert('Post deleted successfully!');
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('Failed to delete post');
+      }
+      return;
+    }
+    
     switch (actionId) {
-      case 'delete':
-        try {
-          // Confirm delete
-          if (!confirm(`Are you sure you want to delete this post?`)) {
-            return;
-          }
-          
-          // backend delete call
-          const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-          await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post.id || post._id}`, { 
-            method: 'DELETE', 
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          // remove post from local state
-          setPosts((posts) => posts.filter(p => p.id !== post.id));
-          
-          if (window.Telegram?.WebApp?.showAlert) {
-            window.Telegram.WebApp.showAlert('✅ Post deleted successfully!');
-          } else {
-            alert('Post deleted successfully!');
-          }
-        } catch (error) {
-          console.error('Delete error:', error);
-          if (window.Telegram?.WebApp?.showAlert) {
-            window.Telegram.WebApp.showAlert('❌ Failed to delete post');
-          } else {
-            alert('Failed to delete post');
-          }
-        }
-        break;
       // handle other actions...
       default:
         const actions = {
