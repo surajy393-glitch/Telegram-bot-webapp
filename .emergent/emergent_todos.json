@@ -9,11 +9,11 @@
   },
   {
     "content": "Fix cleanupLocalStorage function properly",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Remove all setTimeout delays in registration",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Ensure consistent 'luvhive_user' key usage everywhere",
