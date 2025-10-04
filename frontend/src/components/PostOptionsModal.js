@@ -55,13 +55,22 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
       show: true
     },
     {
-      id: 'block',
-      title: isOwnPost ? 'Delete Post' : 'Block User',
-      icon: isOwnPost ? '🗑️' : '🚫',
+      id: 'delete',
+      title: 'Delete Post',
+      icon: '🗑️',
       color: 'text-red-600',
       bgColor: 'hover:bg-red-50',
-      description: isOwnPost ? 'Permanently delete this post' : `Block ${post.user.name}`,
-      show: true
+      description: 'Permanently delete this post',
+      show: isOwnPost
+    },
+    {
+      id: 'block',
+      title: `Block ${post.user.name}`,
+      icon: '🚫',
+      color: 'text-red-600',
+      bgColor: 'hover:bg-red-50',
+      description: `Block all content from ${post.user.name}`,
+      show: !isOwnPost
     }
   ];
 
