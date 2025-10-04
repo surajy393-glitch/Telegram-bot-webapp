@@ -380,19 +380,75 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   const handleSpark = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, sparkCount: post.sparkCount + 1 }
-        : post
-    ));
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        const hasUserSparked = post.userReactions?.spark || false;
+        const hasUserGlowed = post.userReactions?.glow || false;
+        
+        // If user already glowed, remove glow and add spark
+        if (hasUserGlowed) {
+          return { 
+            ...post, 
+            sparkCount: (post.sparkCount || 0) + 1,
+            glowCount: Math.max((post.glowCount || 0) - 1, 0),
+            userReactions: { spark: true, glow: false }
+          };
+        }
+        // If user already sparked, remove spark
+        else if (hasUserSparked) {
+          return { 
+            ...post, 
+            sparkCount: Math.max((post.sparkCount || 0) - 1, 0),
+            userReactions: { ...post.userReactions, spark: false }
+          };
+        }
+        // First time spark
+        else {
+          return { 
+            ...post, 
+            sparkCount: (post.sparkCount || 0) + 1,
+            userReactions: { ...post.userReactions, spark: true }
+          };
+        }
+      }
+      return post;
+    }));
   };
 
   const handleGlow = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, glowCount: post.glowCount + 1 }
-        : post
-    ));
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        const hasUserSparked = post.userReactions?.spark || false;
+        const hasUserGlowed = post.userReactions?.glow || false;
+        
+        // If user already sparked, remove spark and add glow
+        if (hasUserSparked) {
+          return { 
+            ...post, 
+            glowCount: (post.glowCount || 0) + 1,
+            sparkCount: Math.max((post.sparkCount || 0) - 1, 0),
+            userReactions: { spark: false, glow: true }
+          };
+        }
+        // If user already glowed, remove glow
+        else if (hasUserGlowed) {
+          return { 
+            ...post, 
+            glowCount: Math.max((post.glowCount || 0) - 1, 0),
+            userReactions: { ...post.userReactions, glow: false }
+          };
+        }
+        // First time glow
+        else {
+          return { 
+            ...post, 
+            glowCount: (post.glowCount || 0) + 1,
+            userReactions: { ...post.userReactions, glow: true }
+          };
+        }
+      }
+      return post;
+    }));
   };
 
   const handleReplySubmit = async (reply) => {
