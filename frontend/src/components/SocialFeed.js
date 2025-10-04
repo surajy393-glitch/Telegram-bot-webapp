@@ -353,22 +353,42 @@ const SocialFeed = ({ user, theme }) => {
 
   const handlePostAction = async (actionId, post) => {
     if (actionId === 'delete') {
-      try {
-        // Confirmation dialog
-        const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
-        
-        if (window.Telegram?.WebApp?.showConfirm) {
-          window.Telegram.WebApp.showConfirm(
-            confirmMessage,
-            async (confirmed) => {
-              if (confirmed) {
-                await handleDeletePost(post.id);
+      // Confirmation dialog
+      const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
+      
+      if (window.Telegram?.WebApp?.showConfirm) {
+        window.Telegram.WebApp.showConfirm(
+          confirmMessage,
+          async (confirmed) => {
+            if (confirmed) {
+              try {
+                const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
+                  method: 'DELETE', 
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                setPosts(posts => posts.filter(p => p.id !== post.id));
+                
+                if (window.Telegram?.WebApp?.showAlert) {
+                  window.Telegram.WebApp.showAlert('✅ Post deleted successfully!');
+                } else {
+                  alert('Post deleted successfully!');
+                }
+              } catch (error) {
+                console.error('Delete error:', error);
+                if (window.Telegram?.WebApp?.showAlert) {
+                  window.Telegram.WebApp.showAlert('❌ Failed to delete post');
+                } else {
+                  alert('Failed to delete post');
+                }
               }
             }
-          );
-        } else {
-          // eslint-disable-next-line no-restricted-globals
-          if (confirm(confirmMessage)) {
+          }
+        );
+      } else {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm(confirmMessage)) {
+          try {
             const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
             await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
               method: 'DELETE', 
@@ -376,11 +396,11 @@ const SocialFeed = ({ user, theme }) => {
             });
             setPosts(posts => posts.filter(p => p.id !== post.id));
             alert('Post deleted successfully!');
+          } catch (error) {
+            console.error('Delete error:', error);
+            alert('Failed to delete post');
           }
         }
-      } catch (error) {
-        console.error('Delete error:', error);
-        alert('Failed to delete post');
       }
       return;
     }
