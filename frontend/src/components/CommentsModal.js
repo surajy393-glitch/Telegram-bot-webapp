@@ -75,11 +75,18 @@ const CommentsModal = ({ post, currentUser, onClose, onAddComment }) => {
       return (
         <div className="relative">
           <img 
-            src="https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true&rounded=true"
+            src="https://cdn.jsdelivr.net/gh/luvsociety/assets@main/logo-circle.png"
             alt="Luvsociety avatar" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-purple-300 shadow-lg"
+            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 shadow-lg"
             onError={(e) => {
-              e.target.outerHTML = '<div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 text-white text-lg font-bold shadow-lg border-2 border-purple-300">💜</div>';
+              e.target.outerHTML = `
+                <div class="w-10 h-10 flex items-center justify-center bg-black text-white text-xs font-bold rounded-full shadow-lg border-2 border-gray-200" style="font-family: Arial, sans-serif;">
+                  <div class="text-center">
+                    <div style="font-size: 6px; line-height: 1;">LUV</div>
+                    <div style="font-size: 6px; line-height: 1;">SOCIETY</div>
+                  </div>
+                </div>
+              `;
             }}
           />
           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
