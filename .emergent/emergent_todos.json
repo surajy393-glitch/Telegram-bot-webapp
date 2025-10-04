@@ -5,10 +5,10 @@
   },
   {
     "content": "Test both Post and Story share buttons thoroughly",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Verify share functionality works correctly",
-    "status": "pending"
+    "status": "completed"
   }
 ]
