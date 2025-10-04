@@ -609,13 +609,18 @@ const SocialFeed = ({ user, theme }) => {
                         {isVideo ? (
                           <video 
                             src={mediaUrl} 
-                            className="w-full h-64 object-cover"
+                            className="w-full h-64 object-cover cursor-pointer"
                             controls
                             preload="metadata"
                             poster={mediaUrl.replace('video', 'thumb')} // Try to get thumbnail
                           />
                         ) : (
-                          <img src={mediaUrl} alt={`Post media ${idx + 1}`} className="w-full h-64 object-cover" />
+                          <img 
+                            src={mediaUrl} 
+                            alt={`Post media ${idx + 1}`} 
+                            className="w-full h-64 object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+                            onClick={() => setFullScreenImage({ url: mediaUrl, alt: `${post.user.name}'s photo` })}
+                          />
                         )}
                       </div>
                     );
