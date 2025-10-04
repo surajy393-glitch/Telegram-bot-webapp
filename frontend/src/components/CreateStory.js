@@ -90,29 +90,50 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     { id: '30', name: 'Quevedo: Bzrp Music Sessions', artist: 'Bizarrap & Quevedo', duration: '3:29', genre: 'Latin Pop' }
   ];
 
-  const handleImageUpload = (event) => {
+  const handleMediaUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
     
-    const maxFileSize = 10 * 1024 * 1024; // 10MB limit (Telegram sendPhoto limit)
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
     
     // Check file type
-    if (!file.type.startsWith('image/')) {
-      alert('केवल इमेज फाइल्स (JPEG/PNG) समर्थित हैं।');
+    if (!isImage && !isVideo) {
+      alert('केवल इमेज और वीडियो फाइलें समर्थित हैं।');
       return;
     }
     
-    // Check file size
-    if (file.size > maxFileSize) {
-      alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 10MB से कम साइज की इमेज चुनें।`);
+    // Check file size limits
+    const maxImageSize = 20 * 1024 * 1024; // 20MB for images
+    const maxVideoSize = 50 * 1024 * 1024; // 50MB for videos
+    
+    if (isImage && file.size > maxImageSize) {
+      alert(`इमेज बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 20MB से कम साइज की इमेज चुनें।`);
       return;
     }
     
-    setSelectedImageFile(file); // Store the actual file object
+    if (isVideo && file.size > maxVideoSize) {
+      alert(`वीडियो बहुत बड़ा है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 50MB से कम साइज का वीडियो चुनें।`);
+      return;
+    }
+    
+    // Clear previous media
+    setSelectedImage(null);
+    setSelectedImageFile(null);
+    setSelectedVideo(null);
+    setSelectedVideoFile(null);
+    
     const reader = new FileReader();
     reader.onload = (e) => {
-      setSelectedImage(e.target.result);
-      setStoryType('image');
+      if (isVideo) {
+        setSelectedVideo(e.target.result);
+        setSelectedVideoFile(file);
+        setStoryType('video');
+      } else {
+        setSelectedImage(e.target.result);
+        setSelectedImageFile(file);
+        setStoryType('image');
+      }
     };
     reader.readAsDataURL(file);
   };
