@@ -90,15 +90,29 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setSelectedImageFile(file); // Store the actual file object
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-        setStoryType('image');
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    
+    const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('केवल इमेज फाइल्स (JPEG/PNG) समर्थित हैं।');
+      return;
     }
+    
+    // Check file size
+    if (file.size > maxFileSize) {
+      alert(`फाइल बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 5MB से कम साइज की इमेज चुनें।`);
+      return;
+    }
+    
+    setSelectedImageFile(file); // Store the actual file object
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setSelectedImage(e.target.result);
+      setStoryType('image');
+    };
+    reader.readAsDataURL(file);
   };
 
   const uploadImageToBackend = async (file) => {
