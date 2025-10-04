@@ -618,8 +618,12 @@ const SocialFeed = ({ user, theme }) => {
                       // Get proper avatar URL from user data
                       const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
                       
-                      // Check if we have a valid image URL
-                      if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:'))) {
+                      // Check if we have a valid image URL (exclude avataaars strings)
+                      if (avatarUrl && 
+                          (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:')) &&
+                          !avatarUrl.includes('avataaars/svg?') && 
+                          !avatarUrl.includes('n/7.x/') &&
+                          avatarUrl.length > 10) {
                         return (
                           <img 
                             src={avatarUrl} 
