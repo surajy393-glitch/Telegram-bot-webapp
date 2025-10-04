@@ -176,6 +176,56 @@ async def get_current_user(request: Request) -> dict:
 async def root():
     return {"message": "Social Platform API"}
 
+@app.post("/api/register")
+async def register_user(user_data: dict):
+    """Register a new user."""
+    try:
+        logging.info(f"📝 Registering new user: {user_data.get('username', 'unknown')}")
+        
+        # Validate required fields
+        required_fields = ['name', 'username', 'age', 'gender']
+        for field in required_fields:
+            if not user_data.get(field):
+                raise HTTPException(status_code=400, detail=f"फील्ड '{field}' आवश्यक है।")
+        
+        # Check if username already exists
+        existing_user = await db.users.find_one({"username": user_data['username']})
+        if existing_user:
+            raise HTTPException(status_code=409, detail="यह यूजरनेम पहले से उपयोग में है।")
+        
+        # Create user document
+        user_doc = {
+            "tg_user_id": user_data.get('id', f"user_{int(time.time())}"),
+            "name": user_data['name'],
+            "username": user_data['username'],
+            "age": int(user_data['age']),
+            "gender": user_data['gender'],
+            "bio": user_data.get('bio', ''),
+            "avatar_url": user_data.get('avatarUrl') or user_data.get('profilePic'),
+            "mood": user_data.get('mood', 'joyful'),
+            "aura": user_data.get('aura', 'purple'),
+            "stats": user_data.get('stats', {"posts": 0, "followers": 0, "following": 0, "sparks": 0}),
+            "join_date": datetime.datetime.utcnow(),
+            "is_active": True
+        }
+        
+        # Insert user into database
+        result = await db.users.insert_one(user_doc)
+        
+        logging.info(f"✅ User registered successfully: {result.inserted_id}")
+        
+        return {
+            "success": True,
+            "message": "रजिस्ट्रेशन सफल हुई!",
+            "user_id": str(result.inserted_id)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"❌ Registration error: {e}")
+        raise HTTPException(status_code=500, detail="रजिस्ट्रेशन में समस्या हुई।")
+
 @app.get("/api/test-telegram")
 async def test_telegram():
     """Test Telegram connection and permissions."""
