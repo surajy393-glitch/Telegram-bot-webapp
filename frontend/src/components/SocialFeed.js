@@ -243,40 +243,63 @@ const SocialFeed = ({ user, theme }) => {
           console.error('Failed to copy link:', error);
         }
       },
-      block: async () => {
-        const isOwnPost = user && post.user.name === user.name;
-        const actionText = isOwnPost ? 'delete this post' : `block ${post.user.name}`;
+      delete: async () => {
+        const isOwnPost = user && (post.user.name === user.name || post.user.username === user.username);
+        
+        if (!isOwnPost) {
+          alert("❌ आप केवल अपनी पोस्ट डिलीट कर सकते हैं।");
+          return;
+        }
+        
+        const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
         
         if (window.Telegram?.WebApp?.showConfirm) {
           window.Telegram.WebApp.showConfirm(
-            `Are you sure you want to ${actionText}?`,
+            confirmMessage,
+            async (confirmed) => {
+              if (confirmed) {
+                await handleDeletePost(post.id);
+              }
+            }
+          );
+        } else {
+          // eslint-disable-next-line no-restricted-globals
+          if (confirm(confirmMessage)) {
+            await handleDeletePost(post.id);
+          }
+        }
+      },
+      block: async () => {
+        const isOwnPost = user && (post.user.name === user.name || post.user.username === user.username);
+        
+        if (isOwnPost) {
+          // If it's own post, redirect to delete
+          await actions.delete();
+          return;
+        }
+        
+        // Block user logic
+        const confirmMessage = `क्या आप ${post.user.name} को ब्लॉक करना चाहते हैं?`;
+        
+        if (window.Telegram?.WebApp?.showConfirm) {
+          window.Telegram.WebApp.showConfirm(
+            confirmMessage,
             (confirmed) => {
               if (confirmed) {
-                if (isOwnPost) {
-                  setPosts(prevPosts => prevPosts.filter(p => p.id !== post.id));
-                  if (window.Telegram?.WebApp?.showAlert) {
-                    window.Telegram.WebApp.showAlert("🗑️ Post deleted successfully!");
-                  }
+                setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
+                if (window.Telegram?.WebApp?.showAlert) {
+                  window.Telegram.WebApp.showAlert(`🚫 ${post.user.name} को ब्लॉक कर दिया गया।`);
                 } else {
-                  // Block user logic
-                  setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
-                  if (window.Telegram?.WebApp?.showAlert) {
-                    window.Telegram.WebApp.showAlert(`🚫 ${post.user.name} has been blocked.`);
-                  }
+                  alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
                 }
               }
             }
           );
         } else {
           // eslint-disable-next-line no-restricted-globals
-          if (confirm(`Are you sure you want to ${actionText}?`)) {
-            if (isOwnPost) {
-              setPosts(prevPosts => prevPosts.filter(p => p.id !== post.id));
-              alert("Post deleted!");
-            } else {
-              setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
-              alert(`${post.user.name} blocked!`);
-            }
+          if (confirm(confirmMessage)) {
+            setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
+            alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
           }
         }
       }
