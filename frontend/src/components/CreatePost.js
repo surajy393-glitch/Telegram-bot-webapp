@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { compressImage, compressVideo, getCompressionRecommendations, formatFileSize } from '../utils/compression';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [postText, setPostText] = useState('');
