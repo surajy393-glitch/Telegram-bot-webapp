@@ -287,6 +287,57 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
     
     return {"success": True, "post_id": str(result.inserted_id)}
 
+@app.post("/api/upload-photo")
+async def upload_photo(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    """Upload photo to Telegram and return file_id."""
+    try:
+        if not MEDIA_SINK_CHAT_ID:
+            raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
+        
+        # Read file content
+        file_content = await file.read()
+        
+        # Upload to Telegram using Bot API
+        async with aiohttp.ClientSession() as session:
+            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+            
+            # Create multipart form data
+            form_data = aiohttp.FormData()
+            form_data.add_field('chat_id', str(MEDIA_SINK_CHAT_ID))
+            form_data.add_field('photo', file_content, filename=file.filename, content_type=file.content_type)
+            
+            async with session.post(url, data=form_data) as resp:
+                result = await resp.json()
+                
+                if not result.get('ok'):
+                    logging.error(f"Telegram API error: {result}")
+                    raise HTTPException(status_code=500, detail="Failed to upload to Telegram")
+                
+                # Get file_id from the largest photo
+                photos = result['result']['photo']
+                largest_photo = max(photos, key=lambda p: p['file_size'])
+                file_id = largest_photo['file_id']
+                
+                # Get file_path to construct URL
+                file_info_url = f"https://api.telegram.org/bot{BOT_TOKEN}/getFile?file_id={file_id}"
+                async with session.get(file_info_url) as file_resp:
+                    file_data = await file_resp.json()
+                    if file_data.get('ok'):
+                        file_path = file_data['result']['file_path']
+                        photo_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
+                    else:
+                        photo_url = None
+                
+                return {
+                    "success": True,
+                    "file_id": file_id,
+                    "photo_url": photo_url
+                }
+    
+    except Exception as e:
+        logging.error(f"Upload error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/stories")
 async def get_stories(user: dict = Depends(get_current_user)):
     """Get active stories."""
