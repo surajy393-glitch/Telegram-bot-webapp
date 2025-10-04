@@ -65,6 +65,21 @@ const cleanupLocalStorage = () => {
 // Clean up on app start
 cleanupLocalStorage();
 
+// Add debug helper for development
+if (process.env.NODE_ENV === 'development') {
+  window.clearLuvHiveCache = () => {
+    console.log('🧹 Clearing LuvHive cache for testing...');
+    Object.keys(localStorage).forEach(key => {
+      if (key.includes('luvhive') || key.includes('luv_hive')) {
+        localStorage.removeItem(key);
+        console.log(`Removed: ${key}`);
+      }
+    });
+    window.location.reload();
+  };
+  console.log('🛠️ Dev helper: Use clearLuvHiveCache() to reset registration state');
+}
+
 // Initialize Telegram WebApp if available with safe error handling
 initTelegramWebApp();
 
