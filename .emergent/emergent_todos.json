@@ -1,18 +1,18 @@
 [
   {
-    "content": "Check onboarding registration flow - button not working",
-    "status": "completed"
+    "content": "Fix localStorage key inconsistency: 'luv_hive_user' vs 'luvhive_user'",
+    "status": "in_progress"
   },
   {
-    "content": "Fix backend registration API endpoint",
-    "status": "completed"
+    "content": "Update cleanup function to preserve both key patterns",
+    "status": "pending"
   },
   {
-    "content": "Fix frontend registration form submission",
-    "status": "completed"
+    "content": "Verify registration completion state management",
+    "status": "pending"
   },
   {
-    "content": "Test complete registration workflow",
-    "status": "completed"
+    "content": "Clear cache and test complete registration flow",
+    "status": "pending"
   }
 ]
