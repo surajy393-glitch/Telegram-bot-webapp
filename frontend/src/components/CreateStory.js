@@ -132,6 +132,11 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     setSelectedImageFile(null);
     setSelectedVideo(null);
     setSelectedVideoFile(null);
+    setCompressedMediaFile(null);
+    
+    // Get compression recommendations
+    const recommendation = getCompressionRecommendations(file);
+    setMediaRecommendation(recommendation);
     
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -143,6 +148,11 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
         setSelectedImage(e.target.result);
         setSelectedImageFile(file);
         setStoryType('image');
+      }
+      
+      // Auto-compress if enabled and recommended
+      if (compressionSettings.autoCompress && recommendation.shouldCompress) {
+        compressCurrentMedia(file, isVideo ? 'video' : 'image');
       }
     };
     reader.readAsDataURL(file);
