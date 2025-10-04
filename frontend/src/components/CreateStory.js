@@ -141,6 +141,21 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
     // Create default user if none exists
     const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
     
+    // Upload image to backend first if present
+    let uploadedImageUrl = null;
+    if (selectedImage && selectedImageFile) {
+      try {
+        console.log('📤 Uploading story image to backend...');
+        uploadedImageUrl = await uploadImageToBackend(selectedImageFile);
+        console.log('✅ Story image uploaded:', uploadedImageUrl);
+      } catch (error) {
+        console.error('❌ Story image upload failed:', error);
+        setIsSubmitting(false);
+        alert('⚠️ Failed to upload image. Please try again.');
+        return;
+      }
+    }
+    
     // Create story object with all features
     const newStory = {
       id: Date.now(),
