@@ -346,7 +346,7 @@ class BackendTester:
             return None
 
     async def test_media_upload_video(self):
-        """Test video upload to Telegram via /api/upload-media"""
+        """Test video upload to Telegram via /api/upload-video"""
         try:
             # Create a minimal MP4 video (just headers, won't actually play but should be accepted)
             # This is a minimal MP4 file structure
