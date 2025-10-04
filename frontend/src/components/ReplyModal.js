@@ -5,37 +5,13 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [replyType, setReplyType] = useState('text'); // 'text', 'spark', 'glow'
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!replyText.trim() && replyType === 'text') return;
-
-    setIsSubmitting(true);
-    try {
-      const newReply = {
-        id: Date.now(),
-        user: currentUser,
-        content: replyText.trim(),
-        type: replyType,
-        timestamp: new Date().toISOString(),
-        likes: 0
-      };
-
-      await onReply(newReply);
-      
-      if (window.Telegram?.WebApp?.showAlert) {
-        const userName = post.user.name || post.user.username || 'User';
-        window.Telegram.WebApp.showAlert(`✨ ${userName} को रिप्लाई भेजा गया!`);
-      }
-      
-      onClose();
-    } catch (error) {
-      console.error('Error sending reply:', error);
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert('❌ Failed to send reply. Please try again.');
-      }
-    } finally {
-      setIsSubmitting(false);
+  const handleSubmit = async () => {
+    const newReply = { text: replyText, createdAt: new Date(), user: currentUser };
+    if (onReply) {
+      await onReply(newReply);  // call parent handler
     }
+    setReplyText('');
+    onClose();
   };
 
   const quickReplies = [
