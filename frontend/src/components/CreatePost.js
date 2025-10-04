@@ -134,8 +134,12 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
-  const removeImage = (id) => {
-    setSelectedImages(prev => prev.filter(img => img.id !== id));
+  const removeMedia = (id, type) => {
+    if (type === 'video') {
+      setSelectedVideos(prev => prev.filter(video => video.id !== id));
+    } else {
+      setSelectedImages(prev => prev.filter(img => img.id !== id));
+    }
   };
 
   const uploadImageToBackend = async (imageObj) => {
