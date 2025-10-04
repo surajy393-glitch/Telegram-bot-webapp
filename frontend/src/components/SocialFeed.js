@@ -267,122 +267,107 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   const handlePostAction = async (actionId, post) => {
-    const actions = {
-      report: async () => {
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert("🚨 Post reported! Our team will review it. Thank you for keeping LuvHive safe.");
-        } else {
-          alert("Post reported successfully!");
-        }
-      },
-      save: async () => {
-        // Save post to localStorage
-        const savedPosts = JSON.parse(localStorage.getItem(`luvhive_saved_${user?.username}`) || '[]');
-        if (!savedPosts.find(p => p.id === post.id)) {
-          savedPosts.push(post);
-          localStorage.setItem(`luvhive_saved_${user?.username}`, JSON.stringify(savedPosts));
-        }
-        
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert("💾 Post saved! Check your saved posts in profile.");
-        } else {
-          alert("Post saved!");
-        }
-      },
-      hide: async () => {
-        // Hide post from feed
-        setPosts(prevPosts => prevPosts.filter(p => p.id !== post.id));
-        
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert("🙈 Post hidden from your feed.");
-        } else {
-          alert("Post hidden!");
-        }
-      },
-      copy: async () => {
-        const postUrl = `${window.location.origin}/post/${post.id}`;
-        try {
-          await navigator.clipboard.writeText(postUrl);
-          if (window.Telegram?.WebApp?.showAlert) {
-            window.Telegram.WebApp.showAlert("🔗 Link copied to clipboard!");
-          } else {
-            alert("Link copied!");
+    switch (actionId) {
+      case 'delete':
+        // backend delete call
+        const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id}`, { 
+          method: 'DELETE', 
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
-        } catch (error) {
-          console.error('Failed to copy link:', error);
-        }
-      },
-      delete: async () => {
-        // More comprehensive user matching for delete functionality
-        const isOwnPost = user && (
-          post.user.name === user.name || 
-          post.user.username === user.username ||
-          (user.username && post.user.username && post.user.username.includes(user.username)) ||
-          (user.name && post.user.name && post.user.name.includes(user.name))
-        );
-        
-        if (!isOwnPost) {
-          alert("❌ आप केवल अपनी पोस्ट डिलीट कर सकते हैं।");
-          return;
-        }
-        
-        const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
-        
-        if (window.Telegram?.WebApp?.showConfirm) {
-          window.Telegram.WebApp.showConfirm(
-            confirmMessage,
-            async (confirmed) => {
-              if (confirmed) {
-                await handleDeletePost(post.id);
-              }
+        });
+        // remove post from local state
+        setPosts((posts) => posts.filter(p => p._id !== post._id));
+        break;
+      // handle other actions...
+      default:
+        const actions = {
+          report: async () => {
+            if (window.Telegram?.WebApp?.showAlert) {
+              window.Telegram.WebApp.showAlert("🚨 Post reported! Our team will review it. Thank you for keeping LuvHive safe.");
+            } else {
+              alert("Post reported successfully!");
             }
-          );
-        } else {
-          // eslint-disable-next-line no-restricted-globals
-          if (confirm(confirmMessage)) {
-            await handleDeletePost(post.id);
-          }
-        }
-      },
-      block: async () => {
-        const isOwnPost = user && (post.user.name === user.name || post.user.username === user.username);
-        
-        if (isOwnPost) {
-          // If it's own post, redirect to delete
-          await actions.delete();
-          return;
-        }
-        
-        // Block user logic
-        const confirmMessage = `क्या आप ${post.user.name} को ब्लॉक करना चाहते हैं?`;
-        
-        if (window.Telegram?.WebApp?.showConfirm) {
-          window.Telegram.WebApp.showConfirm(
-            confirmMessage,
-            (confirmed) => {
-              if (confirmed) {
-                setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
-                if (window.Telegram?.WebApp?.showAlert) {
-                  window.Telegram.WebApp.showAlert(`🚫 ${post.user.name} को ब्लॉक कर दिया गया।`);
-                } else {
-                  alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
+          },
+          save: async () => {
+            // Save post to localStorage
+            const savedPosts = JSON.parse(localStorage.getItem(`luvhive_saved_${user?.username}`) || '[]');
+            if (!savedPosts.find(p => p.id === post.id)) {
+              savedPosts.push(post);
+              localStorage.setItem(`luvhive_saved_${user?.username}`, JSON.stringify(savedPosts));
+            }
+            
+            if (window.Telegram?.WebApp?.showAlert) {
+              window.Telegram.WebApp.showAlert("💾 Post saved! Check your saved posts in profile.");
+            } else {
+              alert("Post saved!");
+            }
+          },
+          hide: async () => {
+            // Hide post from feed
+            setPosts(prevPosts => prevPosts.filter(p => p.id !== post.id));
+            
+            if (window.Telegram?.WebApp?.showAlert) {
+              window.Telegram.WebApp.showAlert("🙈 Post hidden from your feed.");
+            } else {
+              alert("Post hidden!");
+            }
+          },
+          copy: async () => {
+            const postUrl = `${window.location.origin}/post/${post.id}`;
+            try {
+              await navigator.clipboard.writeText(postUrl);
+              if (window.Telegram?.WebApp?.showAlert) {
+                window.Telegram.WebApp.showAlert("🔗 Link copied to clipboard!");
+              } else {
+                alert("Link copied!");
+              }
+            } catch (error) {
+              console.error('Failed to copy link:', error);
+            }
+          },
+          block: async () => {
+            const isOwnPost = user && (post.user.name === user.name || post.user.username === user.username);
+            
+            if (isOwnPost) {
+              // If it's own post, redirect to delete
+              await actions.delete();
+              return;
+            }
+            
+            // Block user logic
+            const confirmMessage = `क्या आप ${post.user.name} को ब्लॉक करना चाहते हैं?`;
+            
+            if (window.Telegram?.WebApp?.showConfirm) {
+              window.Telegram.WebApp.showConfirm(
+                confirmMessage,
+                (confirmed) => {
+                  if (confirmed) {
+                    setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
+                    if (window.Telegram?.WebApp?.showAlert) {
+                      window.Telegram.WebApp.showAlert(`🚫 ${post.user.name} को ब्लॉक कर दिया गया।`);
+                    } else {
+                      alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
+                    }
+                  }
                 }
+              );
+            } else {
+              // eslint-disable-next-line no-restricted-globals
+              if (confirm(confirmMessage)) {
+                setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
+                alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
               }
             }
-          );
-        } else {
-          // eslint-disable-next-line no-restricted-globals
-          if (confirm(confirmMessage)) {
-            setPosts(prevPosts => prevPosts.filter(p => p.user.name !== post.user.name));
-            alert(`${post.user.name} को ब्लॉक कर दिया गया।`);
           }
-        }
-      }
-    };
+        };
 
-    const action = actions[actionId];
-    if (action) {
-      await action();
+        const action = actions[actionId];
+        if (action) {
+          await action();
+        }
     }
   };
 
