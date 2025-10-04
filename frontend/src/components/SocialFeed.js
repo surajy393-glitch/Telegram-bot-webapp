@@ -18,7 +18,7 @@ const mockPostsData = [
       name: 'Luvsociety', 
       username: '@luvsociety', 
       avatar: '💜', 
-      avatarUrl: 'https://cdn.jsdelivr.net/gh/luvsociety/assets@main/logo-circle.png',
+      avatarUrl: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center',
       mood: 'happy', 
       aura: 'purple' 
     },
