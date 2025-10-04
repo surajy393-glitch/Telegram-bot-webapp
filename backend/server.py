@@ -335,23 +335,15 @@ async def upload_photo(file: UploadFile = File(...)):
         # Read file content
         content = await file.read()
         file_size_mb = len(content) / (1024 * 1024)
-        logging.info(f"📤 Uploading media: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
+        logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
         
-        # Detect file type
-        is_image = file.content_type and file.content_type.startswith('image/')
-        is_video = file.content_type and file.content_type.startswith('video/')
+        # Validate image file type
+        if not file.content_type or not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="केवल इमेज फाइलें (JPEG, PNG, WebP) समर्थित हैं।")
         
-        # Check file size based on type
-        if is_video and file_size_mb > 50:
-            raise HTTPException(status_code=400, detail="वीडियो बहुत बड़ा है। अधिकतम 50MB समर्थित है।")
-        elif is_image and file_size_mb > 20:
+        # Check file size (20MB max for images)
+        if file_size_mb > 20:
             raise HTTPException(status_code=400, detail="इमेज बहुत बड़ी है। अधिकतम 20MB समर्थित है।")
-        elif not (is_image or is_video) and file_size_mb > 20:
-            raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। अधिकतम 20MB समर्थित है।")
-        
-        # Validate supported file types
-        if not (is_image or is_video):
-            raise HTTPException(status_code=400, detail="केवल इमेज और वीडियो फाइलें समर्थित हैं।")
         
         async with aiohttp.ClientSession() as session:
             # Choose upload method based on file type and size
