@@ -396,12 +396,16 @@ async def upload_photo(file: UploadFile = File(...)):
                         raise HTTPException(status_code=500, detail=f"Telegram error: {error_desc}")
                 
                 # Get file_id from photo or document
-                if is_image and 'photo' in result['result']:
+                if not use_send_document and 'photo' in result['result']:
+                    # sendPhoto response
                     photos = result['result']['photo']
                     largest_photo = max(photos, key=lambda p: p.get('file_size', 0))
                     file_id = largest_photo['file_id']
+                    logging.info(f"✅ sendPhoto successful, file_id: {file_id}")
                 elif 'document' in result['result']:
+                    # sendDocument response (for large images or non-images)
                     file_id = result['result']['document']['file_id']
+                    logging.info(f"✅ sendDocument successful, file_id: {file_id}")
                 else:
                     raise HTTPException(status_code=500, detail="No file in Telegram response")
                 
