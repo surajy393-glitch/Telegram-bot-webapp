@@ -35,8 +35,13 @@ function App() {
   }, []);
 
   const handleRegistrationComplete = (userData) => {
+    console.log('🎉 Registration completed, setting user state:', userData);
     setUser(userData);
     setIsRegistered(true);
+    
+    // Double-check localStorage is set correctly
+    const savedUser = localStorage.getItem('luvhive_user');
+    console.log('✅ Verified localStorage user data:', savedUser ? 'Present' : 'Missing');
   };
 
   const handleEnterLuvHive = () => {
