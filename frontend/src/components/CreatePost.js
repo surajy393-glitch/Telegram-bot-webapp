@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+iupload
+mselectedImages
+puploaort React, { useState, useEffect } from 'react';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [postText, setPostText] = useState('');
@@ -140,7 +142,19 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       }
       
       const result = await response.json();
-      return result.photo_url || result.file_id;
+      
+      // Ensure we always return a valid image URL
+      if (!result.success) {
+        throw new Error(result.message || 'Upload failed');
+      }
+      
+      // photo_url should always be present from backend
+      if (!result.photo_url) {
+        console.error('No photo_url in response:', result);
+        throw new Error('Invalid server response - no photo URL');
+      }
+      
+      return result.photo_url;
     } catch (error) {
       console.error('Image upload error:', error);
       throw error;
