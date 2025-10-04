@@ -183,6 +183,51 @@ const SocialFeed = ({ user, theme }) => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/posts/${postId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include Telegram WebApp initData for authentication if available
+          ...(window.Telegram?.WebApp?.initData ? {
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+          } : {})
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'पोस्ट डिलीट नहीं हो सकी।');
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Remove post from frontend state
+        setPosts(prevPosts => prevPosts.filter(p => p.id !== postId));
+        
+        if (window.Telegram?.WebApp?.showAlert) {
+          window.Telegram.WebApp.showAlert("🗑️ पोस्ट सफलतापूर्वक डिलीट हो गई!");
+        } else {
+          alert("🗑️ पोस्ट सफलतापूर्वक डिलीट हो गई!");
+        }
+      } else {
+        throw new Error(result.message || 'पोस्ट डिलीट नहीं हो सकी।');
+      }
+    } catch (error) {
+      console.error('❌ Delete post error:', error);
+      const errorMsg = error.message || 'पोस्ट डिलीट करने में त्रुटि हुई।';
+      
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert(`❌ ${errorMsg}`);
+      } else {
+        alert(`❌ ${errorMsg}`);
+      }
+    }
+  };
+
   const handleShare = (postId) => {
     const post = posts.find(p => p.id === postId);
     if (post) {
