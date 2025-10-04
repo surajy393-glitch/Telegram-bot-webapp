@@ -354,13 +354,30 @@ const SocialFeed = ({ user, theme }) => {
   const handlePostAction = async (actionId, post) => {
     if (actionId === 'delete') {
       try {
-        const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
-          method: 'DELETE', 
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setPosts(posts => posts.filter(p => p.id !== post.id));
-        alert('Post deleted successfully!');
+        // Confirmation dialog
+        const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
+        
+        if (window.Telegram?.WebApp?.showConfirm) {
+          window.Telegram.WebApp.showConfirm(
+            confirmMessage,
+            async (confirmed) => {
+              if (confirmed) {
+                await handleDeletePost(post.id);
+              }
+            }
+          );
+        } else {
+          // eslint-disable-next-line no-restricted-globals
+          if (confirm(confirmMessage)) {
+            const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/delete-post/${post._id || post.id}`, { 
+              method: 'DELETE', 
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setPosts(posts => posts.filter(p => p.id !== post.id));
+            alert('Post deleted successfully!');
+          }
+        }
       } catch (error) {
         console.error('Delete error:', error);
         alert('Failed to delete post');
