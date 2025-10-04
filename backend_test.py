@@ -458,6 +458,17 @@ class BackendTester:
             await self.test_user_onboarding()
             user_profile = await self.test_user_profile()
             
+            # Test Telegram integration (critical for media uploads)
+            telegram_working = await self.test_telegram_connection()
+            
+            # Test media upload functionality (core feature)
+            if telegram_working:
+                await self.test_media_upload_image()
+                await self.test_media_upload_video()
+                await self.test_media_upload_size_limits()
+            else:
+                self.log_result("Media Upload Tests", False, "Skipped due to Telegram connection issues")
+            
             # Test core functionality
             post_id = await self.test_post_creation()
             await self.test_posts_feed()
