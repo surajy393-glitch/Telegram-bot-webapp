@@ -386,6 +386,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     setSelectedMusic(null);
     setSelectedLocation('');
     setIsSubmitting(false);
+    setIsCompressing(false);
   }, []);
 
   const handleMusicSelect = (music) => {
