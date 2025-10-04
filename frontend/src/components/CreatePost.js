@@ -225,7 +225,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
         aura: getAuraByMood(mood)
       },
       content: postText,
-      images: uploadedImageUrls, // Use uploaded URLs instead of Base64
+      images: uploadedMediaUrls, // Use uploaded URLs instead of Base64
       mood: mood,
       music: selectedMusic,
       location: selectedLocation || null,
