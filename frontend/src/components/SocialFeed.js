@@ -354,7 +354,7 @@ const SocialFeed = ({ user, theme }) => {
   const handlePostAction = async (actionId, post) => {
     if (actionId === 'delete') {
       // Confirmation dialog
-      const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
+      const confirmMessage = "Are you sure you want to delete this post?";
       
       // eslint-disable-next-line no-restricted-globals
       const confirmed = confirm(confirmMessage);
