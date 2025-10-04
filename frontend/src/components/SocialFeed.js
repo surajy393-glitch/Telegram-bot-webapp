@@ -9,6 +9,7 @@ import PostOptionsModal from './PostOptionsModal';
 import ShareModal from './ShareModal';
 import ReplyModal from './ReplyModal';
 import CommentsModal from './CommentsModal';
+import Avatar from './ui/Avatar';
 
 // Mock posts data outside component to avoid dependency issues
 const mockPostsData = [
