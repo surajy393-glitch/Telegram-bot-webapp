@@ -64,7 +64,7 @@ const mockPostsData = [
         id: 2,
         user: { name: 'Emma Soul', username: '@emma_vibes', avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=center', profilePic: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=center' },
         text: 'Nature always has the best surprises! 🌿✨',
-        timestamp: '30m ago',
+        timestamp: '1h ago',
         likes: 3
       }
     ],
@@ -100,7 +100,7 @@ const mockPostsData = [
         id: 2,
         user: { name: 'Zara Wild', username: '@zara_free', avatarUrl: 'https://ui-avatars.com/api/?name=Zara+Wild&background=ec4899&color=fff&size=200' },
         text: 'Nature always has the best surprises! 🌿✨',
-        timestamp: '30m ago',
+        timestamp: '1h ago',
         likes: 3
       }
     ],
