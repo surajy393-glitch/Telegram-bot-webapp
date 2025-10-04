@@ -412,8 +412,12 @@ async def upload_media(file: UploadFile = File(...)):
                     else:
                         raise HTTPException(status_code=500, detail=f"Telegram error: {error_desc}")
                 
-                # Get file_id from photo or document
-                if not use_send_document and 'photo' in result['result']:
+                # Get file_id from photo, video or document
+                if is_video and 'video' in result['result']:
+                    # sendVideo response
+                    file_id = result['result']['video']['file_id']
+                    logging.info(f"✅ sendVideo successful, file_id: {file_id}")
+                elif not use_send_document and 'photo' in result['result']:
                     # sendPhoto response
                     photos = result['result']['photo']
                     largest_photo = max(photos, key=lambda p: p.get('file_size', 0))
