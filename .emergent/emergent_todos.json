@@ -1,22 +1,22 @@
 [
   {
     "content": "Add client-side file size validation in CreatePost/CreateStory (5MB limit)",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Install and add browser-image-compression library for client-side compression",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Update backend to use sendPhoto instead of sendDocument for images",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Add better error messages in backend for file size/type errors",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Test complete flow with compressed images",
-    "status": "pending"
+    "status": "completed"
   }
 ]
