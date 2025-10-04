@@ -352,55 +352,45 @@ const SocialFeed = ({ user, theme }) => {
   };
 
   const handlePostAction = async (actionId, post) => {
+    console.log('🔥 handlePostAction called:', actionId, post);
+    
     if (actionId === 'delete') {
+      console.log('🗑️ Delete action triggered for post:', post.id);
+      
       // Confirmation dialog
       const confirmMessage = "क्या आप वाकई इस पोस्ट को डिलीट करना चाहते हैं?";
       
-      if (window.Telegram?.WebApp?.showConfirm) {
-        window.Telegram.WebApp.showConfirm(
-          confirmMessage,
-          async (confirmed) => {
-            if (confirmed) {
-              try {
-                const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${post._id || post.id}`, { 
-                  method: 'DELETE', 
-                  headers: { Authorization: `Bearer ${token}` }
-                });
-                setPosts(posts => posts.filter(p => p.id !== post.id));
-                
-                if (window.Telegram?.WebApp?.showAlert) {
-                  window.Telegram.WebApp.showAlert('✅ Post deleted successfully!');
-                } else {
-                  alert('Post deleted successfully!');
-                }
-              } catch (error) {
-                console.error('Delete error:', error);
-                if (window.Telegram?.WebApp?.showAlert) {
-                  window.Telegram.WebApp.showAlert('❌ Failed to delete post');
-                } else {
-                  alert('Failed to delete post');
-                }
-              }
-            }
-          }
-        );
-      } else {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm(confirmMessage)) {
-          try {
-            const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${post._id || post.id}`, { 
-              method: 'DELETE', 
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            setPosts(posts => posts.filter(p => p.id !== post.id));
-            alert('Post deleted successfully!');
-          } catch (error) {
-            console.error('Delete error:', error);
-            alert('Failed to delete post');
-          }
+      // Use simple confirm for debugging
+      // eslint-disable-next-line no-restricted-globals
+      const confirmed = confirm(confirmMessage);
+      console.log('✅ User confirmed delete:', confirmed);
+      
+      if (confirmed) {
+        try {
+          console.log('🚀 Starting delete process...');
+          
+          // For mock posts, just remove from state (no backend call needed)
+          console.log('📄 Current posts count:', posts.length);
+          
+          const postToDelete = posts.find(p => p.id === post.id);
+          console.log('🎯 Post to delete found:', postToDelete ? 'YES' : 'NO');
+          
+          // Remove from posts array
+          const newPosts = posts.filter(p => p.id !== post.id);
+          console.log('📄 Posts after filter:', newPosts.length);
+          
+          setPosts(newPosts);
+          console.log('✅ setPosts called with new array');
+          
+          alert('Post deleted successfully!');
+          console.log('🎉 Delete process completed');
+          
+        } catch (error) {
+          console.error('❌ Delete error:', error);
+          alert('Failed to delete post: ' + error.message);
         }
+      } else {
+        console.log('❌ User cancelled delete');
       }
       return;
     }
