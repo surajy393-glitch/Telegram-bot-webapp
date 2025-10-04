@@ -1,14 +1,18 @@
 [
   {
-    "content": "Fix Story Share button - Add proper ShareModal integration",
-    "status": "completed"
+    "content": "Fix photo upload issue - Posts with images not appearing in feed",
+    "status": "in_progress"
   },
   {
-    "content": "Test both Post and Story share buttons thoroughly",
-    "status": "completed"
+    "content": "Fix story photo upload - Stories with images not being saved/displayed",
+    "status": "pending"
   },
   {
-    "content": "Verify share functionality works correctly",
-    "status": "completed"
+    "content": "Test both post and story creation with actual photos",
+    "status": "pending"
+  },
+  {
+    "content": "Verify created posts and stories appear correctly in feed",
+    "status": "pending"
   }
 ]
