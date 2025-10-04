@@ -670,6 +670,49 @@ async def create_comment(post_id: str, data: CommentCreate, user: dict = Depends
     
     return {"success": True, "comment_id": str(result.inserted_id)}
 
+@app.delete("/api/posts/{post_id}")
+async def delete_post(post_id: str, user: dict = Depends(get_current_user)):
+    """Delete a post (only by the owner)."""
+    from bson import ObjectId
+    user_id = user["id"]
+    
+    try:
+        # Find the post first
+        post = await db.posts.find_one({"_id": ObjectId(post_id)})
+        
+        if not post:
+            raise HTTPException(status_code=404, detail="पोस्ट नहीं मिली।")
+        
+        # Check if user is the owner of the post
+        if post["user_id"] != user_id:
+            raise HTTPException(status_code=403, detail="आप केवल अपनी पोस्ट डिलीट कर सकते हैं।")
+        
+        # Delete the post
+        result = await db.posts.delete_one({"_id": ObjectId(post_id)})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="पोस्ट डिलीट नहीं हो सकी।")
+        
+        # Delete associated comments
+        await db.comments.delete_many({"post_id": ObjectId(post_id)})
+        
+        # Delete associated likes
+        await db.likes.delete_many({"post_id": ObjectId(post_id)})
+        
+        # Decrement user's posts count
+        await db.users.update_one(
+            {"tg_user_id": user_id},
+            {"$inc": {"posts_count": -1}}
+        )
+        
+        return {"success": True, "message": "पोस्ट सफलतापूर्वक डिलीट हो गई।"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"❌ Delete post error: {e}")
+        raise HTTPException(status_code=500, detail="पोस्ट डिलीट करने में त्रुटि हुई।")
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
