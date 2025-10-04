@@ -510,7 +510,7 @@ const SocialFeed = ({ user, theme }) => {
     try {
       // Save comment to backend
       const token = window.Telegram?.WebApp?.initData || localStorage.getItem('authToken') || '';
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${selectedPost._id}/comments`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/posts/${selectedPost.id || selectedPost._id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ text: comment.text })
@@ -518,7 +518,7 @@ const SocialFeed = ({ user, theme }) => {
       
       // Update local state
       setPosts(posts => posts.map(post =>
-        post._id === selectedPost._id ? { 
+        post.id === selectedPost.id ? { 
           ...post, 
           comments: [...(post.comments || []), comment],
           comments_count: (post.comments_count || 0) + 1
