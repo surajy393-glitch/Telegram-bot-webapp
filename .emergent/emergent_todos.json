@@ -1,11 +1,11 @@
 [
   {
     "content": "Check onboarding registration flow - button not working",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix backend registration API endpoint",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix frontend registration form submission",
