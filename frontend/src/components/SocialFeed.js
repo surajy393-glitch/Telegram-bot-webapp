@@ -93,7 +93,7 @@ const mockPostsData = [
         id: 1,
         user: { name: 'Alex Dream', username: '@alex_cosmic', avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Dream&background=8b5cf6&color=fff&size=200' },
         text: 'Wow, that looks amazing! 😍 Where is this place?',
-        timestamp: '1h ago',
+        timestamp: '2h ago',
         likes: 5
       },
       {
