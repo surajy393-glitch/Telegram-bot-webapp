@@ -1,0 +1,390 @@
+#!/usr/bin/env python3
+"""
+LuvHive Backend API Testing Suite
+Tests core functionality: Story Creation, Post Creation, Profile Integration, User Management
+"""
+
+import asyncio
+import aiohttp
+import json
+import sys
+import os
+from datetime import datetime
+
+# Backend URL from frontend .env
+BACKEND_URL = "https://content-flow-fix-2.preview.emergentagent.com/api"
+
+class BackendTester:
+    def __init__(self):
+        self.session = None
+        self.test_user_id = 647778438  # Dev mode fallback user ID
+        self.headers = {
+            "X-Dev-User": str(self.test_user_id),
+            "Content-Type": "application/json"
+        }
+        self.results = {
+            "passed": 0,
+            "failed": 0,
+            "errors": []
+        }
+
+    async def setup(self):
+        """Initialize HTTP session"""
+        self.session = aiohttp.ClientSession()
+
+    async def cleanup(self):
+        """Close HTTP session"""
+        if self.session:
+            await self.session.close()
+
+    def log_result(self, test_name, success, message=""):
+        """Log test result"""
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name}")
+        if message:
+            print(f"   {message}")
+        
+        if success:
+            self.results["passed"] += 1
+        else:
+            self.results["failed"] += 1
+            self.results["errors"].append(f"{test_name}: {message}")
+
+    async def test_api_root(self):
+        """Test basic API connectivity"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("message") == "Social Platform API":
+                        self.log_result("API Root Endpoint", True, "Backend is accessible")
+                        return True
+                    else:
+                        self.log_result("API Root Endpoint", False, f"Unexpected response: {data}")
+                        return False
+                else:
+                    self.log_result("API Root Endpoint", False, f"HTTP {response.status}")
+                    return False
+        except Exception as e:
+            self.log_result("API Root Endpoint", False, f"Connection error: {str(e)}")
+            return False
+
+    async def test_user_profile(self):
+        """Test user profile endpoint (/api/me)"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/me", headers=self.headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    required_fields = ["id", "display_name", "username", "is_onboarded"]
+                    missing_fields = [field for field in required_fields if field not in data]
+                    
+                    if not missing_fields:
+                        self.log_result("User Profile API", True, f"Profile data: {data.get('display_name', 'Unknown')} (@{data.get('username', 'unknown')})")
+                        return data
+                    else:
+                        self.log_result("User Profile API", False, f"Missing fields: {missing_fields}")
+                        return None
+                else:
+                    self.log_result("User Profile API", False, f"HTTP {response.status}")
+                    return None
+        except Exception as e:
+            self.log_result("User Profile API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_user_onboarding(self):
+        """Test user onboarding if needed"""
+        try:
+            # First check if user is already onboarded
+            user_data = await self.test_user_profile()
+            if user_data and user_data.get("is_onboarded"):
+                self.log_result("User Onboarding", True, "User already onboarded")
+                return True
+
+            # Onboard user
+            onboard_data = {
+                "display_name": "Test User",
+                "username": f"testuser{self.test_user_id}",
+                "age": 25,
+                "avatar_file_id": None
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/onboard", 
+                                       headers=self.headers, 
+                                       json=onboard_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success"):
+                        self.log_result("User Onboarding", True, "User onboarded successfully")
+                        return True
+                    else:
+                        self.log_result("User Onboarding", False, f"Onboarding failed: {data}")
+                        return False
+                else:
+                    self.log_result("User Onboarding", False, f"HTTP {response.status}")
+                    return False
+        except Exception as e:
+            self.log_result("User Onboarding", False, f"Error: {str(e)}")
+            return False
+
+    async def test_post_creation(self):
+        """Test post creation functionality"""
+        try:
+            post_data = {
+                "content": "Testing LuvHive post creation! 🎉 This is a test post with music and vibes.",
+                "media_urls": ["https://example.com/test-image.jpg"]
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/posts", 
+                                       headers=self.headers, 
+                                       json=post_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success") and data.get("post_id"):
+                        self.log_result("Post Creation API", True, f"Post created with ID: {data['post_id']}")
+                        return data["post_id"]
+                    else:
+                        self.log_result("Post Creation API", False, f"Creation failed: {data}")
+                        return None
+                else:
+                    self.log_result("Post Creation API", False, f"HTTP {response.status}")
+                    return None
+        except Exception as e:
+            self.log_result("Post Creation API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_posts_feed(self):
+        """Test posts feed retrieval"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/posts", headers=self.headers) as response:
+                if response.status == 200:
+                    posts = await response.json()
+                    if isinstance(posts, list):
+                        self.log_result("Posts Feed API", True, f"Retrieved {len(posts)} posts from feed")
+                        
+                        # Check if posts have required structure
+                        if posts:
+                            post = posts[0]
+                            required_fields = ["id", "content", "user_id", "created_at"]
+                            missing_fields = [field for field in required_fields if field not in post]
+                            if missing_fields:
+                                self.log_result("Posts Feed Structure", False, f"Missing fields in posts: {missing_fields}")
+                            else:
+                                self.log_result("Posts Feed Structure", True, "Posts have correct structure")
+                        
+                        return posts
+                    else:
+                        self.log_result("Posts Feed API", False, f"Expected list, got: {type(posts)}")
+                        return None
+                else:
+                    self.log_result("Posts Feed API", False, f"HTTP {response.status}")
+                    return None
+        except Exception as e:
+            self.log_result("Posts Feed API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_story_creation(self):
+        """Test story creation functionality"""
+        try:
+            story_data = {
+                "media_url": "https://example.com/test-story.jpg",
+                "duration": 24
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/stories", 
+                                       headers=self.headers, 
+                                       json=story_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success") and data.get("story_id"):
+                        self.log_result("Story Creation API", True, f"Story created with ID: {data['story_id']}")
+                        return data["story_id"]
+                    else:
+                        self.log_result("Story Creation API", False, f"Creation failed: {data}")
+                        return None
+                else:
+                    self.log_result("Story Creation API", False, f"HTTP {response.status}")
+                    return None
+        except Exception as e:
+            self.log_result("Story Creation API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_stories_feed(self):
+        """Test stories feed retrieval"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/stories", headers=self.headers) as response:
+                if response.status == 200:
+                    stories = await response.json()
+                    if isinstance(stories, list):
+                        self.log_result("Stories Feed API", True, f"Retrieved {len(stories)} active stories")
+                        
+                        # Check if stories have required structure
+                        if stories:
+                            story = stories[0]
+                            required_fields = ["id", "media_url", "user_id", "created_at"]
+                            missing_fields = [field for field in required_fields if field not in story]
+                            if missing_fields:
+                                self.log_result("Stories Feed Structure", False, f"Missing fields in stories: {missing_fields}")
+                            else:
+                                self.log_result("Stories Feed Structure", True, "Stories have correct structure")
+                        
+                        return stories
+                    else:
+                        self.log_result("Stories Feed API", False, f"Expected list, got: {type(stories)}")
+                        return None
+                else:
+                    self.log_result("Stories Feed API", False, f"HTTP {response.status}")
+                    return None
+        except Exception as e:
+            self.log_result("Stories Feed API", False, f"Error: {str(e)}")
+            return None
+
+    async def test_post_interactions(self, post_id):
+        """Test post like and comment functionality"""
+        if not post_id:
+            self.log_result("Post Interactions", False, "No post ID provided")
+            return
+
+        try:
+            # Test liking a post
+            async with self.session.post(f"{BACKEND_URL}/posts/{post_id}/like", 
+                                       headers=self.headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if "liked" in data:
+                        self.log_result("Post Like API", True, f"Post like status: {data['liked']}")
+                    else:
+                        self.log_result("Post Like API", False, f"Unexpected response: {data}")
+                else:
+                    self.log_result("Post Like API", False, f"HTTP {response.status}")
+
+            # Test commenting on a post
+            comment_data = {
+                "content": "Great post! Testing comment functionality 💬",
+                "post_id": post_id
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/posts/{post_id}/comments", 
+                                       headers=self.headers, 
+                                       json=comment_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success") and data.get("comment_id"):
+                        self.log_result("Post Comment API", True, f"Comment created with ID: {data['comment_id']}")
+                    else:
+                        self.log_result("Post Comment API", False, f"Comment creation failed: {data}")
+                else:
+                    self.log_result("Post Comment API", False, f"HTTP {response.status}")
+
+            # Test retrieving comments
+            async with self.session.get(f"{BACKEND_URL}/posts/{post_id}/comments", 
+                                      headers=self.headers) as response:
+                if response.status == 200:
+                    comments = await response.json()
+                    if isinstance(comments, list):
+                        self.log_result("Post Comments Retrieval", True, f"Retrieved {len(comments)} comments")
+                    else:
+                        self.log_result("Post Comments Retrieval", False, f"Expected list, got: {type(comments)}")
+                else:
+                    self.log_result("Post Comments Retrieval", False, f"HTTP {response.status}")
+
+        except Exception as e:
+            self.log_result("Post Interactions", False, f"Error: {str(e)}")
+
+    async def test_status_endpoints(self):
+        """Test status check endpoints"""
+        try:
+            # Test creating a status check
+            status_data = {
+                "client_name": "backend_test_suite"
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/status", 
+                                       headers=self.headers, 
+                                       json=status_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("id") and data.get("client_name"):
+                        self.log_result("Status Creation API", True, f"Status check created: {data['id']}")
+                    else:
+                        self.log_result("Status Creation API", False, f"Unexpected response: {data}")
+                else:
+                    self.log_result("Status Creation API", False, f"HTTP {response.status}")
+
+            # Test retrieving status checks
+            async with self.session.get(f"{BACKEND_URL}/status", headers=self.headers) as response:
+                if response.status == 200:
+                    statuses = await response.json()
+                    if isinstance(statuses, list):
+                        self.log_result("Status Retrieval API", True, f"Retrieved {len(statuses)} status checks")
+                    else:
+                        self.log_result("Status Retrieval API", False, f"Expected list, got: {type(statuses)}")
+                else:
+                    self.log_result("Status Retrieval API", False, f"HTTP {response.status}")
+
+        except Exception as e:
+            self.log_result("Status Endpoints", False, f"Error: {str(e)}")
+
+    async def run_all_tests(self):
+        """Run comprehensive backend API tests"""
+        print("🚀 Starting LuvHive Backend API Tests")
+        print("=" * 50)
+        
+        await self.setup()
+        
+        try:
+            # Test basic connectivity
+            if not await self.test_api_root():
+                print("❌ Backend is not accessible. Stopping tests.")
+                return
+            
+            # Test user management
+            await self.test_user_onboarding()
+            user_profile = await self.test_user_profile()
+            
+            # Test core functionality
+            post_id = await self.test_post_creation()
+            await self.test_posts_feed()
+            
+            story_id = await self.test_story_creation()
+            await self.test_stories_feed()
+            
+            # Test interactions
+            if post_id:
+                await self.test_post_interactions(post_id)
+            
+            # Test utility endpoints
+            await self.test_status_endpoints()
+            
+        finally:
+            await self.cleanup()
+        
+        # Print summary
+        print("\n" + "=" * 50)
+        print("🏁 Test Summary")
+        print(f"✅ Passed: {self.results['passed']}")
+        print(f"❌ Failed: {self.results['failed']}")
+        
+        if self.results['errors']:
+            print("\n🔍 Failed Tests:")
+            for error in self.results['errors']:
+                print(f"   • {error}")
+        
+        success_rate = (self.results['passed'] / (self.results['passed'] + self.results['failed'])) * 100 if (self.results['passed'] + self.results['failed']) > 0 else 0
+        print(f"\n📊 Success Rate: {success_rate:.1f}%")
+        
+        return self.results['failed'] == 0
+
+async def main():
+    """Main test runner"""
+    tester = BackendTester()
+    success = await tester.run_all_tests()
+    
+    if success:
+        print("\n🎉 All backend tests passed! LuvHive API is working correctly.")
+        sys.exit(0)
+    else:
+        print("\n⚠️  Some backend tests failed. Check the errors above.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    asyncio.run(main())
