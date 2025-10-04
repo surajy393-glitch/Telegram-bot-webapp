@@ -24,7 +24,7 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
   );
 
   const options = [
-    { id: 'delete', title: 'Delete Post', icon: '🗑️', color: 'text-red-500', bgColor: 'hover:bg-red-100', show: post.user.id === currentUser.id },
+    { id: 'delete', title: 'Delete Post', icon: '🗑️', color: 'text-red-500', bgColor: 'hover:bg-red-100', show: isOwnPost },
     {
       id: 'report',
       title: 'Report Post',
