@@ -1,18 +1,14 @@
 [
   {
-    "content": "Fix localStorage key inconsistency: 'luv_hive_user' vs 'luvhive_user'",
-    "status": "completed"
+    "content": "Fix actual localStorage key mismatch in RegistrationFlow.js",
+    "status": "in_progress"
   },
   {
-    "content": "Update cleanup function to preserve both key patterns",
-    "status": "completed"
+    "content": "Verify and update cleanup function in index.js",
+    "status": "pending"
   },
   {
-    "content": "Verify registration completion state management",
-    "status": "completed"
-  },
-  {
-    "content": "Clear cache and test complete registration flow",
-    "status": "completed"
+    "content": "Test complete registration persistence",
+    "status": "pending"
   }
 ]
