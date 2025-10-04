@@ -133,9 +133,9 @@ const RegistrationFlow = ({ onComplete }) => {
         console.log('⚠️ Backend not available, using localStorage:', backendError.message);
       }
       
-      // Save to localStorage as fallback/primary storage
+      // Save to localStorage with consistent key (matching App.js)
       localStorage.setItem('luvhive_user', JSON.stringify(userData));
-      console.log('✅ User saved to localStorage');
+      console.log('✅ User saved to localStorage with key: luvhive_user');
       
       // Show success message
       if (window.Telegram?.WebApp?.showAlert) {
