@@ -741,11 +741,19 @@ const SocialFeed = ({ user, theme }) => {
                       if (userName.toLowerCase() === 'luvsociety') {
                         return (
                           <img 
-                            src="https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true&rounded=true"
+                            src="https://cdn.jsdelivr.net/gh/luvsociety/assets@main/logo-circle.png"
                             alt="Luvsociety" 
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              e.target.outerHTML = '<div class="w-full h-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-bold">💜</div>';
+                              // Fallback to a better logo design
+                              e.target.outerHTML = `
+                                <div class="w-full h-full flex items-center justify-center bg-black text-white text-xs font-bold rounded-full" style="font-family: Arial, sans-serif;">
+                                  <div class="text-center">
+                                    <div style="font-size: 8px; line-height: 1;">LUV</div>
+                                    <div style="font-size: 8px; line-height: 1;">SOCIETY</div>
+                                  </div>
+                                </div>
+                              `;
                             }}
                           />
                         );
