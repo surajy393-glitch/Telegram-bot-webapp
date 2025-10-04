@@ -9,11 +9,11 @@
   },
   {
     "content": "Fix delete button functionality - add backend endpoint and frontend handler",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix reply username issue - remove random string concatenation",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Add proper error handling and fallbacks for missing data",
