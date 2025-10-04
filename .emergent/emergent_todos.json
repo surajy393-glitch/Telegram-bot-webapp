@@ -1,18 +1,22 @@
 [
   {
-    "content": "Add /api/upload-photo endpoint in backend using MEDIA_SINK_CHAT_ID",
+    "content": "Fix backend upload endpoint to use sendDocument instead of sendPhoto",
     "status": "completed"
   },
   {
-    "content": "Update CreatePost to use backend upload API instead of localStorage",
-    "status": "completed"
+    "content": "Restart backend and test Telegram upload with real image",
+    "status": "in_progress"
   },
   {
-    "content": "Update CreateStory to use backend upload API instead of localStorage",
-    "status": "completed"
+    "content": "Verify image appears in Telegram chat -1003138482795",
+    "status": "pending"
   },
   {
-    "content": "Test photo upload with actual Telegram bot integration",
-    "status": "completed"
+    "content": "Test full flow: webapp photo upload -> backend -> Telegram chat",
+    "status": "pending"
+  },
+  {
+    "content": "Confirm posts/stories work end-to-end with photos",
+    "status": "pending"
   }
 ]
