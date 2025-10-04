@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [postText, setPostText] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedVideos, setSelectedVideos] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mood, setMood] = useState('happy');
   const [selectedMusic, setSelectedMusic] = useState(null);
