@@ -637,9 +637,10 @@ const SocialFeed = ({ user, theme }) => {
                           />
                         );
                       } else {
-                        // Use emoji avatar or first letter of name
-                        const displayAvatar = post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤';
-                        return <span className="text-xl font-bold text-white">{displayAvatar}</span>;
+                        // Generate a nice avatar based on user name
+                        const name = post.user.name || 'User';
+                        const initials = name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+                        return <span className="text-xl font-bold text-white">{initials || '👤'}</span>;
                       }
                     })()}
                     {/* Hidden fallback for image errors */}
