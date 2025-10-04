@@ -1,15 +1,15 @@
 [
   {
     "content": "Fix avatar display issue - using wrong field for user profile pics",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix image display - add full screen modal and proper CSS",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Fix delete button functionality - add backend endpoint and frontend handler",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix reply username issue - remove random string concatenation",
