@@ -1,47 +1,50 @@
 import React from 'react';
 
-const Avatar = ({ user, size = 'md', className = '' }) => {
-  const sizes = {
-    sm: 'w-8 h-8 text-sm',
-    md: 'w-12 h-12 text-lg', 
-    lg: 'w-16 h-16 text-xl',
-    xl: 'w-20 h-20 text-2xl'
-  };
+const Avatar = ({ user, size = 32 }) => {
+  const src = user.avatarUrl || user.profilePic || '';
+  const fallbackLetter = user.name?.[0]?.toUpperCase() || '?';
   
-  const sizeClasses = sizes[size] || sizes.md;
-  
-  // Get avatar URL with fallback priority
-  const avatarUrl = user?.avatarUrl || user?.profilePic || user?.avatar_url;
-  
-  // Special handling for Luvsociety
+  // Special handling for Luvsociety - always show proper image
   if (user?.name?.toLowerCase() === 'luvsociety') {
     return (
-      <img 
+      <img
         src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=200&h=200&fit=crop&crop=center"
-        alt="Luvsociety" 
-        className={`${sizeClasses} rounded-full object-cover ${className}`}
+        alt="Luvsociety"
+        style={{ width: size, height: size }}
+        className="rounded-full object-cover"
         onError={(e) => {
+          // Fallback to a solid avatar for Luvsociety
           e.target.src = 'https://ui-avatars.com/api/?name=Luvsociety&background=8b5cf6&color=fff&size=200&bold=true';
         }}
       />
     );
   }
   
-  // Default avatar URL if no custom avatar
-  const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=random&color=fff&size=200`;
-  
-  return (
-    <img 
-      src={avatarUrl || defaultAvatarUrl}
-      alt={`${user?.name || 'User'} avatar`} 
-      className={`${sizeClasses} rounded-full object-cover ${className}`}
+  return src ? (
+    <img
+      src={src}
+      alt={user.name}
+      style={{ width: size, height: size }}
+      className="rounded-full object-cover"
       onError={(e) => {
-        // Fallback to default avatar service
-        if (e.target.src !== defaultAvatarUrl) {
-          e.target.src = defaultAvatarUrl;
-        }
+        // On image error, replace with fallback letter
+        e.target.outerHTML = `
+          <span
+            style="width: ${size}px; height: ${size}px"
+            class="rounded-full bg-gray-400 flex items-center justify-center text-white font-bold"
+          >
+            ${fallbackLetter}
+          </span>
+        `;
       }}
     />
+  ) : (
+    <span
+      style={{ width: size, height: size }}
+      className="rounded-full bg-gray-400 flex items-center justify-center text-white font-bold"
+    >
+      {fallbackLetter}
+    </span>
   );
 };
 
