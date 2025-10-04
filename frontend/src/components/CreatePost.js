@@ -523,14 +523,27 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
                       {formatFileSize(image.originalSize)} → {formatFileSize(image.compressedSize)}
                     </div>
                   )}
-                  <button
-                    onClick={() => removeMedia(image.id, 'image')}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <div className="absolute top-2 right-2 flex space-x-1">
+                    {!image.compressed && image.recommendation.shouldCompress && (
+                      <button
+                        onClick={() => compressMediaItem(image)}
+                        className="bg-blue-500 text-white p-1 rounded-full hover:bg-blue-600 transition-colors"
+                        title="Compress image"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                        </svg>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => removeMedia(image.id, 'image')}
+                      className="bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               ))}
               
