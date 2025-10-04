@@ -291,16 +291,15 @@
 
 ## test_plan:
   current_focus:
-    - "Fix loading state stuck issue in SocialFeed"
-    - "Fix modal state persistence for story and post creation"
-    - "Replace localStorage with backend integration"
-    - "Fix 405 Method Not Allowed errors and emoji URL encoding"
+    - "Test comprehensive UI/UX fixes: Avatar display, Delete/Reply functionality, Full-screen media modal"
+    - "Verify registration flow reaches feed page successfully"
+    - "Test avatar display fixes - no more 'L' or weird strings"
+    - "Test delete and reply button functionality with improved user matching"
+    - "Test full-screen image and video modal triggers"
   stuck_tasks:
-    - "Story creation and management improvements"
-    - "Replace poll with music in posts"
-    - "Fix JavaScript runtime errors and error overlay"
+    - "Registration flow not reaching feed page after completion"
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 ## agent_communication:
     - agent: "main"
