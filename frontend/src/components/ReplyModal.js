@@ -23,7 +23,8 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
       await onReply(newReply);
       
       if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert(`✨ Reply sent to ${post.user.name}!`);
+        const userName = post.user.name || post.user.username || 'User';
+        window.Telegram.WebApp.showAlert(`✨ ${userName} को रिप्लाई भेजा गया!`);
       }
       
       onClose();
