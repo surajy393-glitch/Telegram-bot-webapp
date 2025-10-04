@@ -9,10 +9,10 @@
   },
   {
     "content": "Verify cleanup function behavior",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Clear build cache and restart services",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]
