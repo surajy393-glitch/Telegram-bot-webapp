@@ -1,0 +1,30 @@
+[
+  {
+    "content": "Analyze the uploaded LuvHive zip file and extract all frontend components",
+    "status": "in_progress"
+  },
+  {
+    "content": "Set up the correct LuvHive frontend with Feed page (Following/Discover/Vibes/Sparks tabs)",
+    "status": "pending"
+  },
+  {
+    "content": "Implement story circles feature (Your Story, Luna, River, Nova)",
+    "status": "pending"
+  },
+  {
+    "content": "Create post cards with vibe progress bars and engagement metrics",
+    "status": "pending"
+  },
+  {
+    "content": "Add Discover and Vibes modal overlays",
+    "status": "pending"
+  },
+  {
+    "content": "Implement profile page with Sparks, Glows, Connections, Vibe Score",
+    "status": "pending"
+  },
+  {
+    "content": "Verify all features match the screenshots exactly",
+    "status": "pending"
+  }
+]
