@@ -117,7 +117,8 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
                   const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
                   
                   // Check if we have a valid image URL
-                  if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:'))) {
+                  if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl
+                  .startsWith('data:'))) {
                     return (
                       <img 
                         src={avatarUrl} 

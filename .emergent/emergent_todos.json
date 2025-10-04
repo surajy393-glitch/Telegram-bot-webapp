@@ -1,18 +1,22 @@
 [
   {
-    "content": "Fix delete button functionality in PostOptionsModal and SocialFeed",
-    "status": "completed"
+    "content": "Check actual PostOptionsModal.js for delete option presence",
+    "status": "in_progress"
   },
   {
-    "content": "Fix reply functionality - add onReply callback and proper integration",
-    "status": "completed"
+    "content": "Fix ReplyModal onReply callback integration in SocialFeed",
+    "status": "pending"
   },
   {
-    "content": "Fix avatar display issue - show images instead of raw strings",
-    "status": "completed"
+    "content": "Fix avatar display with proper fallback logic",
+    "status": "pending"
   },
   {
-    "content": "Fix multiple like buttons and reaction state management",
-    "status": "completed"
+    "content": "Add full-screen media view modal",
+    "status": "pending"
+  },
+  {
+    "content": "Fix duplicate like system with proper state management",
+    "status": "pending"
   }
 ]
