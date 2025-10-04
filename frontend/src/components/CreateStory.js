@@ -544,7 +544,7 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
                   setStoryText(e.target.value);
                   console.log('📝 Story text updated:', e.target.value);
                 }}
-                placeholder="Write a caption for your story..."
+                placeholder={`Write a caption for your ${storyType}...`}
                 className="w-full p-3 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
                 rows={3}
                 maxLength={280}
