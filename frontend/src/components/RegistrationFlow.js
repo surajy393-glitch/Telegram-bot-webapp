@@ -34,9 +34,40 @@ const RegistrationFlow = ({ onComplete }) => {
   };
 
   const handleNext = () => {
+    console.log(`📝 Step ${step}: Attempting to proceed`, formData);
+    
+    // Validate current step
+    if (!isStepValid()) {
+      console.log(`❌ Step ${step} validation failed`);
+      
+      let errorMessage = '';
+      switch (step) {
+        case 1:
+          errorMessage = 'नाम कम से कम 2 अक्षर का होना चाहिए।';
+          break;
+        case 2:
+          errorMessage = 'यूजरनेम कम से कम 3 अक्षर का होना चाहिए और उम्र 18+ होनी चाहिए।';
+          break;
+        case 3:
+          errorMessage = 'कृपया अपना जेंडर चुनें।';
+          break;
+        default:
+          errorMessage = 'कृपया सभी आवश्यक जानकारी भरें।';
+      }
+      
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert(`⚠️ ${errorMessage}`);
+      } else {
+        alert(`⚠️ ${errorMessage}`);
+      }
+      return;
+    }
+    
     if (step < 4) {
+      console.log(`✅ Step ${step} valid, moving to step ${step + 1}`);
       setStep(step + 1);
     } else {
+      console.log('🚀 Final step, starting registration submission');
       handleSubmit();
     }
   };
