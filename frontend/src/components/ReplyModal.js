@@ -60,10 +60,37 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
-                <span className="text-lg">{post.user.avatar}</span>
+                {(() => {
+                  // Get proper avatar URL from user data
+                  const avatarUrl = post.user.avatarUrl || post.user.profilePic || post.user.avatar_url;
+                  
+                  // Check if we have a valid image URL
+                  if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/') || avatarUrl.startsWith('data:'))) {
+                    return (
+                      <img 
+                        src={avatarUrl} 
+                        alt={post.user.name} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback to emoji on image load error
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    );
+                  } else {
+                    // Use emoji avatar or first letter of name
+                    const displayAvatar = post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤';
+                    return <span className="text-lg font-bold text-white">{displayAvatar}</span>;
+                  }
+                })()}
+                {/* Hidden fallback for image errors */}
+                <span className="text-lg font-bold text-white" style={{ display: 'none' }}>
+                  {post.user.name?.charAt(0)?.toUpperCase() || '👤'}
+                </span>
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-800">Reply to {post.user.name}</h2>
+                <h2 className="text-lg font-bold text-gray-800">Reply to {post.user.name || post.user.username || 'User'}</h2>
                 <p className="text-sm text-gray-500">Share your thoughts on this post</p>
               </div>
             </div>
