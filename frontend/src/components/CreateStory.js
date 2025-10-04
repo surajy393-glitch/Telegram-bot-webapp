@@ -406,26 +406,36 @@ const CreateStory = ({ user, onClose, onStoryCreated }) => {
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-4">
           {/* Story Type Selector */}
-          <div className="flex space-x-2">
+          <div className="flex space-x-1">
             <button
               onClick={() => setStoryType('image')}
-              className={`flex-1 p-3 rounded-2xl font-semibold transition-all ${
+              className={`flex-1 p-2 rounded-2xl font-semibold transition-all text-sm ${
                 storyType === 'image'
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              📸 Photo Story
+              📸 Photo
+            </button>
+            <button
+              onClick={() => setStoryType('video')}
+              className={`flex-1 p-2 rounded-2xl font-semibold transition-all text-sm ${
+                storyType === 'video'
+                  ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              🎥 Video
             </button>
             <button
               onClick={() => setStoryType('text')}
-              className={`flex-1 p-3 rounded-2xl font-semibold transition-all ${
+              className={`flex-1 p-2 rounded-2xl font-semibold transition-all text-sm ${
                 storyType === 'text'
                   ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              ✍️ Text Story
+              ✍️ Text
             </button>
           </div>
 
