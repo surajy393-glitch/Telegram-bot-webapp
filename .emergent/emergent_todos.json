@@ -1,15 +1,15 @@
 [
   {
     "content": "Fix photo upload issue - Posts with images not appearing in feed",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix story photo upload - Stories with images not being saved/displayed",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Test both post and story creation with actual photos",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Verify created posts and stories appear correctly in feed",
