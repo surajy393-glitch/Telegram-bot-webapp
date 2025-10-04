@@ -368,7 +368,7 @@ class BackendTester:
                     data = await response.json()
                     if data.get("success") and data.get("video_url"):
                         self.log_result("Video Upload API", True, f"Video uploaded: {data.get('file_id', 'unknown')}")
-                        return data["media_url"]
+                        return data["video_url"]
                     else:
                         self.log_result("Video Upload API", False, f"Upload failed: {data}")
                         return None
