@@ -1,11 +1,11 @@
 [
   {
     "content": "Fix setTimeout delay in registration completion",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Ensure localStorage key consistency across all files",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Verify cleanup function behavior",
