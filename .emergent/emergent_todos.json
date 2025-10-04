@@ -1,11 +1,11 @@
 [
   {
     "content": "Check actual PostOptionsModal.js for delete option presence",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
     "content": "Fix ReplyModal onReply callback integration in SocialFeed",
-    "status": "pending"
+    "status": "in_progress"
   },
   {
     "content": "Fix avatar display with proper fallback logic",
