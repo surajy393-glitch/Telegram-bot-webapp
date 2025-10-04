@@ -335,14 +335,23 @@ async def upload_media(file: UploadFile = File(...)):
         # Read file content
         content = await file.read()
         file_size_mb = len(content) / (1024 * 1024)
-        logging.info(f"📤 Uploading photo: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
+        logging.info(f"📤 Uploading media: {file.filename}, size: {file_size_mb:.2f}MB, content_type: {file.content_type}")
         
-        # Check file size (Telegram limit is 20MB for documents, 10MB for photos)
-        if file_size_mb > 20:
+        # Detect file type
+        is_image = file.content_type and file.content_type.startswith('image/')
+        is_video = file.content_type and file.content_type.startswith('video/')
+        
+        # Check file size based on type
+        if is_video and file_size_mb > 50:
+            raise HTTPException(status_code=400, detail="वीडियो बहुत बड़ा है। अधिकतम 50MB समर्थित है।")
+        elif is_image and file_size_mb > 20:
+            raise HTTPException(status_code=400, detail="इमेज बहुत बड़ी है। अधिकतम 20MB समर्थित है।")
+        elif not (is_image or is_video) and file_size_mb > 20:
             raise HTTPException(status_code=400, detail="फाइल बहुत बड़ी है। अधिकतम 20MB समर्थित है।")
         
-        # Check if it's an image
-        is_image = file.content_type and file.content_type.startswith('image/')
+        # Validate supported file types
+        if not (is_image or is_video):
+            raise HTTPException(status_code=400, detail="केवल इमेज और वीडियो फाइलें समर्थित हैं।")
         
         async with aiohttp.ClientSession() as session:
             # For images: Try sendPhoto first (up to 10MB), fallback to sendDocument (up to 20MB)
