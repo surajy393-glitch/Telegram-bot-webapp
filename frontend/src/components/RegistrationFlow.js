@@ -144,20 +144,19 @@ const RegistrationFlow = ({ onComplete }) => {
         alert('🎉 Registration Successful! Redirecting to your feed...');
       }
       
-      // Complete registration
-      setTimeout(() => {
-        console.log('🎯 Completing registration and navigating to feed');
-        console.log('💾 About to save user data:', userData);
-        
-        // Verify localStorage immediately after saving
-        const verifyData = localStorage.getItem('luvhive_user');
-        console.log('✅ Verification - Data in localStorage:', verifyData ? 'Present' : 'Missing');
-        
-        onComplete(userData);
-        
-        console.log('🧭 Navigating to /feed...');
-        navigate('/feed');
-      }, 1500);
+      // Complete registration immediately (no setTimeout delay)
+      console.log('🎯 Completing registration and navigating to feed');
+      console.log('💾 User data saved:', userData);
+      
+      // Verify localStorage immediately after saving
+      const verifyData = localStorage.getItem('luvhive_user');
+      console.log('✅ Verification - Data in localStorage:', verifyData ? 'Present' : 'Missing');
+      
+      // Complete registration and navigate immediately
+      onComplete(userData);
+      
+      console.log('🧭 Navigating to /feed...');
+      navigate('/feed', { replace: true });
       
     } catch (error) {
       console.error('❌ Registration error:', error);
