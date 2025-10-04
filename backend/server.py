@@ -446,7 +446,8 @@ async def upload_media(file: UploadFile = File(...)):
                 return {
                     "success": True,
                     "file_id": file_id,
-                    "photo_url": photo_url,
+                    "media_url": photo_url,  # Can be photo or video URL
+                    "media_type": "video" if is_video else "image",
                     "message_id": result['result'].get('message_id')
                 }
     
