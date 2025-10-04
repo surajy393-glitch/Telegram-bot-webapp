@@ -145,7 +145,15 @@ const RegistrationFlow = ({ onComplete }) => {
       // Complete registration
       setTimeout(() => {
         console.log('🎯 Completing registration and navigating to feed');
+        console.log('💾 About to save user data:', userData);
+        
+        // Verify localStorage immediately after saving
+        const verifyData = localStorage.getItem('luvhive_user');
+        console.log('✅ Verification - Data in localStorage:', verifyData ? 'Present' : 'Missing');
+        
         onComplete(userData);
+        
+        console.log('🧭 Navigating to /feed...');
         navigate('/feed');
       }, 1500);
       
