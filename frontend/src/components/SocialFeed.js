@@ -645,7 +645,11 @@ const SocialFeed = ({ user, theme }) => {
                     })()}
                     {/* Hidden fallback for image errors */}
                     <span className="text-xl font-bold text-white" style={{ display: 'none' }}>
-                      {post.user.avatar || post.user.name?.charAt(0)?.toUpperCase() || '👤'}
+                      {(() => {
+                        const name = post.user.name || 'User';
+                        const initials = name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+                        return initials || '👤';
+                      })()}
                     </span>
                   </div>
                   <div>
