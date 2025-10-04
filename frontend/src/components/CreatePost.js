@@ -188,7 +188,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   };
 
   const handleSubmit = async () => {
-    if (!postText.trim() && selectedImages.length === 0) return;
+    if (!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) return;
 
     setIsSubmitting(true);
     console.log('🔄 Post submission started');
