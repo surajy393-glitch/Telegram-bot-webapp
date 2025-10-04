@@ -284,7 +284,7 @@ const SocialFeed = ({ user, theme }) => {
     setShowViewProfile(true);
   };
 
-  const handleReply = (postId) => {
+  const openReplyModal = (postId) => {
     const post = posts.find(p => p.id === postId);
     if (post) {
       setSelectedPost(post);
