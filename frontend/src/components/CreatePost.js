@@ -95,23 +95,28 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       const isImage = file.type.startsWith('image/');
       const isVideo = file.type.startsWith('video/');
       
-      // Check file type
+      // Check file type with specific messages
       if (!isImage && !isVideo) {
-        alert('केवल इमेज और वीडियो फाइलें समर्थित हैं।');
+        if (file.type.startsWith('audio/')) {
+          alert('❌ ऑडियो फाइलें समर्थित नहीं हैं। कृपया इमेज (JPEG, PNG, WebP) या वीडियो (MP4, MOV, WebM) चुनें।');
+        } else {
+          alert('❌ केवल इमेज (JPEG, PNG, WebP) और वीडियो (MP4, MOV, WebM) फाइलें समर्थित हैं।');
+        }
         continue;
       }
       
-      // Check file size limits
+      // Check file size limits with clear messages
       const maxImageSize = 20 * 1024 * 1024; // 20MB for images
       const maxVideoSize = 50 * 1024 * 1024; // 50MB for videos
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
       
       if (isImage && file.size > maxImageSize) {
-        alert(`इमेज बहुत बड़ी है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 20MB से कम साइज की इमेज चुनें।`);
+        alert(`📷 इमेज बहुत बड़ी है (${fileSizeMB}MB)।\n\n✅ समाधान:\n• अधिकतम साइज: 20MB\n• सुझाव: कंप्रेशन का उपयोग करें`);
         continue;
       }
       
       if (isVideo && file.size > maxVideoSize) {
-        alert(`वीडियो बहुत बड़ा है (${(file.size / (1024 * 1024)).toFixed(1)}MB)। कृपया 50MB से कम साइज का वीडियो चुनें।`);
+        alert(`🎥 वीडियो बहुत बड़ा है (${fileSizeMB}MB)।\n\n✅ समाधान:\n• अधिकतम साइज: 50MB\n• सुझाव: वीडियो को छोटा करें या कंप्रेस करें`);
         continue;
       }
       
