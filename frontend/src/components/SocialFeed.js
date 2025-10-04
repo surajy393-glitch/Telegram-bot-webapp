@@ -30,7 +30,24 @@ const mockPostsData = [
     glowCount: 23,
     userReactions: { spark: false, glow: false },
     timestamp: '2h ago',
-    isSparkPost: false
+    isSparkPost: false,
+    comments: [
+      {
+        id: 1,
+        user: { name: 'Alex Dream', username: '@alex_cosmic', avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Dream&background=8b5cf6&color=fff&size=200' },
+        text: 'Wow, that looks amazing! 😍 Where is this place?',
+        timestamp: '1h ago',
+        likes: 5
+      },
+      {
+        id: 2,
+        user: { name: 'Zara Wild', username: '@zara_free', avatarUrl: 'https://ui-avatars.com/api/?name=Zara+Wild&background=ec4899&color=fff&size=200' },
+        text: 'Nature always has the best surprises! 🌿✨',
+        timestamp: '30m ago',
+        likes: 3
+      }
+    ],
+    comments_count: 2
   },
   {
     id: 2,
