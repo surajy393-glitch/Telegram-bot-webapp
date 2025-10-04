@@ -1,6 +1,4 @@
-iupload
-mselectedImages
-puploaort React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [postText, setPostText] = useState('');
