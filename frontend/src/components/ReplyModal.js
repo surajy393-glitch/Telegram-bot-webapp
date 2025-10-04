@@ -38,16 +38,7 @@ const ReplyModal = ({ post, currentUser, onClose, onReply }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="flex items-center">
-                {(() => {
-                  const avatarUrl = post.user.avatarUrl || post.user.profilePic;
-                  const displayAvatarLetter = post.user.name?.charAt(0).toUpperCase();
-
-                  return avatarUrl ? (
-                    <img src={avatarUrl} alt={`${post.user.name} avatar`} className="w-8 h-8 rounded-full object-cover" />
-                  ) : (
-                    <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 text-white">{displayAvatarLetter}</span>
-                  );
-                })()}
+                <Avatar user={post.user} size={32} />
                 <span className="ml-2 font-semibold">{post.user.name}</span>
               </div>
               <div>
