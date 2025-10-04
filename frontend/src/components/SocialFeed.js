@@ -32,6 +32,7 @@ const mockPostsData = [
     vibeScore: 88,
     sparkCount: 34,
     glowCount: 19,
+    userReactions: { spark: false, glow: false },
     timestamp: '4h ago',
     isSparkPost: true,
     sparkDuration: '18h remaining'
