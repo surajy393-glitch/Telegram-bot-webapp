@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 const CreateStory = ({ user, onClose, onStoryCreated }) => {
-  const [storyType, setStoryType] = useState('image'); // 'image' or 'text'
+  const [storyType, setStoryType] = useState('text'); // 'image', 'video', or 'text'
   const [storyText, setStoryText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedVideoFile, setSelectedVideoFile] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState('from-pink-400 to-purple-600');
   const [mood, setMood] = useState(''); // Empty by default (optional)
   const [selectedMusic, setSelectedMusic] = useState(null);
