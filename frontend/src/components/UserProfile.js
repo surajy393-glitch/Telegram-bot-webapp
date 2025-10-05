@@ -438,11 +438,12 @@ const UserProfile = ({ user, theme }) => {
                       
                       <p className="text-gray-700 mt-1">{post.content}</p>
                       
-                      {post.image && (
-                        <img 
-                          src={post.image} 
-                          alt="Post content" 
+                      {(post.images?.length || post.image) && (
+                        <img
+                          src={post.images?.[0] || post.image}
+                          alt="Post content"
                           className="mt-2 rounded-lg w-full h-48 object-cover"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       )}
                       
