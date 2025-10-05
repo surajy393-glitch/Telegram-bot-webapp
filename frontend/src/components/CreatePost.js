@@ -311,6 +311,9 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
 
       // 🔵 Optimistic feed update (if parent passes onPostCreated)
       onPostCreated?.(created);
+      
+      // Emit event for cross-component updates
+      window.dispatchEvent(new CustomEvent('post:created', { detail: created }));
 
       // 🔔 Haptic/Toast (safe fallback to alert)
       try {
