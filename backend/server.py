@@ -38,7 +38,6 @@ ALLOW_INSECURE_TRIAL = int(os.environ.get("ALLOW_INSECURE_TRIAL", "0"))
 
 # Upload mode: 'telegram' (default if creds present) or 'local'
 UPLOAD_MODE = os.environ.get("UPLOAD_MODE") or ("telegram" if BOT_TOKEN and MEDIA_SINK_CHAT_ID else "local")
-ROOT_DIR = Path(__file__).parent
 UPLOAD_DIR = ROOT_DIR / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
