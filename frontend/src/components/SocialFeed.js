@@ -172,7 +172,7 @@ const mockPostsData = [
     glowCount: 41,
     userReactions: { spark: false, glow: false },
     timestamp: '1d ago',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    createdAt: new Date(Date.now() - 36 * 60 * 60 * 1000).toISOString(), // 1.5 days ago
     isSparkPost: false
   }
 ];
