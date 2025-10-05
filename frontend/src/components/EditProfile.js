@@ -104,6 +104,21 @@ const EditProfile = ({ user, onClose, onSave }) => {
     }
   };
 
+  const handleCancel = () => {
+    // Cancel any ongoing operations
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Reset submitting state
+    setIsSubmitting(false);
+    
+    // Close modal
+    if (onClose) {
+      onClose();
+    }
+  };
+
   const hasChanges = name.trim() !== (user.name || '').trim() || 
                     (username.trim() !== (user.username || '').trim() && canChangeUsername) || 
                     bio.trim() !== (user.bio || '').trim() || 
