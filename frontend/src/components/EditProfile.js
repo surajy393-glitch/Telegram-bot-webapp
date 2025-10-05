@@ -27,21 +27,14 @@ const EditProfile = ({ user, onClose, onSave }) => {
 
   const { canChange: canChangeUsername, daysLeft } = checkUsernameChangeEligibility();
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const maxSize = 10 * 1024 * 1024; // 10MB
-      if (file.size > maxSize) {
-        (window.Telegram?.WebApp?.showAlert || alert)("Image too large! Max 10MB for profile pictures.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setNewProfileImage(e.target.result);   // base64 preview
-        setProfilePic(e.target.result);        // show instantly
-      };
-      reader.readAsDataURL(file);
-    }
+  const onPick = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > 10 * 1024 * 1024) return alert('Max 10MB');
+    setNewProfileImage(f);
+    const r = new FileReader();
+    r.onload = () => setProfilePic(String(r.result)); // preview immediately
+    r.readAsDataURL(f);
   };
 
   const handleSave = async () => {
