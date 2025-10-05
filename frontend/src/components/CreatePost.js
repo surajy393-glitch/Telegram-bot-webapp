@@ -400,19 +400,26 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
 
     // Only proceed if save was successful
     if (saveSuccess) {
+      console.log('✅ Post created successfully:', newPost);
+      
+      // Immediately add to feed (optimistic update)
+      onPostCreated && onPostCreated(newPost);
+      
+      // Show success feedback
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert('✨ Post shared successfully!');
+      } else {
+        // Use a non-blocking toast instead of alert
+        console.log('✨ Post shared successfully!');
+      }
+      
+      // Close modal after brief delay to show success
       setTimeout(() => {
-        console.log('✅ Post created successfully:', newPost);
-        onPostCreated && onPostCreated(newPost);
         onClose && onClose();
-        
-        // Show success feedback
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert('✨ Post shared successfully!');
-        } else {
-          alert('✨ Post shared successfully!');
-        }
-      }, 1500);
+      }, 500);
     }
+    
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
