@@ -37,46 +37,56 @@ const EditProfile = ({ user, onClose, onSave }) => {
     r.readAsDataURL(f);
   };
 
-  const handleSave = async () => {
-    if (!hasChanges || isSubmitting) return;
+  const onSave = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    const avatarVersion = newProfileImage ? Date.now() : (user.avatarVersion || 0);
-    const finalProfilePic = profilePic; // ❗ Do NOT append ?v here; Avatar component will add it
-    const updatedUser = {
-      ...user,
-      name: name.trim(),
-      username: username.trim(),
-      bio: bio.trim(),
-      profilePic: finalProfilePic,
-      avatarUrl: finalProfilePic,
-      avatarVersion
-    };
-    // (Optional) Try backend avatar upload + profile update
+    ctlRef.current = new AbortController();
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      if (backendUrl && newProfileImage) {
-        // Upload avatar to backend
-        const blob = await (await fetch(newProfileImage)).blob();
-        const fd = new FormData(); fd.append('file', new File([blob], 'avatar.jpg', { type: blob.type || 'image/jpeg' }));
-        const up = await fetch(`${backendUrl}/api/upload-photo`, {
-          method: 'POST', body: fd,
-          headers: { ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {}) }
-        });
-        if (up.ok) {
-          const js = await up.json().catch(()=> ({}));
-          if (js?.photo_url) updatedUser.avatarUrl = js.photo_url;
-        }
-        // If you add backend /api/profile (below), call it here to persist display_name/bio/avatar
+      let avatarUrl = user?.avatarUrl || '';
+      if (newProfileImage) {
+        // 1) Upload avatar
+        const fd = new FormData();
+        fd.append('file', newProfileImage);
+        const up = await fetch('/api/upload-photo', { method: 'POST', body: fd, signal: ctlRef.current.signal });
+        if (!up.ok) throw new Error('Avatar upload failed');
+        const uj = await up.json();
+        avatarUrl = uj.photo_url || avatarUrl;
       }
-    } catch (e) {
-      console.warn('Backend profile update skipped:', e);
-    } finally {
-      // Always persist locally for immediate UX
-      localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
-      setIsSubmitting(false);
-      onSave?.(updatedUser);
+      // 2) Persist profile (optional backend)
+      try {
+        const res = await fetch('/api/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ display_name: name.trim(), username: username.trim(), bio: bio.trim(), avatar_url: avatarUrl }),
+          signal: ctlRef.current.signal
+        });
+        if (!res.ok) console.warn('profile persist failed', await res.text());
+      } catch (e) { console.warn('profile persist error', e); }
+
+      // 3) Local/global state update for instant reflect
+      const updated = { ...user, name, username, bio, avatarUrl, avatarVersion: (user?.avatarVersion || 0) + (newProfileImage ? 1 : 0) };
+      localStorage.setItem('luvhive_user', JSON.stringify(updated));
+      // Inform rest of app instantly
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
+
+      // 4) Smooth feedback + close + navigate back to profile
+      try { window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success'); } catch {}
+      (window?.toast?.success || alert)('Profile updated');
+      onSave?.(updated);
       onClose?.();
+      navigate('/profile', { replace: true });   // or router.replace('/profile')
+    } catch (e) {
+      console.error(e);
+      (window?.toast?.error || alert)(e?.message || 'Failed to save');
+    } finally {
+      setIsSubmitting(false); // ✅ ALWAYS
+      ctlRef.current = null;
     }
+  };
+
+  const onCancel = () => {
+    ctlRef.current?.abort();
+    setIsSubmitting(false);
   };
 
   const handleCancel = () => {
