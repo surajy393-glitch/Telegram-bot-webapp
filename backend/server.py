@@ -515,6 +515,19 @@ async def upload_photo(file: UploadFile = File(...)):
 async def upload_video(file: UploadFile = File(...)):
     """Upload video to Telegram chat and return file info."""
     try:
+        if UPLOAD_MODE == "local":
+            content = await file.read()
+            if not file.content_type or not file.content_type.startswith('video/'):
+                raise HTTPException(status_code=400, detail="केवल वीडियो (MP4/MOV/WebM) समर्थित हैं।")
+            fname = f"{uuid.uuid4().hex}.mp4"
+            (UPLOAD_DIR / fname).write_bytes(content)
+            return {
+                "success": True,
+                "media_type": "video",
+                "video_url": _public_url_for(fname),
+                "thumb_url": None
+            }
+        # else telegram branch (existing code)
         if not MEDIA_SINK_CHAT_ID:
             raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
         
