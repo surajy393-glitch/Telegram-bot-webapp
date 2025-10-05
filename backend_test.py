@@ -640,6 +640,13 @@ class BackendTester:
             # Test interactions
             if post_id:
                 await self.test_post_interactions(post_id)
+                # Test comment timestamps after creating comments
+                await self.test_comments_timestamp_format(post_id)
+            
+            # Test critical fixes from review request
+            print("\n🔍 Testing Critical Fixes:")
+            await self.test_user_profile_posts()
+            await self.test_profile_editing_endpoints()
             
             # Test utility endpoints
             await self.test_status_endpoints()
