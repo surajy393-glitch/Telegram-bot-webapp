@@ -55,7 +55,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
       }
       // 2) Persist profile (optional backend)
       try {
-        const res = await fetch('/api/profile', {
+        const res = await fetch(`${backendUrl}/api/profile`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ display_name: name.trim(), username: username.trim(), bio: bio.trim(), avatar_url: avatarUrl }),
