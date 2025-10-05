@@ -56,8 +56,11 @@ const EditProfile = ({ user, onClose, onSave }) => {
         name: name.trim(),
         username: username.trim(),
         bio: bio.trim(),
-        profilePic: profilePic
+        profilePic: profilePic,
+        avatarUrl: profilePic // Also update avatarUrl for consistency
       };
+
+      console.log('Saving profile:', updatedUser); // Debug log
 
       // If username changed, record the change date
       if (username.trim() !== user.username && canChangeUsername) {
@@ -68,24 +71,39 @@ const EditProfile = ({ user, onClose, onSave }) => {
       
       // Save to localStorage
       localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
+      console.log('Profile saved to localStorage'); // Debug log
       
       // Call parent handlers immediately
       if (onSave) {
+        console.log('Calling onSave handler'); // Debug log
         onSave(updatedUser);
       }
       
+      // Show success message
       if (window.Telegram?.WebApp?.showAlert) {
         window.Telegram.WebApp.showAlert("Profile updated successfully! ✨");
       } else {
         alert("Profile updated successfully!");
       }
       
-      // Close modal immediately
-      onClose();
+      // Reset submitting state
+      setIsSubmitting(false);
+      
+      // Close modal after a short delay to show success message
+      setTimeout(() => {
+        onClose();
+      }, 1000);
       
     } catch (error) {
       console.error('Error updating profile:', error);
       setIsSubmitting(false);
+      
+      // Show error message
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert("Error updating profile. Please try again.");
+      } else {
+        alert("Error updating profile. Please try again.");
+      }
     }
   };
 
