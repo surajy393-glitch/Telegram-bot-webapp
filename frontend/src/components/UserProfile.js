@@ -135,11 +135,16 @@ const UserProfile = ({ user, theme }) => {
   };
 
   const handleProfileUpdate = (updatedUser) => {
+    console.log('Profile update received:', updatedUser); // Debug log
     setCurrentUser(updatedUser);
-    // Also update the parent component's user state if needed
-    if (user) {
-      // This would typically call a parent callback to update user state
-    }
+    
+    // Update localStorage as well to ensure consistency
+    localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
+    
+    // Close the edit profile modal
+    setShowEditProfile(false);
+    
+    console.log('Profile updated successfully in UserProfile'); // Debug log
   };
 
   const handleSettingsUpdate = (newSettings) => {
