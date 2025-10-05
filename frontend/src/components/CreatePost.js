@@ -402,106 +402,81 @@ const createPostFlow = async ({ signal } = {}) => {
   let saveSuccess = false;
   
   // Save post to user's profile with storage management
-    try {
-      const userPostsKey = `luvhive_posts_${defaultUser.username}`;
-      console.log('📝 Saving post to key:', userPostsKey);
-      let existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
-      console.log('📝 Existing posts before:', existingPosts.length);
-      
-      // Limit to 50 posts per user to prevent quota issues
-      if (existingPosts.length >= 50) {
-        existingPosts = existingPosts.slice(0, 49);
-      }
-      
-      existingPosts.unshift(newPost); // Add to beginning of array
-      localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
-      console.log('📝 Posts after save:', existingPosts.length);
-      console.log('📝 Saved post data:', newPost);
-      saveSuccess = true;
-    } catch (error) {
-      console.log('Storage error:', error);
-      // If localStorage is full, clear old data
-      if (error.name === 'QuotaExceededError') {
-        try {
-          console.log('⚠️ Storage quota exceeded, clearing old data...');
-          // Clear old stories and posts to make space
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && (key.includes('luvhive_posts_') || key.includes('luvhive_stories_'))) {
-              const data = JSON.parse(localStorage.getItem(key) || '[]');
-              if (data.length > 5) {
-                // Keep only 5 most recent items
-                localStorage.setItem(key, JSON.stringify(data.slice(0, 5)));
-              }
+  try {
+    const userPostsKey = `luvhive_posts_${defaultUser.username}`;
+    console.log('📝 Saving post to key:', userPostsKey);
+    let existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
+    console.log('📝 Existing posts before:', existingPosts.length);
+    
+    // Limit to 50 posts per user to prevent quota issues
+    if (existingPosts.length >= 50) {
+      existingPosts = existingPosts.slice(0, 49);
+    }
+    
+    existingPosts.unshift(newPost); // Add to beginning of array
+    localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
+    console.log('📝 Posts after save:', existingPosts.length);
+    console.log('📝 Saved post data:', newPost);
+    saveSuccess = true;
+  } catch (error) {
+    console.log('Storage error:', error);
+    // If localStorage is full, clear old data
+    if (error.name === 'QuotaExceededError') {
+      try {
+        console.log('⚠️ Storage quota exceeded, clearing old data...');
+        // Clear old stories and posts to make space
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes('luvhive_posts_') || key.includes('luvhive_stories_'))) {
+            const data = JSON.parse(localStorage.getItem(key) || '[]');
+            if (data.length > 5) {
+              // Keep only 5 most recent items
+              localStorage.setItem(key, JSON.stringify(data.slice(0, 5)));
             }
           }
-          // Try saving again
-          const userPostsKey = `luvhive_posts_${defaultUser.username}`;
-          const existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
-          existingPosts.unshift(newPost);
-          localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
-          console.log('✅ Saved post after cleanup');
-          saveSuccess = true;
-        } catch (retryError) {
-          console.log('❌ Failed to save post even after cleanup:', retryError);
-          setIsSubmitting(false);
-          alert('⚠️ Failed to save post. Image might be too large. Try with smaller image or without image.');
-          return; // Exit early - don't call onPostCreated
         }
-      } else {
-        setIsSubmitting(false);
-        alert('⚠️ Failed to save post: ' + error.message);
-        return; // Exit early - don't call onPostCreated
+        // Try saving again
+        const userPostsKey = `luvhive_posts_${defaultUser.username}`;
+        const existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
+        existingPosts.unshift(newPost);
+        localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
+        console.log('✅ Saved post after cleanup');
+        saveSuccess = true;
+      } catch (retryError) {
+        console.log('❌ Failed to save post even after cleanup:', retryError);
+        throw new Error('Failed to save post. Image might be too large. Try with smaller image or without image.');
       }
+    } else {
+      throw new Error('Failed to save post: ' + error.message);
     }
+  }
 
-    // (Optional) Also try to persist on backend (non-blocking)
-    try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      if (backendUrl) {
-        const res = await fetch(`${backendUrl}/api/posts`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {})
-          },
-          body: JSON.stringify({ content: postText, media_urls: uploadedMediaUrls })
-        });
-        if (res.ok) {
-          const saved = await res.json().catch(() => null);
-          if (saved?.post_id) newPost._id = saved.post_id;
-        } else {
-          console.warn('POST /api/posts failed, staying local:', await res.text());
-        }
-      }
-    } catch (e) {
-      console.warn('Backend persist error (ignored):', e);
-    }
-
-    // Always save locally for instant UI
-    
-    // Only proceed if save was successful
-    if (saveSuccess) {
-      console.log('✅ Post created successfully:', newPost);
-      
-      // Immediately add to feed (optimistic update)
-      onPostCreated && onPostCreated(newPost);
-      
-      // Show success feedback
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert('✨ Post shared successfully!');
+  // (Optional) Also try to persist on backend (non-blocking)
+  try {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    if (backendUrl) {
+      const res = await fetch(`${backendUrl}/api/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {})
+        },
+        body: JSON.stringify({ content: postText, media_urls: uploadedMediaUrls }),
+        signal
+      });
+      if (res.ok) {
+        const saved = await res.json().catch(() => null);
+        if (saved?.post_id) newPost._id = saved.post_id;
       } else {
-        // Use a non-blocking toast instead of alert
-        console.log('✨ Post shared successfully!');
+        console.warn('POST /api/posts failed, staying local:', await res.text());
       }
-      
-      // Close modal after brief delay to show success
-      setTimeout(() => {
-        onClose && onClose();
-      }, 500);
     }
-    
-    setIsSubmitting(false);
+  } catch (e) {
+    console.warn('Backend persist error (ignored):', e);
+  }
+
+  // Return the created post
+  return newPost;
   };
 
   useEffect(() => {
