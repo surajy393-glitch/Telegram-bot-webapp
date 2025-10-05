@@ -41,59 +41,45 @@ const EditProfile = ({ user, onClose, onSave }) => {
     }
   };
 
-  const handleSave = () => {
-    if (!hasChanges || isSubmitting) {
-      return;
-    }
-
+  const handleSave = async () => {
+    if (!hasChanges || isSubmitting) return;
     setIsSubmitting(true);
-    
-    // Add version for cache busting if profile pic changed
     const avatarVersion = newProfileImage ? Date.now() : (user.avatarVersion || 0);
-    const finalProfilePic = profilePic + (newProfileImage ? `?v=${avatarVersion}` : '');
-    
+    const finalProfilePic = profilePic; // ❗ Do NOT append ?v here; Avatar component will add it
     const updatedUser = {
       ...user,
       name: name.trim(),
       username: username.trim(),
       bio: bio.trim(),
       profilePic: finalProfilePic,
-      avatarUrl: finalProfilePic, // Also update avatarUrl for consistency
-      avatarVersion: avatarVersion // Store version for cache busting
+      avatarUrl: finalProfilePic,
+      avatarVersion
     };
-
-    console.log('Saving profile:', updatedUser); // Debug log
-
-    // If username changed, record the change date
-    if (username.trim() !== (user.username || '') && canChangeUsername) {
-      localStorage.setItem(`luvhive_username_change_${user.username}`, new Date().toISOString());
-      // Also update the key for future checks
-      localStorage.setItem(`luvhive_username_change_${username.trim()}`, new Date().toISOString());
-    }
-    
-    // Save to localStorage
-    localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
-    console.log('Profile saved to localStorage'); // Debug log
-    
-    // Call parent handlers immediately
-    if (onSave) {
-      console.log('Calling onSave handler'); // Debug log
-      onSave(updatedUser);
-    }
-    
-    // Show success message
-    const successMsg = "Profile updated successfully! ✨";
-    if (window.Telegram?.WebApp?.showAlert) {
-      window.Telegram.WebApp.showAlert(successMsg);
-    } else {
-      alert(successMsg);
-    }
-    
-    console.log('Profile update completed, closing modal'); // Debug log
-    
-    // Close modal immediately
-    if (onClose) {
-      onClose();
+    // (Optional) Try backend avatar upload + profile update
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      if (backendUrl && newProfileImage) {
+        // Upload avatar to backend
+        const blob = await (await fetch(newProfileImage)).blob();
+        const fd = new FormData(); fd.append('file', new File([blob], 'avatar.jpg', { type: blob.type || 'image/jpeg' }));
+        const up = await fetch(`${backendUrl}/api/upload-photo`, {
+          method: 'POST', body: fd,
+          headers: { ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {}) }
+        });
+        if (up.ok) {
+          const js = await up.json().catch(()=> ({}));
+          if (js?.photo_url) updatedUser.avatarUrl = js.photo_url;
+        }
+        // If you add backend /api/profile (below), call it here to persist display_name/bio/avatar
+      }
+    } catch (e) {
+      console.warn('Backend profile update skipped:', e);
+    } finally {
+      // Always persist locally for immediate UX
+      localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
+      setIsSubmitting(false);
+      onSave?.(updatedUser);
+      onClose?.();
     }
   };
 
