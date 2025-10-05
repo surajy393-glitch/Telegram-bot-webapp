@@ -212,7 +212,7 @@ class BackendTester:
             return None
 
     async def test_stories_feed(self):
-        """Test stories feed retrieval"""
+        """Test stories feed retrieval with timestamp validation"""
         try:
             async with self.session.get(f"{BACKEND_URL}/stories", headers=self.headers) as response:
                 if response.status == 200:
@@ -229,6 +229,9 @@ class BackendTester:
                                 self.log_result("Stories Feed Structure", False, f"Missing fields in stories: {missing_fields}")
                             else:
                                 self.log_result("Stories Feed Structure", True, "Stories have correct structure")
+                                
+                                # Test timestamp format validation
+                                await self.test_timestamp_format(story.get("created_at"), "Story")
                         
                         return stories
                     else:
