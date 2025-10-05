@@ -213,6 +213,13 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
+  const fileToDataUrl = (file) => new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+
   const uploadMediaToBackend = async (mediaObj) => {
     try {
       const formData = new FormData();
@@ -224,7 +231,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       
       // Choose correct endpoint based on media type
       const endpoint = mediaObj.type === 'video' ? '/api/upload-video' : '/api/upload-photo';
-      
+      if (!backendUrl) throw new Error('NO_BACKEND'); // force fallback if not configured
       const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         body: formData,
