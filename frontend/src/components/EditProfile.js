@@ -47,7 +47,8 @@ const EditProfile = ({ user, onClose, onSave }) => {
         // 1) Upload avatar
         const fd = new FormData();
         fd.append('file', newProfileImage);
-        const up = await fetch('/api/upload-photo', { method: 'POST', body: fd, signal: ctlRef.current.signal });
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const up = await fetch(`${backendUrl}/api/upload-photo`, { method: 'POST', body: fd, signal: ctlRef.current.signal });
         if (!up.ok) throw new Error('Avatar upload failed');
         const uj = await up.json();
         avatarUrl = uj.photo_url || avatarUrl;
