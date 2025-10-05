@@ -34,6 +34,13 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 EXTERNAL_URL = (os.environ.get("EXTERNAL_URL") or "").rstrip("/")
 MEDIA_SINK_CHAT_ID = int(os.environ.get("MEDIA_SINK_CHAT_ID", "0"))
 PUBLIC_TTL_HOURS = int(os.environ.get("FEED_PUBLIC_TTL_HOURS", "72"))
+ALLOW_INSECURE_TRIAL = int(os.environ.get("ALLOW_INSECURE_TRIAL", "0"))
+
+# Upload mode: 'telegram' (default if creds present) or 'local'
+UPLOAD_MODE = os.environ.get("UPLOAD_MODE") or ("telegram" if BOT_TOKEN and MEDIA_SINK_CHAT_ID else "local")
+ROOT_DIR = Path(__file__).parent
+UPLOAD_DIR = ROOT_DIR / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN not set")
