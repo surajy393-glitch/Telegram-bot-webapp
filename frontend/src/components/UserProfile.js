@@ -85,6 +85,13 @@ const UserProfile = ({ user, theme }) => {
     }
   }, [user]);
 
+  // Live update listener
+  useEffect(() => {
+    const onUpd = (e) => setCurrentUser(e.detail);
+    window.addEventListener('profile:updated', onUpd);
+    return () => window.removeEventListener('profile:updated', onUpd);
+  }, []);
+
   // Load user posts
   useEffect(() => {
     console.log('useEffect triggered, currentUser:', currentUser); // Debug log
