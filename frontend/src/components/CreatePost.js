@@ -299,70 +299,107 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) return;
-
+  const handleSubmit = async (e) => {
+    e?.preventDefault?.();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    console.log('🔄 Post submission started');
-    
-    // Create default user if none exists
-    const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
-    
-    // Upload all media to backend first if any
-    let uploadedMediaUrls = [];
-    const allMedia = [...selectedImages, ...selectedVideos];
-    if (allMedia.length > 0) {
-      try {
-        console.log('📤 Uploading media to backend...');
-        const uploadPromises = allMedia.map(media => uploadMediaToBackend(media));
-        const uploadResults = await Promise.all(uploadPromises);
-        uploadedMediaUrls = uploadResults.map(result => result.url);
-        console.log('✅ Media uploaded:', uploadedMediaUrls);
-      } catch (error) {
-        console.error('❌ Media upload failed:', error);
-        setIsSubmitting(false);
-        
-        // Show specific error messages
-        const errorMsg = error.message || 'Upload failed';
-        if (errorMsg.includes('केवल इमेज फाइलें')) {
-          alert('❌ गलत फाइल टाइप!\n\nइमेज के लिए: JPEG, PNG, WebP समर्थित हैं।');
-        } else if (errorMsg.includes('केवल वीडियो फाइलें')) {
-          alert('❌ गलत फाइल टाइप!\n\nवीडियो के लिए: MP4, MOV, WebM समर्थित हैं।');
-        } else if (errorMsg.includes('बहुत बड़ा') || errorMsg.includes('बहुत बड़ी')) {
-          alert('📏 फाइल साइज़ की समस्या!\n\n• इमेज: अधिकतम 20MB\n• वीडियो: अधिकतम 50MB\n\n💡 कंप्रेशन का उपयोग करें।');
-        } else if (errorMsg.includes('Network') || errorMsg.includes('नेटवर्क')) {
-          alert('🌐 नेटवर्क समस्या!\n\nकृपया अपना इंटरनेट कनेक्शन चेक करें और फिर से प्रयास करें।');
-        } else {
-          alert(`⚠️ अपलोड असफल: ${errorMsg}\n\nकृपया फिर से प्रयास करें।`);
-        }
-        return;
-      }
-    }
-    
-    // Create post with proper avatar URL and timestamp
-    const newPost = {
-      id: Date.now(),
-      user: {
-        name: defaultUser.name,
-        username: defaultUser.username,
-        avatar: defaultUser.profilePic || defaultUser.avatarUrl,
-        avatarUrl: defaultUser.profilePic || defaultUser.avatarUrl,
-        mood: mood,
-        aura: getAuraByMood(mood)
-      },
-      content: postText,
-      images: uploadedMediaUrls, // array of string URLs (backend or local)
-      mood,
-      music: selectedMusic,
-      location: selectedLocation || null,
-      vibeScore: Math.floor(Math.random() * 20) + 80,
-      sparkCount: 0,
-      glowCount: 0,
-      createdAt: new Date().toISOString(),
-      isSparkPost: false
-    };
+    // Always attach an AbortController so cancel / unmount won't leave spinner
+    abortRef.current = new AbortController();
+    try {
+      const created = await createPostFlow({ signal: abortRef.current.signal }); // ensure every fetch awaits
 
-    let saveSuccess = false;
+      // 🔵 Optimistic feed update (if parent passes onPostCreated)
+      onPostCreated?.(created);
+
+      // 🔔 Haptic/Toast (safe fallback to alert)
+      try {
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
+      } catch {}
+      (window?.toast?.success || window?.sonner?.toast?.success || alert)('Posted!');
+
+      // 🧭 Navigate to main feed immediately so user sees their post
+      navigate('/', { replace: true });     // React Router
+      // router.replace('/');               // Next.js
+
+      // Clear local form state AFTER navigate (if this page persists)
+      // setText(''); setFiles([]);
+    } catch (err) {
+      console.error(err);
+      (window?.toast?.error || alert)(err?.message || 'Failed to post');
+    } finally {
+      setIsSubmitting(false);         // ✅ ALWAYS turn spinner off
+      abortRef.current = null;
+    }
+  };
+
+  // If you expose a Cancel button:
+  const handleCancel = () => {
+    abortRef.current?.abort();
+    setIsSubmitting(false);
+  };
+
+// Ensure ALL async calls are awaited and returned properly
+const createPostFlow = async ({ signal } = {}) => {
+  if (!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) {
+    throw new Error('Please add some content or images/videos to share!');
+  }
+
+  // Create default user if none exists
+  const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
+
+  let uploadedMediaUrls = [];
+  
+  // Upload media if any
+  if (selectedImages.length > 0 || selectedVideos.length > 0) {
+    console.log('🚀 Starting media upload...');
+    const allMedia = [...selectedImages, ...selectedVideos];
+    console.log('📸 Media to upload:', allMedia.length, 'files');
+    
+    // Convert files to upload format
+    const mediaToUpload = allMedia.map(media => ({
+      file: media.file || media, 
+      compressedFile: media.compressedFile,
+      type: media.type || (media.file?.type?.startsWith('video/') ? 'video' : 'image') || 'image',
+      size: media.size || media.file?.size || 0,
+      originalSize: media.originalSize
+    }));
+    
+    // Upload all media files with signal
+    const uploadPromises = mediaToUpload.map((f) => uploadOne(f, { signal }));
+    const uploaded = await Promise.allSettled(uploadPromises);
+    const media = uploaded
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value);
+    if (!media.length && allMedia?.length) {
+      throw new Error('Media upload failed');
+    }
+    uploadedMediaUrls = media.map(result => result.url);
+  }
+  
+  // Create post with proper avatar URL and timestamp
+  const newPost = {
+    id: Date.now(),
+    user: {
+      name: defaultUser.name,
+      username: defaultUser.username,
+      avatar: defaultUser.profilePic || defaultUser.avatarUrl,
+      avatarUrl: defaultUser.profilePic || defaultUser.avatarUrl,
+      mood: mood,
+      aura: getAuraByMood(mood)
+    },
+    content: postText,
+    images: uploadedMediaUrls, // array of string URLs (backend or local)
+    mood,
+    music: selectedMusic,
+    location: selectedLocation || null,
+    vibeScore: Math.floor(Math.random() * 20) + 80,
+    sparkCount: 0,
+    glowCount: 0,
+    createdAt: new Date().toISOString(),
+    isSparkPost: false
+  };
+
+  let saveSuccess = false;
     
     // Save post to user's profile with storage management
     try {
