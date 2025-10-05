@@ -411,6 +411,31 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       }
     }
 
+    // (Optional) Also try to persist on backend (non-blocking)
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      if (backendUrl) {
+        const res = await fetch(`${backendUrl}/api/posts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {})
+          },
+          body: JSON.stringify({ content: postText, media_urls: uploadedMediaUrls })
+        });
+        if (res.ok) {
+          const saved = await res.json().catch(() => null);
+          if (saved?.post_id) newPost._id = saved.post_id;
+        } else {
+          console.warn('POST /api/posts failed, staying local:', await res.text());
+        }
+      }
+    } catch (e) {
+      console.warn('Backend persist error (ignored):', e);
+    }
+
+    // Always save locally for instant UI
+    
     // Only proceed if save was successful
     if (saveSuccess) {
       console.log('✅ Post created successfully:', newPost);
