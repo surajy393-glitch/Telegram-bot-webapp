@@ -65,18 +65,24 @@ const EditProfile = ({ user, onClose, onSave }) => {
         if (!res.ok) console.warn('profile persist failed', await res.text());
       } catch (e) { console.warn('profile persist error', e); }
 
-      // 3) Local/global state update for instant reflect
-      const updated = { ...user, name, username, bio, avatarUrl, avatarVersion: (user?.avatarVersion || 0) + (newProfileImage ? 1 : 0) };
-      localStorage.setItem('luvhive_user', JSON.stringify(updated));
-      // Inform rest of app instantly
+      // ✅ Single source-of-truth local state
+      const updated = {
+        ...user,
+        name: name.trim(),
+        username: username.trim(),
+        bio: bio.trim(),
+        avatarUrl,
+        avatarVersion: (user?.avatarVersion || 0) + (newProfileImage ? 1 : 0)
+      };
+      localStorage.setItem('lh_user', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
 
-      // 4) Smooth feedback + close + navigate back to profile
-      try { window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success'); } catch {}
       (window?.toast?.success || alert)('Profile updated');
+
+      // ✅ Always go to the canonical profile (dusra profile nahi)
+      navigate(PROFILE_ROUTE, { replace: true });
       onSave?.(updated);
       onClose?.();
-      navigate('/profile', { replace: true });   // or router.replace('/profile')
     } catch (e) {
       console.error(e);
       (window?.toast?.error || alert)(e?.message || 'Failed to save');
