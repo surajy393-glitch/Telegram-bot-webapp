@@ -54,13 +54,18 @@ const EditProfile = ({ user, onClose, onSave }) => {
 
     setIsSubmitting(true);
     
+    // Add version for cache busting if profile pic changed
+    const avatarVersion = newProfileImage ? Date.now() : (user.avatarVersion || 0);
+    const finalProfilePic = profilePic + (newProfileImage ? `?v=${avatarVersion}` : '');
+    
     const updatedUser = {
       ...user,
       name: name.trim(),
       username: username.trim(),
       bio: bio.trim(),
-      profilePic: profilePic,
-      avatarUrl: profilePic // Also update avatarUrl for consistency
+      profilePic: finalProfilePic,
+      avatarUrl: finalProfilePic, // Also update avatarUrl for consistency
+      avatarVersion: avatarVersion // Store version for cache busting
     };
 
     console.log('Saving profile:', updatedUser); // Debug log
