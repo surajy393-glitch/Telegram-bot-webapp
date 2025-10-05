@@ -399,7 +399,7 @@ const UserProfile = ({ user, theme }) => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         <span className="font-semibold text-gray-800">{userData.name}</span>
-                        <span className="text-sm text-gray-500">• {post.timestamp}</span>
+                        <span className="text-sm text-gray-500">• {formatTimeIST(post.createdAt || post.timestamp)}</span>
                       </div>
                       
                       <p className="text-gray-700 mt-1">{post.content}</p>
