@@ -69,15 +69,21 @@ const EditProfile = ({ user, onClose, onSave }) => {
       // Save to localStorage
       localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
       
-      // Simulate API call delay
-      setTimeout(() => {
+      // Call parent handlers immediately
+      if (onSave) {
         onSave(updatedUser);
+      }
+      
+      if (window.Telegram?.WebApp?.showAlert) {
+        window.Telegram.WebApp.showAlert("Profile updated successfully! ✨");
+      } else {
+        alert("Profile updated successfully!");
+      }
+      
+      // Close modal after brief delay
+      setTimeout(() => {
         onClose();
-        
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert("Profile updated successfully! ✨");
-        }
-      }, 1000);
+      }, 500);
       
     } catch (error) {
       console.error('Error updating profile:', error);
