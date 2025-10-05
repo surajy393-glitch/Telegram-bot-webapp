@@ -59,14 +59,17 @@ const UserProfile = ({ user, theme }) => {
   useEffect(() => {
     // First try the passed user prop
     if (user) {
+      console.log('Setting user from props:', user); // Debug log
       setCurrentUser(user);
       setLoading(false);
     } else {
       // Try to get user from localStorage
       const savedUser = localStorage.getItem('luvhive_user');
+      console.log('Saved user from localStorage:', savedUser); // Debug log
       if (savedUser) {
         try {
           const userData = JSON.parse(savedUser);
+          console.log('Parsed user data:', userData); // Debug log
           setCurrentUser(userData);
           setLoading(false);
         } catch (error) {
@@ -75,6 +78,7 @@ const UserProfile = ({ user, theme }) => {
           // Show error instead of redirect
         }
       } else {
+        console.log('No user found in localStorage'); // Debug log
         setLoading(false);
         // Show no user state instead of redirect
       }
