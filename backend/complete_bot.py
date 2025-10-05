@@ -415,7 +415,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Handle menu buttons
     if text == BTN_PUBLIC_FEED:
         keyboard = [[InlineKeyboardButton("🌐 Open Social Feed", 
-            web_app=WebAppInfo(url="https://telegram-dating-4.preview.emergentagent.com"))]]
+            web_app=WebAppInfo(url="https://telegram-social.preview.emergentagent.com"))]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await update.message.reply_text(
@@ -556,7 +556,7 @@ def main():
     # Run with polling
     logger.info("🚀 Starting Complete Social Platform Bot...")
     logger.info("💕 Features: Registration, Matching, Premium, Social Feed")
-    logger.info("🌐 Web App: https://telegram-dating-4.preview.emergentagent.com")
+    logger.info("🌐 Web App: https://telegram-social.preview.emergentagent.com")
     
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

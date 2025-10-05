@@ -23,7 +23,7 @@ async def cmd_feed(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # Get the webapp URL - use the preview URL for now
-    webapp_url = "https://telegram-dating-4.preview.emergentagent.com"
+    webapp_url = "https://telegram-social.preview.emergentagent.com"
     
     # Create WebApp button
     keyboard = [
@@ -97,7 +97,7 @@ async def cb_miniapp_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton(
             "🚀 Enter LuvHive Now", 
-            web_app=WebAppInfo(url="https://telegram-dating-4.preview.emergentagent.com/")
+            web_app=WebAppInfo(url="https://telegram-social.preview.emergentagent.com/")
         )],
         [InlineKeyboardButton("⬅️ Back", callback_data="main_menu")]
     ]
