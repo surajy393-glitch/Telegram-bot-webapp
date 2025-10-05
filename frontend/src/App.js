@@ -14,7 +14,9 @@ function App() {
   const [theme] = useState('passion'); // eslint-disable-line no-unused-vars
   const [isRegistered, setIsRegistered] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { 
+    hydrateUser(); 
+    
     // Initialize Telegram WebApp theme
     if (window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
