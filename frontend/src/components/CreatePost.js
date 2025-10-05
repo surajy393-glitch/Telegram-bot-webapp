@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+// React Router (choose this)  👉
+import { useNavigate } from 'react-router-dom';
+// Next.js Router (use this instead of useNavigate if Next) 👉
+// import { useRouter } from 'next/navigation';
 import { compressImage, compressVideo, getCompressionRecommendations, formatFileSize } from '../utils/compression';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
