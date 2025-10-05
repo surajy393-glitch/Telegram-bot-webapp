@@ -9,6 +9,8 @@ const EditProfile = ({ user, onClose, onSave }) => {
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const abortControllerRef = useRef(null);
+  const ctlRef = useRef(null);
+  const navigate = useNavigate();  // or const router = useRouter();
 
   // Check username change eligibility
   const checkUsernameChangeEligibility = () => {
