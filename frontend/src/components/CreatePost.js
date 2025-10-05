@@ -319,7 +319,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       (window?.toast?.success || window?.sonner?.toast?.success || alert)('Posted!');
 
       // 🧭 Navigate to main feed immediately so user sees their post
-      navigate('/', { replace: true });     // React Router
+      navigate(FEED_ROUTE, { replace: true });     // React Router
       // router.replace('/');               // Next.js
 
       // Clear local form state AFTER navigate (if this page persists)
