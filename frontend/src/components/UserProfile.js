@@ -9,6 +9,7 @@ const UserProfile = ({ user, theme }) => {
   const [loading, setLoading] = useState(true);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [userPosts, setUserPosts] = useState([]);
 
   // Load user data on component mount
   useEffect(() => {
