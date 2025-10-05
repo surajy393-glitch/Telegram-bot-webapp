@@ -109,9 +109,9 @@ const EditProfile = ({ user, onClose, onSave }) => {
     }
   };
 
-  const hasChanges = name !== user.name || 
-                    (username !== user.username && canChangeUsername) || 
-                    bio !== user.bio || 
+  const hasChanges = name.trim() !== (user.name || '').trim() || 
+                    (username.trim() !== (user.username || '').trim() && canChangeUsername) || 
+                    bio.trim() !== (user.bio || '').trim() || 
                     newProfileImage;
 
   return (
