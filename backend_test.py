@@ -413,6 +413,161 @@ class BackendTester:
         except Exception as e:
             self.log_result("Size Limit Validation", False, f"Error: {str(e)}")
 
+    async def test_timestamp_format(self, timestamp_str, entity_type):
+        """Test if timestamp is in proper ISO format for frontend consumption"""
+        try:
+            if not timestamp_str:
+                self.log_result(f"{entity_type} Timestamp Format", False, "Timestamp is missing")
+                return False
+            
+            # Try to parse the timestamp
+            from datetime import datetime
+            try:
+                # Check if it's a valid ISO format timestamp
+                parsed_time = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+                
+                # Check if timestamp is recent (within last year) to ensure it's not a default value
+                now = datetime.utcnow()
+                time_diff = abs((now - parsed_time.replace(tzinfo=None)).total_seconds())
+                
+                if time_diff < 365 * 24 * 3600:  # Within last year
+                    self.log_result(f"{entity_type} Timestamp Format", True, f"Valid ISO timestamp: {timestamp_str}")
+                    return True
+                else:
+                    self.log_result(f"{entity_type} Timestamp Format", False, f"Timestamp too old or invalid: {timestamp_str}")
+                    return False
+                    
+            except ValueError as e:
+                self.log_result(f"{entity_type} Timestamp Format", False, f"Invalid timestamp format: {timestamp_str} - {str(e)}")
+                return False
+                
+        except Exception as e:
+            self.log_result(f"{entity_type} Timestamp Format", False, f"Error validating timestamp: {str(e)}")
+            return False
+
+    async def test_user_profile_posts(self):
+        """Test user profile endpoint and verify it includes user posts data structure"""
+        try:
+            # Get user profile
+            async with self.session.get(f"{BACKEND_URL}/me", headers=self.headers) as response:
+                if response.status == 200:
+                    profile_data = await response.json()
+                    
+                    # Check if profile has required fields for posts display
+                    required_fields = ["id", "display_name", "username"]
+                    missing_fields = [field for field in required_fields if field not in profile_data]
+                    
+                    if missing_fields:
+                        self.log_result("User Profile Posts Structure", False, f"Missing profile fields: {missing_fields}")
+                        return False
+                    
+                    # Test if we can get posts for this user by checking posts feed
+                    async with self.session.get(f"{BACKEND_URL}/posts", headers=self.headers) as posts_response:
+                        if posts_response.status == 200:
+                            posts = await posts_response.json()
+                            user_posts = [post for post in posts if post.get("user_id") == profile_data["id"]]
+                            
+                            self.log_result("User Profile Posts Integration", True, 
+                                          f"Profile data compatible with posts feed. Found {len(user_posts)} user posts")
+                            
+                            # Verify posts have user data structure needed for profile display
+                            if user_posts:
+                                post = user_posts[0]
+                                if "user" in post and "display_name" in post["user"]:
+                                    self.log_result("User Profile Posts Data Structure", True, 
+                                                  "Posts include user data for profile display")
+                                else:
+                                    self.log_result("User Profile Posts Data Structure", False, 
+                                                  "Posts missing user data structure")
+                            
+                            return True
+                        else:
+                            self.log_result("User Profile Posts Integration", False, 
+                                          f"Cannot retrieve posts for profile: HTTP {posts_response.status}")
+                            return False
+                else:
+                    self.log_result("User Profile Posts Structure", False, f"HTTP {response.status}")
+                    return False
+                    
+        except Exception as e:
+            self.log_result("User Profile Posts", False, f"Error: {str(e)}")
+            return False
+
+    async def test_profile_editing_endpoints(self):
+        """Test profile update/editing functionality"""
+        try:
+            # First get current profile
+            async with self.session.get(f"{BACKEND_URL}/me", headers=self.headers) as response:
+                if response.status != 200:
+                    self.log_result("Profile Editing - Get Profile", False, f"Cannot get current profile: HTTP {response.status}")
+                    return False
+                
+                current_profile = await response.json()
+                
+            # Test profile update (using onboard endpoint as it's the available update mechanism)
+            updated_data = {
+                "display_name": "Updated Test User",
+                "username": current_profile.get("username", f"testuser{self.test_user_id}"),
+                "age": 26,
+                "avatar_file_id": current_profile.get("avatar_file_id")
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/onboard", 
+                                       headers=self.headers, 
+                                       json=updated_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get("success"):
+                        self.log_result("Profile Update API", True, "Profile update successful")
+                        
+                        # Verify the update by getting profile again
+                        async with self.session.get(f"{BACKEND_URL}/me", headers=self.headers) as verify_response:
+                            if verify_response.status == 200:
+                                updated_profile = await verify_response.json()
+                                if updated_profile.get("display_name") == "Updated Test User":
+                                    self.log_result("Profile Update Verification", True, "Profile changes persisted correctly")
+                                    return True
+                                else:
+                                    self.log_result("Profile Update Verification", False, 
+                                                  f"Profile not updated. Expected 'Updated Test User', got '{updated_profile.get('display_name')}'")
+                                    return False
+                            else:
+                                self.log_result("Profile Update Verification", False, f"Cannot verify update: HTTP {verify_response.status}")
+                                return False
+                    else:
+                        self.log_result("Profile Update API", False, f"Update failed: {data}")
+                        return False
+                else:
+                    self.log_result("Profile Update API", False, f"HTTP {response.status}")
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Profile Editing", False, f"Error: {str(e)}")
+            return False
+
+    async def test_comments_timestamp_format(self, post_id):
+        """Test comment timestamps for proper ISO format"""
+        if not post_id:
+            return
+            
+        try:
+            async with self.session.get(f"{BACKEND_URL}/posts/{post_id}/comments", 
+                                      headers=self.headers) as response:
+                if response.status == 200:
+                    comments = await response.json()
+                    if comments and len(comments) > 0:
+                        comment = comments[0]
+                        if "created_at" in comment:
+                            await self.test_timestamp_format(comment["created_at"], "Comment")
+                        else:
+                            self.log_result("Comment Timestamp Format", False, "Comment missing created_at field")
+                    else:
+                        self.log_result("Comment Timestamp Format", True, "No comments to test (expected)")
+                else:
+                    self.log_result("Comment Timestamp Format", False, f"Cannot get comments: HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Comment Timestamp Format", False, f"Error: {str(e)}")
+
     async def test_status_endpoints(self):
         """Test status check endpoints"""
         try:
