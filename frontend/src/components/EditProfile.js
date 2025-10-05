@@ -125,7 +125,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
             </svg>
           </button>
           <h2 className="text-lg font-semibold">Edit Profile</h2>
-          <button onClick={onSave} disabled={isSubmitting} aria-busy={isSubmitting} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+          <button onClick={handleSave} disabled={isSubmitting} aria-busy={isSubmitting} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
             {isSubmitting ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
