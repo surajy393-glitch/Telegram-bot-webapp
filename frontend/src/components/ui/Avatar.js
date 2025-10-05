@@ -2,8 +2,13 @@
 import React from 'react';
 
 const Avatar = ({ user, size = 32 }) => {
-  const src = user?.avatarUrl || user?.profilePic;
+  const baseSrc = user?.avatarUrl || user?.profilePic;
   const letter = user?.name?.[0]?.toUpperCase() || '?';
+  
+  // Add cache busting if avatar version exists
+  const src = baseSrc && user?.avatarVersion ? 
+    `${baseSrc}${baseSrc.includes('?') ? '&' : '?'}v=${user.avatarVersion}` : 
+    baseSrc;
   
   return src ? (
     <img 
@@ -11,6 +16,7 @@ const Avatar = ({ user, size = 32 }) => {
       style={{ width: size, height: size }} 
       className="rounded-full object-cover" 
       alt={user?.name || 'User'}
+      key={user?.avatarVersion || 0} // Force re-render on version change
       onError={(e) => {
         // Fallback to letter on image load error
         e.target.outerHTML = `
