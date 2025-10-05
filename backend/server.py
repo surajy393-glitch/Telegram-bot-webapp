@@ -393,9 +393,21 @@ async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
 async def upload_photo(file: UploadFile = File(...)):
     """Upload photo to Telegram chat and return file info."""
     try:
+        if UPLOAD_MODE == "local":
+            content = await file.read()
+            if not file.content_type or not file.content_type.startswith('image/'):
+                raise HTTPException(status_code=400, detail="केवल इमेज फाइलें (JPEG, PNG, WebP) समर्थित हैं।")
+            fname = f"{uuid.uuid4().hex}.jpg"
+            (UPLOAD_DIR / fname).write_bytes(content)
+            return {
+                "success": True,
+                "media_type": "image",
+                "photo_url": _public_url_for(fname),
+                "thumb_url": None
+            }
+        # else: telegram mode (existing code below) 👇
         if not MEDIA_SINK_CHAT_ID:
             raise HTTPException(status_code=500, detail="MEDIA_SINK_CHAT_ID not configured")
-        
         if not BOT_TOKEN:
             raise HTTPException(status_code=500, detail="BOT_TOKEN not configured")
         
