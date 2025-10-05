@@ -400,8 +400,8 @@ const createPostFlow = async ({ signal } = {}) => {
   };
 
   let saveSuccess = false;
-    
-    // Save post to user's profile with storage management
+  
+  // Save post to user's profile with storage management
     try {
       const userPostsKey = `luvhive_posts_${defaultUser.username}`;
       console.log('📝 Saving post to key:', userPostsKey);
