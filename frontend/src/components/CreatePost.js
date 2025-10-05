@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Next.js Router (use this instead of useNavigate if Next) 👉
 // import { useRouter } from 'next/navigation';
+import { FEED_ROUTE } from '../constants/routes';
 import { compressImage, compressVideo, getCompressionRecommendations, formatFileSize } from '../utils/compression';
 
 const CreatePost = ({ user, onClose, onPostCreated }) => {
