@@ -102,13 +102,13 @@ const UserProfile = ({ user, theme }) => {
       const savedPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
       console.log('Saved posts:', savedPosts); // Debug log
       
-      // Add mock user posts for demo - Always show at least these
+      // Add mock user posts with images for demo - Always show at least these
       const mockUserPosts = [
         {
           id: 'user_post_1',
           user: currentUser || userData,
           content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨',
-          image: null,
+          image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
           sparkCount: 12,
           glowCount: 8,
           timestamp: '14h ago',
@@ -127,12 +127,22 @@ const UserProfile = ({ user, theme }) => {
         {
           id: 'user_post_3', 
           user: currentUser || userData,
-          content: 'Finally got my profile posts working! This is a test post to verify everything is displaying correctly 🎉',
-          image: null,
-          sparkCount: 8,
-          glowCount: 5,
+          content: 'Coffee and code - perfect combination for productivity! ☕💻',
+          image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
+          sparkCount: 18,
+          glowCount: 12,
           timestamp: '6h ago',
           createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 'user_post_4', 
+          user: currentUser || userData,
+          content: 'Finally got my profile posts working! This is a test post to verify everything is displaying correctly 🎉',
+          image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+          sparkCount: 8,
+          glowCount: 5,
+          timestamp: '3h ago',
+          createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
         }
       ];
       
