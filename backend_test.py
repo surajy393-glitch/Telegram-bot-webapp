@@ -153,7 +153,7 @@ class BackendTester:
             return None
 
     async def test_posts_feed(self):
-        """Test posts feed retrieval"""
+        """Test posts feed retrieval with timestamp validation"""
         try:
             async with self.session.get(f"{BACKEND_URL}/posts", headers=self.headers) as response:
                 if response.status == 200:
@@ -170,6 +170,9 @@ class BackendTester:
                                 self.log_result("Posts Feed Structure", False, f"Missing fields in posts: {missing_fields}")
                             else:
                                 self.log_result("Posts Feed Structure", True, "Posts have correct structure")
+                                
+                                # Test timestamp format validation
+                                await self.test_timestamp_format(post.get("created_at"), "Post")
                         
                         return posts
                     else:
