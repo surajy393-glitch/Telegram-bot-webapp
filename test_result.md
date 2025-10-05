@@ -294,13 +294,14 @@
 
 ## test_plan:
   current_focus:
-    - "Test comprehensive UI/UX fixes: Avatar display, Delete/Reply functionality, Full-screen media modal"
-    - "Verify registration flow reaches feed page successfully"
-    - "Test avatar display fixes - no more 'L' or weird strings"
-    - "Test delete and reply button functionality with improved user matching"
-    - "Test full-screen image and video modal triggers"
+    - "Test timestamp display fixes - posts should show proper time (14h ago, 2d ago) instead of 'just now'"
+    - "Test UserProfile posts display - verify user posts appear on profile page with correct timestamps"
+    - "Test EditProfile save button functionality - ensure save works immediately without delays"
+    - "Verify all three fixes work together without breaking existing functionality"
   stuck_tasks:
-    - "Registration flow not reaching feed page after completion"
+    - "Timestamps showing 'just now' instead of proper IST time"
+    - "User posts not displaying on profile page"
+    - "EditProfile save button not working properly"
   test_all: false
   test_priority: "high_first"
 
