@@ -43,6 +43,10 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN not set")
+def _public_url_for(filename: str) -> str:
+    # If EXTERNAL_URL configured, use it; else relative path works behind same origin
+    base = EXTERNAL_URL or ""
+    return f"{base}/uploads/{filename}"
 
 # FastAPI app
 app = FastAPI()
