@@ -91,8 +91,10 @@ const EditProfile = ({ user, onClose, onSave }) => {
       
       // Close modal after a short delay to show success message
       setTimeout(() => {
-        onClose();
-      }, 1000);
+        if (onClose) {
+          onClose();
+        }
+      }, 800);
       
     } catch (error) {
       console.error('Error updating profile:', error);
