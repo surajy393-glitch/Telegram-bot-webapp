@@ -318,13 +318,14 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       }
     }
     
-    // Simulate post creation with uploaded image URLs
+    // Create post with proper avatar URL and timestamp
     const newPost = {
       id: Date.now(),
       user: {
         name: defaultUser.name,
         username: defaultUser.username,
-        avatar: defaultUser.profilePic,
+        avatar: defaultUser.profilePic || defaultUser.avatarUrl,
+        avatarUrl: defaultUser.profilePic || defaultUser.avatarUrl, // Ensure both fields
         mood: mood,
         aura: getAuraByMood(mood)
       },
@@ -337,6 +338,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       sparkCount: 0,
       glowCount: 0,
       timestamp: 'Just now',
+      createdAt: new Date().toISOString(), // Add proper timestamp for formatTimeIST
       isSparkPost: false
     };
 
