@@ -10,6 +10,9 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const abortRef = useRef(null);
+  const navigate = useNavigate();          // React Router
+  // const router = useRouter();           // Next.js
   const [compressionSettings, setCompressionSettings] = useState({
     enabled: true,
     imageQuality: 0.8,
