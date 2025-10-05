@@ -365,7 +365,7 @@ const createPostFlow = async ({ signal } = {}) => {
     }));
     
     // Upload all media files with signal
-    const uploadPromises = mediaToUpload.map((f) => uploadOne(f, { signal }));
+    const uploadPromises = mediaToUpload.map((f) => uploadMediaToBackend(f));
     const uploaded = await Promise.allSettled(uploadPromises);
     const media = uploaded
       .filter(r => r.status === 'fulfilled')
