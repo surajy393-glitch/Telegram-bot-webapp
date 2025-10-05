@@ -13,19 +13,32 @@ import Avatar from './ui/Avatar';
 
 // Helper function to format time in IST
 const formatTimeIST = (timestamp) => {
-  const now = new Date();
-  const postTime = new Date(timestamp);
-  const diffMs = now - postTime;
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  
-  if (diffMinutes < 60) {
-    return `${diffMinutes}m ago`;
-  } else if (diffHours < 24) {
-    return `${diffHours}h ago`;
-  } else {
-    return `${diffDays}d ago`;
+  try {
+    const now = new Date();
+    const postTime = new Date(timestamp);
+    
+    // If invalid date, return fallback
+    if (isNaN(postTime.getTime())) {
+      return 'just now';
+    }
+    
+    const diffMs = now - postTime;
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffMinutes < 1) {
+      return 'just now';
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes}m ago`;
+    } else if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    } else {
+      return `${diffDays}d ago`;
+    }
+  } catch (error) {
+    console.error('Time formatting error:', error);
+    return 'just now';
   }
 };
 
