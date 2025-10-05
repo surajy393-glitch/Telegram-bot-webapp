@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { hydrateUser } from './state/hydrateUser';
 import WelcomePage from './components/WelcomePage';
 import SocialFeed from './components/SocialFeed';
 import WhatsNew from './components/WhatsNew';
