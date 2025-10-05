@@ -262,6 +262,13 @@ const SocialFeed = ({ user, theme }) => {
     ];
   };
 
+  // Listen for post created events
+  useEffect(() => {
+    const handler = (e) => setPosts((prev) => [e.detail, ...prev]);
+    window.addEventListener('post:created', handler);
+    return () => window.removeEventListener('post:created', handler);
+  }, []);
+
   useEffect(() => {
     const loadPosts = () => {
       try {
