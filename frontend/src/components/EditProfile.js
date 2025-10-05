@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const EditProfile = ({ user, onClose, onSave }) => {
   const [name, setName] = useState(user.name || '');
@@ -7,6 +7,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
   const [profilePic, setProfilePic] = useState(user.profilePic || '');
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const abortControllerRef = useRef(null);
 
   // Check username change eligibility
   const checkUsernameChangeEligibility = () => {
