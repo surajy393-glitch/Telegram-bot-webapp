@@ -14,18 +14,40 @@ import Avatar from './ui/Avatar';
 // Helper function to format time in IST
 const formatTimeIST = (timestamp) => {
   try {
-    const now = new Date();
-    const postTime = new Date(timestamp);
-    
-    // If invalid date, return fallback
-    if (isNaN(postTime.getTime())) {
+    // If no timestamp provided, return fallback
+    if (!timestamp) {
       return 'just now';
     }
     
+    // Handle different timestamp formats
+    let postTime;
+    if (timestamp instanceof Date) {
+      postTime = timestamp;
+    } else if (typeof timestamp === 'string') {
+      // Handle pre-formatted strings like "14h ago", "2d ago"
+      if (timestamp.includes('ago') || timestamp.includes('now')) {
+        return timestamp;
+      }
+      // Parse ISO string
+      postTime = new Date(timestamp);
+    } else {
+      postTime = new Date(timestamp);
+    }
+    
+    // If invalid date, return fallback
+    if (isNaN(postTime.getTime())) {
+      console.warn('Invalid timestamp:', timestamp);
+      return 'just now';
+    }
+    
+    const now = new Date();
     const diffMs = now - postTime;
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    // Debug logging
+    console.log('Formatting timestamp:', timestamp, '-> diffHours:', diffHours, 'diffMinutes:', diffMinutes);
     
     if (diffMinutes < 1) {
       return 'just now';
@@ -33,8 +55,11 @@ const formatTimeIST = (timestamp) => {
       return `${diffMinutes}m ago`;
     } else if (diffHours < 24) {
       return `${diffHours}h ago`;
-    } else {
+    } else if (diffDays < 7) {
       return `${diffDays}d ago`;
+    } else {
+      const weeks = Math.floor(diffDays / 7);
+      return `${weeks}w ago`;
     }
   } catch (error) {
     console.error('Time formatting error:', error);
