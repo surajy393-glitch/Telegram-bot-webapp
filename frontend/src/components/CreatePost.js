@@ -339,20 +339,19 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
         name: defaultUser.name,
         username: defaultUser.username,
         avatar: defaultUser.profilePic || defaultUser.avatarUrl,
-        avatarUrl: defaultUser.profilePic || defaultUser.avatarUrl, // Ensure both fields
+        avatarUrl: defaultUser.profilePic || defaultUser.avatarUrl,
         mood: mood,
         aura: getAuraByMood(mood)
       },
       content: postText,
-      images: uploadedMediaUrls, // Use uploaded URLs instead of Base64
-      mood: mood,
+      images: uploadedMediaUrls, // array of string URLs (backend or local)
+      mood,
       music: selectedMusic,
       location: selectedLocation || null,
-      vibeScore: Math.floor(Math.random() * 20) + 80, // Random score 80-100
+      vibeScore: Math.floor(Math.random() * 20) + 80,
       sparkCount: 0,
       glowCount: 0,
-      timestamp: 'Just now',
-      createdAt: new Date().toISOString(), // Add proper timestamp for formatTimeIST
+      createdAt: new Date().toISOString(),
       isSparkPost: false
     };
 
