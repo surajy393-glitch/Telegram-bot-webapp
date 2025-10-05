@@ -27,22 +27,15 @@ const EditProfile = ({ user, onClose, onSave }) => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Check file size for Telegram WebApp (max 10MB)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        if (window.Telegram?.WebApp?.showAlert) {
-          window.Telegram.WebApp.showAlert("Image too large! Max 10MB for profile pictures.");
-        } else {
-          alert("Image too large! Max 10MB for profile pictures.");
-        }
+        (window.Telegram?.WebApp?.showAlert || alert)("Image too large! Max 10MB for profile pictures.");
         return;
       }
-
       const reader = new FileReader();
- handleSave
       reader.onload = (e) => {
-        setNewProfileImage(e.target.result);
-        setProfilePic(e.target.result);
+        setNewProfileImage(e.target.result);   // base64 preview
+        setProfilePic(e.target.result);        // show instantly
       };
       reader.readAsDataURL(file);
     }
