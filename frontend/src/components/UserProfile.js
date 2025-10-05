@@ -64,7 +64,7 @@ const UserProfile = ({ user, theme }) => {
       setLoading(false);
     } else {
       // Try to get user from localStorage
-      const savedUser = localStorage.getItem('luvhive_user');
+      const savedUser = localStorage.getItem('lh_user');
       console.log('Saved user from localStorage:', savedUser); // Debug log
       if (savedUser) {
         try {
