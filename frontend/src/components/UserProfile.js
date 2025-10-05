@@ -87,11 +87,11 @@ const UserProfile = ({ user, theme }) => {
 
   // Load user posts
   useEffect(() => {
-    console.log('useEffect triggered, currentUser:', currentUser, 'userData:', userData); // Debug log
-    if (currentUser || userData) {
+    console.log('useEffect triggered, currentUser:', currentUser); // Debug log
+    if (currentUser) {
       loadUserPosts();
     }
-  }, [currentUser, userData]);
+  }, [currentUser]);
 
   const loadUserPosts = () => {
     try {
