@@ -37,6 +37,51 @@ const UserProfile = ({ user, theme }) => {
     }
   }, [user]);
 
+  // Load user posts
+  useEffect(() => {
+    if (currentUser) {
+      loadUserPosts();
+    }
+  }, [currentUser]);
+
+  const loadUserPosts = () => {
+    try {
+      // Load posts from localStorage
+      const userPostsKey = `luvhive_posts_${currentUser.username || 'testuser'}`;
+      const savedPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
+      
+      // Add mock user posts for demo
+      const mockUserPosts = [
+        {
+          id: 'user_post_1',
+          user: currentUser,
+          content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨',
+          image: null,
+          sparkCount: 12,
+          glowCount: 8,
+          timestamp: '14h ago',
+          createdAt: new Date(Date.now() - 14 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 'user_post_2', 
+          user: currentUser,
+          content: 'Beautiful sunset today! Nature never fails to amaze me 🌅',
+          image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+          sparkCount: 24,
+          glowCount: 15,
+          timestamp: '2d ago',
+          createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+      
+      const allUserPosts = [...savedPosts, ...mockUserPosts];
+      setUserPosts(allUserPosts);
+    } catch (error) {
+      console.error('Error loading user posts:', error);
+      setUserPosts([]);
+    }
+  };
+
   const handleEditProfile = () => {
     setShowEditProfile(true);
   };
