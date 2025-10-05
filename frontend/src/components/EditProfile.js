@@ -158,7 +158,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={onPick}
                   className="hidden"
                   disabled={isSubmitting}
                 />
