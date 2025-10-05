@@ -367,7 +367,7 @@ class BackendTester:
                 "X-Dev-User": str(self.test_user_id)
             }
             
-            async with self.session.post(f"{BACKEND_URL}/upload-media", 
+            async with self.session.post(f"{BACKEND_URL}/upload-video", 
                                        headers=upload_headers, 
                                        data=form_data) as response:
                 if response.status == 200:
