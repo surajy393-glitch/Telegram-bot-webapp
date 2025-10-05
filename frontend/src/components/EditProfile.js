@@ -37,7 +37,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
     r.readAsDataURL(f);
   };
 
-  const onSave = async () => {
+  const handleSave = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     ctlRef.current = new AbortController();
