@@ -479,6 +479,30 @@ const createPostFlow = async ({ signal } = {}) => {
   return newPost;
   };
 
+async function uploadOne(mediaObj, { signal } = {}) {
+  // Return the promise to the caller, don't hide it inside setState
+  const fd = new FormData();
+  const fileToUpload = mediaObj.compressedFile || mediaObj.file;
+  fd.append('file', fileToUpload);
+  
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+  const endpoint = mediaObj.type === 'video' ? '/api/upload-video' : '/api/upload-photo';
+  
+  const r = await fetch(`${backendUrl}${endpoint}`, { 
+    method: 'POST', 
+    body: fd, 
+    signal,
+    headers: {
+      ...(window.Telegram?.WebApp?.initData ? {
+        'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+      } : {})
+    }
+  });
+  if (!r.ok) throw new Error('Upload failed');
+  const j = await r.json();
+  return { url: j.photo_url || j.video_url, type: mediaObj.type };
+}
+
   useEffect(() => {
     // Reset form when modal opens
     setPostText('');
