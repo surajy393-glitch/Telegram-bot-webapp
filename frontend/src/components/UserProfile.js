@@ -3,6 +3,50 @@ import { useNavigate } from 'react-router-dom';
 import EditProfile from './EditProfile';
 import Settings from './Settings';
 
+// Helper function to format time (same as SocialFeed)
+const formatTimeIST = (timestamp) => {
+  try {
+    if (!timestamp) return 'just now';
+    
+    let postTime;
+    if (timestamp instanceof Date) {
+      postTime = timestamp;
+    } else if (typeof timestamp === 'string') {
+      if (timestamp.includes('ago') || timestamp.includes('now')) {
+        return timestamp;
+      }
+      postTime = new Date(timestamp);
+    } else {
+      postTime = new Date(timestamp);
+    }
+    
+    if (isNaN(postTime.getTime())) {
+      return 'just now';
+    }
+    
+    const now = new Date();
+    const diffMs = now - postTime;
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffMinutes < 1) {
+      return 'just now';
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes}m ago`;
+    } else if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    } else if (diffDays < 7) {
+      return `${diffDays}d ago`;
+    } else {
+      const weeks = Math.floor(diffDays / 7);
+      return `${weeks}w ago`;
+    }
+  } catch (error) {
+    return 'just now';
+  }
+};
+
 const UserProfile = ({ user, theme }) => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
