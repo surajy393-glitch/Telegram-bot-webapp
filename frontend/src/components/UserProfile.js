@@ -328,6 +328,63 @@ const UserProfile = ({ user, theme }) => {
             </div>
           </div>
         </div>
+
+        {/* User Posts Section */}
+        <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">My Posts ({userPosts.length})</h3>
+          
+          {userPosts.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-2">📝</div>
+              <p className="text-gray-500">No posts yet</p>
+              <p className="text-sm text-gray-400">Share your first post!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {userPosts.map((post) => (
+                <div key={post.id} className="bg-gray-50 rounded-2xl p-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
+                      {userData.profilePic ? (
+                        <img src={userData.profilePic} alt={userData.name} className="w-full h-full rounded-full object-cover" />
+                      ) : (
+                        <span className="text-lg">👤</span>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-gray-800">{userData.name}</span>
+                        <span className="text-sm text-gray-500">• {post.timestamp}</span>
+                      </div>
+                      
+                      <p className="text-gray-700 mt-1">{post.content}</p>
+                      
+                      {post.image && (
+                        <img 
+                          src={post.image} 
+                          alt="Post content" 
+                          className="mt-2 rounded-lg w-full h-48 object-cover"
+                        />
+                      )}
+                      
+                      <div className="flex items-center space-x-4 mt-3">
+                        <div className="flex items-center space-x-1">
+                          <span>✨</span>
+                          <span className="text-sm text-gray-600">{post.sparkCount || 0}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <span>💫</span>
+                          <span className="text-sm text-gray-600">{post.glowCount || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
