@@ -47,7 +47,7 @@ const InstagramProfile = ({ user }) => {
     if (currentUser) {
       loadUserData();
     }
-  }, [currentUser, userPosts.length]); // Re-run when userPosts changes
+  }, [currentUser]); // Only re-run when currentUser changes
 
   // Live update listener for profile changes
   useEffect(() => {
