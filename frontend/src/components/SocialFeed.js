@@ -346,7 +346,7 @@ const SocialFeed = ({ user, theme }) => {
         setLoading(false); // Important: Set loading to false
       } catch (error) {
         console.error('❌ Error loading posts:', error);
-        setPosts(process.env.DEMO_MODE === 'true' ? mockPostsData : []);
+        setPosts(mockPostsData);
         setStories(getMockStories());
         setLoading(false); // Important: Set loading to false even on error
       }
