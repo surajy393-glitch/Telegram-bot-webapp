@@ -62,15 +62,6 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
       show: true
     },
     {
-      id: 'delete',
-      title: 'Delete Post',
-      icon: '🗑️',
-      color: 'text-red-600',
-      bgColor: 'hover:bg-red-50',
-      description: 'Permanently delete this post',
-      show: isOwnPost
-    },
-    {
       id: 'block',
       title: `Block ${post.user.name}`,
       icon: '🚫',
