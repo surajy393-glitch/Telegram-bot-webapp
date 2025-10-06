@@ -294,18 +294,27 @@ const InstagramProfile = ({ user }) => {
 
             {/* Stats */}
             <div className="flex-1 grid grid-cols-3 gap-4 text-center">
-              <div>
+              <button 
+                onClick={() => setActiveTab('posts')}
+                className="transition-colors hover:bg-gray-50 rounded-lg p-2"
+              >
                 <div className="text-xl font-bold text-gray-800">{stats.postsCount}</div>
                 <div className="text-sm text-gray-500">Posts</div>
-              </div>
-              <div>
+              </button>
+              <button 
+                onClick={() => setActiveTab('followers')}
+                className="transition-colors hover:bg-gray-50 rounded-lg p-2"
+              >
                 <div className="text-xl font-bold text-gray-800">{stats.followersCount}</div>
                 <div className="text-sm text-gray-500">Followers</div>
-              </div>
-              <div>
+              </button>
+              <button 
+                onClick={() => setActiveTab('following')}
+                className="transition-colors hover:bg-gray-50 rounded-lg p-2"
+              >
                 <div className="text-xl font-bold text-gray-800">{stats.followingCount}</div>
                 <div className="text-sm text-gray-500">Following</div>
-              </div>
+              </button>
             </div>
           </div>
 
