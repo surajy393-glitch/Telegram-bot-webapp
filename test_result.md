@@ -300,7 +300,7 @@
 
 ## test_plan:
   current_focus:
-    - "All three critical fixes have been tested and verified working"
+    - "Profile posts endpoint testing completed successfully"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
