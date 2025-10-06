@@ -485,6 +485,7 @@ const createPostFlow = async ({ signal, idempotencyKey } = {}) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-Idempotency-Key': idempotencyKey,
           ...(window.Telegram?.WebApp?.initData ? { 'X-Telegram-Init-Data': window.Telegram.WebApp.initData } : {})
         },
         body: JSON.stringify({ content: postText, media_urls: uploadedMediaUrls }),
