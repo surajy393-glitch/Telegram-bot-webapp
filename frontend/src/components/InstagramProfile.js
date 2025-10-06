@@ -63,7 +63,8 @@ const InstagramProfile = ({ user }) => {
     if (!currentUser) return;
 
     // Load user's posts with enhanced mock data
-    const userPostsKey = `luvhive_posts_${currentUser.username}`;
+    const username = currentUser.username || currentUser.name || 'user';
+    const userPostsKey = `luvhive_posts_${username}`;
     let posts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
     
     // Add mock posts if none exist
