@@ -90,6 +90,12 @@ const InstagramProfile = ({ user }) => {
         }));
         
         setUserPosts(transformedPosts);
+        
+        // Update stats with fetched posts count
+        setStats(prevStats => ({
+          ...prevStats,
+          postsCount: transformedPosts.length
+        }));
       } else {
         console.error('❌ Failed to fetch posts, status:', response.status);
         setUserPosts([]);
