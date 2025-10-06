@@ -732,6 +732,10 @@ class BackendTester:
             await self.test_user_profile_posts()
             await self.test_profile_editing_endpoints()
             
+            # Test specific review request: Profile Posts Endpoint
+            print("\n🎯 Testing Review Request - Profile Posts Endpoint:")
+            await self.test_profile_posts_endpoint()
+            
             # Test utility endpoints
             await self.test_status_endpoints()
             
