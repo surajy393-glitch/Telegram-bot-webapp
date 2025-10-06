@@ -194,6 +194,10 @@ const MyProfile = ({ user }) => {
     if (activeFilter === 'videos') return post.video;
     return true;
   });
+  
+  console.log('🔍 Filter active:', activeFilter);
+  console.log('📋 Total userPosts:', userPosts.length);
+  console.log('✅ Filtered posts:', filteredPosts.length);
 
   if (loading) {
     return (
