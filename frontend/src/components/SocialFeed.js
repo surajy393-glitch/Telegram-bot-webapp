@@ -446,7 +446,22 @@ const SocialFeed = ({ user, theme }) => {
       if (confirmed) {
         try {
           // Remove post from state
-          setPosts(posts => posts.filter(p => p.id !== post.id));
+          setPosts(posts => {
+            const updatedPosts = posts.filter(p => p.id !== post.id);
+            
+            // Also remove from user's localStorage posts
+            if (user && post.user && post.user.name === user.name) {
+              const username = user.username || user.name || 'user';
+              const userPostsKey = `luvhive_posts_${username}`;
+              const existingUserPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
+              const updatedUserPosts = existingUserPosts.filter(p => p.id !== post.id);
+              localStorage.setItem(userPostsKey, JSON.stringify(updatedUserPosts));
+              console.log('📝 Post permanently deleted from user localStorage');
+            }
+            
+            return updatedPosts;
+          });
+          
           alert('Post deleted successfully!');
         } catch (error) {
           console.error('Delete error:', error);
