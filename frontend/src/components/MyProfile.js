@@ -54,7 +54,9 @@ const MyProfile = ({ user }) => {
             'Content-Type': 'application/json',
             ...(window.Telegram?.WebApp?.initData ? {
               'X-Telegram-Init-Data': window.Telegram.WebApp.initData
-            } : {})
+            } : {}),
+            // Dev mode authentication
+            'X-Dev-User': currentUser.tg_user_id || currentUser.id || '647778438'
           },
           credentials: 'include'
         });
