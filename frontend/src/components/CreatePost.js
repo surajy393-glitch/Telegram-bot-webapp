@@ -365,7 +365,7 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
   };
 
 // Ensure ALL async calls are awaited and returned properly
-const createPostFlow = async ({ signal } = {}) => {
+const createPostFlow = async ({ signal, idempotencyKey } = {}) => {
   if (!postText.trim() && selectedImages.length === 0 && selectedVideos.length === 0) {
     throw new Error('Please add some content or images/videos to share!');
   }
