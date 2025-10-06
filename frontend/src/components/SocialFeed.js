@@ -710,7 +710,7 @@ const SocialFeed = ({ user, theme }) => {
           </div>
           
           <button
-            onClick={() => navigate('/instagram-profile')}
+            onClick={() => navigate('/profile')}
             className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center"
             title="My Profile"
           >
