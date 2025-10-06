@@ -236,7 +236,7 @@ const InstagramProfile = ({ user }) => {
             </svg>
           </button>
           
-          <h1 className="text-xl font-bold">{user.username}</h1>
+          <h1 className="text-xl font-bold">{currentUser.username}</h1>
           
           <button
             onClick={() => setShowSettings(true)}
