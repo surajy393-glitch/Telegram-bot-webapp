@@ -401,27 +401,38 @@ async def get_posts(user: dict = Depends(get_current_user)):
     return posts
 
 @app.get("/api/profile/posts")
-async def get_profile_posts(user: dict = Depends(get_current_user)):
+async def get_profile_posts(request: Request, user: dict = Depends(get_current_user)):
     """Get posts for user's profile."""
-    user_profile = await db.users.find_one({"tg_user_id": user["id"]})
+    # Check if username is provided in header (for specific user lookup)
+    username_header = request.headers.get("X-Username")
+    
+    if username_header:
+        # Lookup by username
+        user_profile = await db.users.find_one({"username": username_header})
+    else:
+        # Lookup by user ID from auth
+        user_profile = await db.users.find_one({"tg_user_id": user["id"]})
+    
     if not user_profile:
+        logging.warning(f"User profile not found for username: {username_header or user.get('id')}")
         return []
     
-    profile_id = str(user_profile["_id"])
+    user_id = user_profile["tg_user_id"]
     
-    # Query posts by profile_id
-    posts = await db.posts.find({"profile_id": profile_id}).sort("created_at", -1).to_list(100)
+    # Query posts by user_id (more reliable than profile_id)
+    posts = await db.posts.find({"user_id": user_id}).sort("created_at", -1).to_list(100)
+    
+    logging.info(f"Found {len(posts)} posts for user {user_profile.get('username')}")
     
     # Add user info to posts
     for post in posts:
-        post_user = await db.users.find_one({"tg_user_id": post["user_id"]})
-        if post_user:
-            post["user"] = {
-                "id": post_user["tg_user_id"],
-                "display_name": post_user.get("display_name", "User"),
-                "username": post_user.get("username", f"user{post_user['tg_user_id']}"),
-                "avatar_file_id": post_user.get("avatar_file_id")
-            }
+        post["user"] = {
+            "id": user_profile["tg_user_id"],
+            "display_name": user_profile.get("display_name", "User"),
+            "username": user_profile.get("username", f"user{user_profile['tg_user_id']}"),
+            "avatar_file_id": user_profile.get("avatar_file_id"),
+            "avatar_url": user_profile.get("avatar_url")
+        }
         post["id"] = str(post["_id"])
         del post["_id"]  # Remove the ObjectId field
     
