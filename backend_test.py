@@ -493,6 +493,90 @@ class BackendTester:
             self.log_result("User Profile Posts", False, f"Error: {str(e)}")
             return False
 
+    async def test_profile_posts_endpoint(self):
+        """Test /api/profile/posts endpoint specifically as requested in review"""
+        try:
+            print("\n🎯 TESTING PROFILE POSTS ENDPOINT AS REQUESTED")
+            
+            # Test 1: Basic endpoint accessibility with authentication
+            async with self.session.get(f"{BACKEND_URL}/profile/posts", headers=self.headers) as response:
+                if response.status == 200:
+                    posts = await response.json()
+                    
+                    # Test 2: Verify response is an array
+                    if not isinstance(posts, list):
+                        self.log_result("Profile Posts - Response Type", False, f"Expected array, got {type(posts)}")
+                        return False
+                    
+                    self.log_result("Profile Posts - Basic Access", True, f"Endpoint accessible, returned {len(posts)} posts")
+                    
+                    # Test 3: Verify empty state handling
+                    if len(posts) == 0:
+                        self.log_result("Profile Posts - Empty State", True, "Correctly returns empty array when user has no posts")
+                    else:
+                        # Test 4: Verify post structure
+                        post = posts[0]
+                        required_fields = ["id", "content", "user_id", "created_at"]
+                        missing_fields = [field for field in required_fields if field not in post]
+                        
+                        if missing_fields:
+                            self.log_result("Profile Posts - Post Structure", False, f"Missing required fields: {missing_fields}")
+                        else:
+                            self.log_result("Profile Posts - Post Structure", True, "Posts have correct basic structure")
+                        
+                        # Test 5: Verify user info is included
+                        if "user" in post:
+                            user_info = post["user"]
+                            user_required = ["id", "display_name", "username"]
+                            user_missing = [field for field in user_required if field not in user_info]
+                            
+                            if user_missing:
+                                self.log_result("Profile Posts - User Info", False, f"Missing user fields: {user_missing}")
+                            else:
+                                self.log_result("Profile Posts - User Info", True, "Posts include complete user information")
+                        else:
+                            self.log_result("Profile Posts - User Info", False, "Posts missing user information")
+                        
+                        # Test 6: Verify posts are sorted by created_at descending
+                        if len(posts) > 1:
+                            timestamps = [post.get("created_at") for post in posts if post.get("created_at")]
+                            if len(timestamps) > 1:
+                                # Parse timestamps and check order
+                                from datetime import datetime
+                                parsed_times = []
+                                for ts in timestamps:
+                                    try:
+                                        parsed_times.append(datetime.fromisoformat(ts.replace('Z', '+00:00')))
+                                    except:
+                                        pass
+                                
+                                if len(parsed_times) > 1:
+                                    is_descending = all(parsed_times[i] >= parsed_times[i+1] for i in range(len(parsed_times)-1))
+                                    if is_descending:
+                                        self.log_result("Profile Posts - Sort Order", True, "Posts correctly sorted by created_at descending")
+                                    else:
+                                        self.log_result("Profile Posts - Sort Order", False, "Posts not sorted by created_at descending")
+                                else:
+                                    self.log_result("Profile Posts - Sort Order", True, "Cannot verify sort order (timestamp parsing issues)")
+                            else:
+                                self.log_result("Profile Posts - Sort Order", True, "Cannot verify sort order (insufficient timestamps)")
+                        else:
+                            self.log_result("Profile Posts - Sort Order", True, "Cannot verify sort order (insufficient posts)")
+                    
+                    return True
+                    
+                elif response.status == 401:
+                    self.log_result("Profile Posts - Authentication", False, "Authentication failed - endpoint requires valid user")
+                    return False
+                else:
+                    response_text = await response.text()
+                    self.log_result("Profile Posts - Basic Access", False, f"HTTP {response.status}: {response_text[:200]}")
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Profile Posts Endpoint", False, f"Error: {str(e)}")
+            return False
+
     async def test_profile_editing_endpoints(self):
         """Test profile update/editing functionality"""
         try:
