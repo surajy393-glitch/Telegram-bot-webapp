@@ -1,1 +1,0 @@
-# Mini App API endpoints for LuvHive Instagram-style social features
