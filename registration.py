@@ -43,18 +43,13 @@ def _get_pool() -> SimpleConnectionPool:
     """Get or create connection pool with SSL enforcement"""
     global _POOL
     if _POOL is None:
-        try:
-            dsn = _dsn_with_ssl(DB_URL)
-            _POOL = SimpleConnectionPool(
-                minconn=2, maxconn=15, dsn=dsn,
-                keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5,
-                connect_timeout=3, application_name="luvhive-bot"
-            )
-            log.info("✅ SSL-enabled connection pool created")
-        except Exception as e:
-            log.error(f"❌ Failed to create database pool: {e}")
-            log.warning("⚠️ Bot will run in LIMITED MODE without database")
-            _POOL = None
+        dsn = _dsn_with_ssl(DB_URL)
+        _POOL = SimpleConnectionPool(
+            minconn=2, maxconn=15, dsn=dsn,
+            keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5,
+            connect_timeout=3, application_name="luvhive-bot"
+        )
+        log.info("✅ SSL-enabled connection pool created")
     return _POOL
 
 # --- tiny retry wrapper for transient DB hiccups ---
