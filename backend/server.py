@@ -366,28 +366,61 @@ async def get_posts(user: dict = Depends(get_current_user)):
     return posts
 
 @app.post("/api/posts")
-async def create_post(data: PostCreate, user: dict = Depends(get_current_user)):
+async def create_post(data: PostCreate, request: Request, user: dict = Depends(get_current_user)):
     """Create a new post."""
     user_id = user["id"]
     
-    post_doc = {
+    key = request.headers.get("X-Idempotency-Key")
+    if not key:
+        raise HTTPException(status_code=400, detail="X-Idempotency-Key required")
+
+    # 1) If exists, return the same post
+    existing_post = await db.posts.find_one({
         "user_id": user_id,
-        "content": data.content,
-        "media_urls": data.media_urls,
-        "created_at": datetime.datetime.utcnow(),
-        "likes_count": 0,
-        "comments_count": 0
-    }
-    
-    result = await db.posts.insert_one(post_doc)
-    
-    # Increment user's posts count
-    await db.users.update_one(
-        {"tg_user_id": user_id},
-        {"$inc": {"posts_count": 1}}
-    )
-    
-    return {"success": True, "post_id": str(result.inserted_id)}
+        "idempotency_key": key
+    })
+    if existing_post:
+        existing_post["id"] = str(existing_post["_id"])
+        del existing_post["_id"]
+        return existing_post
+
+    # 2) Otherwise, create safely (set profile_id too)
+    try:
+        post_doc = {
+            "user_id": user_id,
+            "content": data.content,
+            "media_urls": data.media_urls,
+            "created_at": datetime.datetime.utcnow(),
+            "likes_count": 0,
+            "comments_count": 0,
+            "idempotency_key": key
+        }
+        
+        result = await db.posts.insert_one(post_doc)
+        
+        # Increment user's posts count
+        await db.users.update_one(
+            {"tg_user_id": user_id},
+            {"$inc": {"posts_count": 1}}
+        )
+        
+        created_post = await db.posts.find_one({"_id": result.inserted_id})
+        created_post["id"] = str(created_post["_id"])
+        del created_post["_id"]
+        return created_post
+        
+    except Exception as e:
+        # Race-safe: if two requests try concurrently, return existing
+        if "duplicate" in str(e).lower() or "unique" in str(e).lower():
+            existing_post = await db.posts.find_one({
+                "user_id": user_id,
+                "idempotency_key": key
+            })
+            if existing_post:
+                existing_post["id"] = str(existing_post["_id"])
+                del existing_post["_id"]
+                return existing_post
+        raise
 
 @app.post("/api/upload-photo")
 async def upload_photo(file: UploadFile = File(...)):
