@@ -290,19 +290,26 @@ async def create_status_check(input: StatusCheckCreate):
     return status_obj
 
 @app.get("/api/me")
-async def get_me(user: dict = Depends(get_current_user)):
+async def get_me(request: Request, user: dict = Depends(get_current_user)):
     """Get current user profile."""
-    user_id = user["id"]
+    # Check if username is provided in header
+    username_header = request.headers.get("X-Username")
     
-    # Find user in database
-    db_user = await db.users.find_one({"tg_user_id": user_id})
+    if username_header:
+        # Lookup by username
+        db_user = await db.users.find_one({"username": username_header})
+    else:
+        # Lookup by user ID from auth
+        user_id = user["id"]
+        db_user = await db.users.find_one({"tg_user_id": user_id})
     
     if not db_user:
+        # Return minimal user info from auth
         return {
             "user": {
-                "id": user_id,
+                "id": user.get("id"),
                 "display_name": user.get("first_name", "User"),
-                "username": user.get("username", f"user{user_id}"),
+                "username": user.get("username", f"user{user.get('id')}"),
                 "is_onboarded": False,
                 "followers_count": 0,
                 "following_count": 0,
@@ -312,11 +319,12 @@ async def get_me(user: dict = Depends(get_current_user)):
     
     return {
         "user": {
-            "id": user_id,
+            "id": db_user["tg_user_id"],
             "display_name": db_user.get("display_name"),
             "username": db_user.get("username"),
             "age": db_user.get("age"),
-            "avatar_url": db_user.get("avatar_file_id"),
+            "bio": db_user.get("bio", ""),
+            "avatar_url": db_user.get("avatar_url") or db_user.get("avatar_file_id"),
             "is_onboarded": True,
             "followers_count": db_user.get("followers_count", 0),
             "following_count": db_user.get("following_count", 0),
