@@ -169,53 +169,23 @@ const InstagramProfile = ({ user }) => {
     loadUserData(); // Refresh data
   };
 
-  // Mock posts for demonstration (in real app, these would come from backend)
-  const mockUserPosts = userPosts.length === 0 ? [
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400',
-      likes: 45,
-      comments: 12,
-      type: 'image'
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
-      likes: 67,
-      comments: 8,
-      type: 'image'
-    },
-    {
-      id: 3,
-      image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
-      likes: 89,
-      comments: 23,
-      type: 'image'
-    },
-    {
-      id: 4,
-      image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400',
-      likes: 34,
-      comments: 15,
-      type: 'image'
-    },
-    {
-      id: 5,
-      image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400',
-      likes: 56,
-      comments: 9,
-      type: 'image'
-    },
-    {
-      id: 6,
-      image: 'https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=400',
-      likes: 78,
-      comments: 21,
-      type: 'image'
+  // Determine what to display based on active tab
+  const getDisplayData = () => {
+    switch (activeTab) {
+      case 'posts':
+        return userPosts;
+      case 'saved':
+        return savedPosts;
+      case 'followers':
+        return followers;
+      case 'following':
+        return following;
+      default:
+        return userPosts;
     }
-  ] : userPosts;
+  };
 
-  const displayPosts = activeTab === 'posts' ? mockUserPosts : savedPosts;
+  const displayData = getDisplayData();
 
   if (!user) {
     return (
