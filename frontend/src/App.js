@@ -27,7 +27,55 @@ function App() {
       }
     }
 
-    // Check if user is already registered
+    // Auto-login function - fetch user from backend if not in localStorage
+    const autoLogin = async () => {
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const response = await fetch(`${backendUrl}/api/me`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(window.Telegram?.WebApp?.initData ? {
+              'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+            } : {}),
+            'X-Dev-User': '647778438' // Dev mode fallback
+          },
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          console.log('✅ Auto-login successful:', userData.display_name);
+          
+          // Transform backend data to frontend format
+          const user = {
+            id: userData.id,
+            tg_user_id: userData.id,
+            name: userData.display_name,
+            display_name: userData.display_name,
+            username: userData.username,
+            age: userData.age,
+            bio: userData.bio || 'LuvHive user ✨',
+            mood: '😊',
+            avatarUrl: userData.avatar_url,
+            avatar_url: userData.avatar_url,
+            created_at: userData.created_at || new Date().toISOString(),
+            joinDate: new Date(userData.created_at || Date.now()).toLocaleDateString('en-US', {month: 'long', year: 'numeric'}),
+            is_onboarded: userData.is_onboarded
+          };
+          
+          // Save to localStorage and set state
+          localStorage.setItem('luvhive_user', JSON.stringify(user));
+          setUser(user);
+          setIsRegistered(true);
+          return;
+        }
+      } catch (error) {
+        console.log('⚠️ Auto-login failed:', error.message);
+      }
+    };
+
+    // Check if user is already registered in localStorage
     const savedUser = localStorage.getItem('luvhive_user');
     console.log('🔍 Checking for existing user in localStorage:', savedUser ? 'Found' : 'Not found');
     
@@ -40,9 +88,11 @@ function App() {
       } catch (error) {
         console.error('❌ Error parsing saved user data:', error);
         localStorage.removeItem('luvhive_user'); // Remove corrupted data
+        autoLogin(); // Try auto-login
       }
     } else {
-      console.log('🆕 No existing user found, user needs to register');
+      console.log('🆕 No existing user found, attempting auto-login...');
+      autoLogin(); // Try to fetch user from backend
     }
   }, []);
 
