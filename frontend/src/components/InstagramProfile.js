@@ -256,9 +256,13 @@ const InstagramProfile = ({ user }) => {
             {/* Profile Picture */}
             <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-r from-purple-400 to-pink-500 flex-shrink-0">
               <img 
-                src={user.profilePic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} 
-                alt={user.name} 
-                className="w-full h-full object-cover" 
+                src={currentUser.profilePic || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.name}`} 
+                alt={currentUser.name} 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white text-2xl font-bold">${currentUser.name?.[0] || '👤'}</div>`;
+                }}
               />
             </div>
 
