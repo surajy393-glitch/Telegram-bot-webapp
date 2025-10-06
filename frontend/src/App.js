@@ -137,6 +137,7 @@ function App() {
             element={<SocialFeed user={user} theme={theme} />} 
           />
           <Route path="/whats-new" element={<WhatsNew theme={theme} />} />
+          <Route path="/profile" element={<MyProfile/>} />
           <Route 
             path="/discover" 
             element={<Discover user={user} theme={theme} />} 
