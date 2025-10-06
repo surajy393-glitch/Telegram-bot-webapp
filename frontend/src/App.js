@@ -4,7 +4,7 @@ import { hydrateUser } from './state/hydrateUser';
 import WelcomePage from './components/WelcomePage';
 import SocialFeed from './components/SocialFeed';
 import WhatsNew from './components/WhatsNew';
-import InstagramProfile from './components/InstagramProfile';
+import MyProfile from './components/MyProfile';
 import Discover from './components/Discover';
 import RegistrationFlow from './components/RegistrationFlow';
 
