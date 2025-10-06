@@ -319,7 +319,20 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       try {
         window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
       } catch {}
-      (window?.toast?.success || window?.sonner?.toast?.success || alert)('Posted!');
+      // Use proper alert without causing compatibility issues
+      try {
+        if (window?.toast?.success) {
+          window.toast.success('Posted!');
+        } else if (window?.sonner?.toast?.success) {
+          window.sonner.toast.success('Posted!');
+        } else {
+          // Simple notification without Telegram WebApp methods
+          console.log('Post created successfully');
+          // Don't show alert that might cause compatibility issues
+        }
+      } catch (e) {
+        console.log('Notification error:', e);
+      }
 
       // ✅ Close modal and go back to feed:
       onClose?.(); // Close the create post modal first
