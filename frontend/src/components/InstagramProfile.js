@@ -187,10 +187,37 @@ const InstagramProfile = ({ user }) => {
 
   const displayData = getDisplayData();
 
-  if (!user) {
+  // Show loading state
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-gray-500">Please login to view profile</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-4 animate-pulse mx-auto">
+            <span className="text-2xl">👤</span>
+          </div>
+          <p className="text-gray-500 text-lg font-medium">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no user state
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <span className="text-3xl">👤</span>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Profile Found</h2>
+          <p className="text-gray-600 mb-6">Please complete registration to create your profile.</p>
+          <button
+            onClick={() => navigate('/register')}
+            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-2xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+          >
+            Complete Registration
+          </button>
+        </div>
       </div>
     );
   }
