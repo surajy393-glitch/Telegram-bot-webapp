@@ -10,15 +10,22 @@ def _dsn() -> str:
         raise RuntimeError("DATABASE_URL / DB_URL is not set")
     return dsn
 
+def _get_sslmode() -> str:
+    """Determine SSL mode based on connection URL"""
+    dsn = _dsn()
+    if "localhost" in dsn or "127.0.0.1" in dsn:
+        return "disable"
+    return "require"
+
 def _exec(sql: str, params=()):
-    with psycopg2.connect(_dsn(), sslmode="require") as conn:
+    with psycopg2.connect(_dsn(), sslmode=_get_sslmode()) as conn:
         with conn.cursor() as cur:
             cur.execute(sql, params)
         conn.commit()
 
 def ensure_metric_columns():
     """Safe to call every boot. Uses valid Postgres syntax."""
-    with psycopg2.connect(_dsn(), sslmode="require") as conn:
+    with psycopg2.connect(_dsn(), sslmode=_get_sslmode()) as conn:
         with conn.cursor() as cur:
             # daily tracking helper
             cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS last_dialog_date DATE")
