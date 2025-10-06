@@ -335,32 +335,60 @@ const InstagramProfile = ({ user }) => {
           </div>
         </div>
 
-        {/* Content Tabs */}
+        {/* Content Tabs - Posts, Saved, Followers, Following */}
         <div className="border-t border-gray-200">
-          <div className="flex">
+          <div className="grid grid-cols-4">
             <button
               onClick={() => setActiveTab('posts')}
-              className={`flex-1 py-4 flex items-center justify-center border-b-2 transition-colors ${
+              className={`py-4 flex flex-col items-center justify-center border-b-2 transition-colors ${
                 activeTab === 'posts'
                   ? 'border-gray-800 text-gray-800'
                   : 'border-transparent text-gray-400'
               }`}
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M21 8.75H3A.75.75 0 012.25 8V6A3.75 3.75 0 016 2.25h12A3.75 3.75 0 0121.75 6v2a.75.75 0 01-.75.75zm0 0v7.5A3.75 3.75 0 0117.25 20H6.75A3.75 3.75 0 013 16.25V8.75M8.5 12.5h7" />
               </svg>
+              <span className="text-xs">Posts</span>
             </button>
             <button
               onClick={() => setActiveTab('saved')}
-              className={`flex-1 py-4 flex items-center justify-center border-b-2 transition-colors ${
+              className={`py-4 flex flex-col items-center justify-center border-b-2 transition-colors ${
                 activeTab === 'saved'
                   ? 'border-gray-800 text-gray-800'
                   : 'border-transparent text-gray-400'
               }`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
               </svg>
+              <span className="text-xs">Saved</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('followers')}
+              className={`py-4 flex flex-col items-center justify-center border-b-2 transition-colors ${
+                activeTab === 'followers'
+                  ? 'border-gray-800 text-gray-800'
+                  : 'border-transparent text-gray-400'
+              }`}
+            >
+              <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="text-xs">Followers</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('following')}
+              className={`py-4 flex flex-col items-center justify-center border-b-2 transition-colors ${
+                activeTab === 'following'
+                  ? 'border-gray-800 text-gray-800'
+                  : 'border-transparent text-gray-400'
+              }`}
+            >
+              <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className="text-xs">Following</span>
             </button>
           </div>
         </div>
