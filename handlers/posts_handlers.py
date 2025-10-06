@@ -1103,8 +1103,8 @@ async def cmd_public(update, context):
         )
         return
     
-    # Get the webapp URL for Mini App
-    webapp_url = os.environ.get("WEBAPP_URL", "https://80b36b2d-922c-49ab-bd43-31b478351840-00-1xprbvjyuj6eq.sisko.replit.dev")
+    # Get the webapp URL for Mini App - use EXTERNAL_URL from environment
+    webapp_url = os.environ.get("EXTERNAL_URL", "https://1e6b58ea-6ff7-4fd8-95b8-77ee1c0d7b30.preview.emergentagent.com")
     
     # Create WebApp button for direct launch
     keyboard = [
