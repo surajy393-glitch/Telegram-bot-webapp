@@ -39,7 +39,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     existing_user = await db.users.find_one({"tg_user_id": user_id})
     
     keyboard = [
-        [InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})],
+        [InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://social-debug.preview.emergentagent.com"})],
         [InlineKeyboardButton("👤 My Profile", callback_data="profile")],
         [InlineKeyboardButton("📱 Features", callback_data="features")]
     ]
@@ -80,7 +80,7 @@ async def profile_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_data = await db.users.find_one({"tg_user_id": user_id})
     
     if not user_data or not user_data.get("is_onboarded"):
-        keyboard = [[InlineKeyboardButton("🌐 Complete Setup", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+        keyboard = [[InlineKeyboardButton("🌐 Complete Setup", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
             "🚀 Complete your profile setup in the web app first!",
@@ -105,7 +105,7 @@ Age: {user_data.get('age', 'Not set')}
 Joined: {user_data.get('joined_at', datetime.datetime.utcnow()).strftime('%B %Y')}
 """
     
-    keyboard = [[InlineKeyboardButton("🌐 Open Profile", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+    keyboard = [[InlineKeyboardButton("🌐 Open Profile", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(profile_text, reply_markup=reply_markup, parse_mode='Markdown')
@@ -133,7 +133,7 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 🎉 Join the community and start sharing!
 """
     
-    keyboard = [[InlineKeyboardButton("🌐 Open App", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+    keyboard = [[InlineKeyboardButton("🌐 Open App", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(stats_text, reply_markup=reply_markup, parse_mode='Markdown')
@@ -171,7 +171,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 Click "Open Web App" to explore all features!
 """
-        keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+        keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(features_text, reply_markup=reply_markup, parse_mode='Markdown')
 
@@ -200,14 +200,14 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 Need more help? Just ask! 😊
 """
     
-    keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+    keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(help_text, reply_markup=reply_markup, parse_mode='Markdown')
 
 async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle text messages."""
-    keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://tg-bot-profile-debug.preview.emergentagent.com"})]]
+    keyboard = [[InlineKeyboardButton("🌐 Open Web App", web_app={"url": "https://social-debug.preview.emergentagent.com"})]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(

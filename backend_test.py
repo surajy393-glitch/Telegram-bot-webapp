@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://1e6b58ea-6ff7-4fd8-95b8-77ee1c0d7b30.preview.emergentagent.com/api"
+BACKEND_URL = "https://social-debug.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):

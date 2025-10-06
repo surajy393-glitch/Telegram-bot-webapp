@@ -117,7 +117,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Welcome back existing user
         keyboard = [
             [InlineKeyboardButton("🌐 Open Web App", 
-                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+                web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
             [InlineKeyboardButton("👤 My Profile", callback_data="profile"),
              InlineKeyboardButton("💕 Find Partner", callback_data="find_partner")],
             [InlineKeyboardButton("🎮 Fun & Games", callback_data="fun_games"),
@@ -154,7 +154,7 @@ Click "Open Web App" for the full experience!
     keyboard = [
         [InlineKeyboardButton("🚀 Start Registration", callback_data="start_registration")],
         [InlineKeyboardButton("🌐 Open Web App", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -428,7 +428,7 @@ async def handle_bio_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if success:
         keyboard = [
             [InlineKeyboardButton("🌐 Open Web App", 
-                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+                web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
             [InlineKeyboardButton("💕 Find Partner", callback_data="find_partner"),
              InlineKeyboardButton("👤 My Profile", callback_data="profile")]
         ]
@@ -501,7 +501,7 @@ async def profile_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     keyboard = [
         [InlineKeyboardButton("🌐 Open Profile", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com/profile"))],
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com/profile"))],
         [InlineKeyboardButton("✏️ Edit Profile", callback_data="edit_profile"),
          InlineKeyboardButton("📸 Add Photo", callback_data="add_photo")],
         [InlineKeyboardButton("💎 Upgrade Premium", callback_data="upgrade_premium")]
@@ -541,7 +541,7 @@ async def find_partner_command(update: Update, context: ContextTypes.DEFAULT_TYP
         keyboard = [
             [InlineKeyboardButton("⚙️ Adjust Preferences", callback_data="adjust_preferences")],
             [InlineKeyboardButton("🌐 Browse Web App", 
-                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]
+                web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -572,7 +572,7 @@ async def find_partner_command(update: Update, context: ContextTypes.DEFAULT_TYP
         [InlineKeyboardButton("💬 Send Message", callback_data=f"message_{match['tg_user_id']}")],
         [InlineKeyboardButton("🔄 Next Match", callback_data="next_match")],
         [InlineKeyboardButton("🌐 View on Web", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -632,7 +632,7 @@ What would you like to try?
         [InlineKeyboardButton("🎪 Live Events", callback_data="game_events"),
          InlineKeyboardButton("💎 Premium Games", callback_data="game_premium")],
         [InlineKeyboardButton("🌐 Play on Web", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -680,7 +680,7 @@ Ready to explore the community?
     
     keyboard = [
         [InlineKeyboardButton("🌐 Open Full Feed", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
         [InlineKeyboardButton("📸 Share Post", callback_data="create_post"),
          InlineKeyboardButton("📱 Add Story", callback_data="create_story")],
         [InlineKeyboardButton("👀 Browse Stories", callback_data="browse_stories"),
@@ -914,7 +914,7 @@ Thank you for being a premium member! 🎉
         
         keyboard = [
             [InlineKeyboardButton("🌐 Premium Web Features", 
-                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+                web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
             [InlineKeyboardButton("👑 Premium Games", callback_data="game_premium")],
             [InlineKeyboardButton("📞 Premium Support", callback_data="premium_support")]
         ]
@@ -1001,7 +1001,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Default response with quick actions
         keyboard = [
             [InlineKeyboardButton("🌐 Open Web App", 
-                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+                web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
             [InlineKeyboardButton("💕 Find Partner", callback_data="find_partner"),
              InlineKeyboardButton("👤 My Profile", callback_data="profile")]
         ]
@@ -1055,7 +1055,7 @@ Ready to expand your social circle?
         [InlineKeyboardButton("💬 My Matches", callback_data="view_matches"),
          InlineKeyboardButton("🔍 Find Friends", callback_data="find_friends")],
         [InlineKeyboardButton("🌐 Social Web App", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
         [InlineKeyboardButton("👥 Community", callback_data="community")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1102,7 +1102,7 @@ async def settings_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("🔔 Notifications", callback_data="edit_notifications"),
          InlineKeyboardButton("🔒 Privacy", callback_data="edit_privacy")],
         [InlineKeyboardButton("🌐 Web Settings", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com/settings"))]
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com/settings"))]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -1166,7 +1166,7 @@ Ready to start your social journey? Use /start! 🌟
     keyboard = [
         [InlineKeyboardButton("🚀 Get Started", callback_data="start_registration")],
         [InlineKeyboardButton("🌐 Open Web App", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))],
+            web_app=WebAppInfo(url="https://social-debug.preview.emergentagent.com"))],
         [InlineKeyboardButton("💎 Try Premium", callback_data="premium")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1203,7 +1203,7 @@ def main():
     # Run with polling
     logger.info("🚀 Starting Enhanced Instagram-Style Social Platform Bot...")
     logger.info("💕 Features: Matching, Stories, Games, Premium, Social Feed")
-    logger.info("🌐 Web App: https://tg-bot-profile-debug.preview.emergentagent.com")
+    logger.info("🌐 Web App: https://social-debug.preview.emergentagent.com")
     
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
