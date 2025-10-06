@@ -134,12 +134,8 @@ const RegistrationFlow = ({ onComplete }) => {
       localStorage.setItem('luvhive_user', JSON.stringify(userData));
       console.log('✅ User saved to localStorage with key: luvhive_user');
       
-      // Show success message
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert('🎉 स्वागत है LuvHive में! आपका प्रोफाइल बन गया है।');
-      } else {
-        alert('🎉 Registration Successful! Redirecting to your feed...');
-      }
+      // Show success message  
+      showAlert('🎉 Registration Successful! Welcome to LuvHive!');
       
       // Complete registration immediately (no setTimeout delay)
       console.log('🎯 Completing registration and navigating to feed');
