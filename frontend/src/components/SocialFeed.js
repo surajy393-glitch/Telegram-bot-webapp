@@ -10,6 +10,7 @@ import ShareModal from './ShareModal';
 import ReplyModal from './ReplyModal';
 import CommentsModal from './CommentsModal';
 import Avatar from './ui/Avatar';
+import mergeById from '../utils/mergeById';
 
 // Helper function to format time in IST
 const formatTimeIST = (timestamp) => {
