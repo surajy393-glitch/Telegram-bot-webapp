@@ -158,11 +158,7 @@ const RegistrationFlow = ({ onComplete }) => {
       // Show user-friendly error
       const errorMessage = error.message || 'रजिस्ट्रेशन में समस्या हुई। कृपया फिर से प्रयास करें।';
       
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert(`❌ ${errorMessage}`);
-      } else {
-        alert(`❌ ${errorMessage}`);
-      }
+      showAlert(`❌ ${errorMessage}`);
     }
   };
 
