@@ -302,12 +302,14 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
 
   const handleSubmit = async (e) => {
     e?.preventDefault?.();
-    if (isSubmitting) return;
+    if (isSubmitting) return;        // hard guard
     setIsSubmitting(true);
     // Always attach an AbortController so cancel / unmount won't leave spinner
     abortRef.current = new AbortController();
     try {
-      const created = await createPostFlow({ signal: abortRef.current.signal }); // ensure every fetch awaits
+      // Use an idempotency key per post attempt
+      const key = crypto.randomUUID();
+      const created = await createPostFlow({ signal: abortRef.current.signal, idempotencyKey: key }); // ensure every fetch awaits
 
       // 🔵 Only use one method to avoid duplicates
       if (onPostCreated) {
