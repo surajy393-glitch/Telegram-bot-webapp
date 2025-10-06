@@ -119,12 +119,12 @@ const InstagramProfile = ({ user }) => {
     const followingList = JSON.parse(localStorage.getItem(followingKey) || '[]');
     setFollowing(followingList);
 
-    // Update stats - posts count will be updated after backend fetch
-    setStats({
-      postsCount: userPosts.length,
+    // Update stats - followers and following counts (posts count updated above)
+    setStats(prevStats => ({
+      ...prevStats,
       followersCount: followersList.length,
       followingCount: followingList.length
-    });
+    }));
   };
 
   const handleSettingsUpdate = (newSettings) => {
