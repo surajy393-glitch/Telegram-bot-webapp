@@ -493,8 +493,19 @@ const InstagramProfile = ({ user }) => {
                         alt={person.name} 
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white text-lg font-bold">${person.name?.[0] || '👤'}</div>`;
+                          if (e.target && e.target.parentElement) {
+                            const initial = person.name?.[0]?.toUpperCase() || '👤';
+                            e.target.style.display = 'none';
+                            
+                            // Create fallback div safely
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = 'w-full h-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white text-lg font-bold rounded-full';
+                            fallbackDiv.textContent = initial;
+                            
+                            if (e.target.parentElement) {
+                              e.target.parentElement.appendChild(fallbackDiv);
+                            }
+                          }
                         }}
                       />
                     </div>
