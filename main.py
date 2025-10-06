@@ -781,7 +781,7 @@ def main():
     register_settings_handlers(app)
 
     # Profile handlers (view profile, edit gender/age/language)
-    register_profile_handlers(app)
+    # register_profile_handlers(app)  # Handler from deleted file
 
     # Premium handlers (benefits page, payment plans, referrals)
     register_premium_handlers(app)
