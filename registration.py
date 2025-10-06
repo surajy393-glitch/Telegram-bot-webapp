@@ -115,6 +115,11 @@ def _conn():
     Usage: with _conn() as con, con.cursor() as cur: ...
     """
     pool = _get_pool()
+    
+    # If pool is None (database not available), raise error
+    if pool is None:
+        raise RuntimeError("Database not available - bot running in limited mode")
+    
     conn = None
     max_retries = 3
 
