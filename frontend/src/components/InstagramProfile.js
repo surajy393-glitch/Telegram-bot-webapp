@@ -285,9 +285,9 @@ const InstagramProfile = ({ user }) => {
 
           {/* Name & Bio */}
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-1">{user.name}</h2>
-            {user.bio && (
-              <p className="text-gray-600 leading-relaxed">{user.bio}</p>
+            <h2 className="text-lg font-bold text-gray-800 mb-1">{currentUser.name}</h2>
+            {currentUser.bio && (
+              <p className="text-gray-600 leading-relaxed">{currentUser.bio}</p>
             )}
           </div>
 
