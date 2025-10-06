@@ -504,19 +504,15 @@ const InstagramProfile = ({ user }) => {
       {/* Modals */}
       {showEditProfile && (
         <EditProfile
-          user={user}
+          user={currentUser}
           onClose={() => setShowEditProfile(false)}
-          onProfileUpdated={() => {
-            setShowEditProfile(false);
-            // Refresh user data
-            window.location.reload();
-          }}
+          onSave={handleProfileUpdate}
         />
       )}
 
       {showSettings && (
         <Settings
-          user={user}
+          user={currentUser}
           onClose={() => setShowSettings(false)}
           onSettingsUpdate={handleSettingsUpdate}
         />
