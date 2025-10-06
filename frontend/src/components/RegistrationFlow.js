@@ -56,11 +56,7 @@ const RegistrationFlow = ({ onComplete }) => {
           errorMessage = 'कृपया सभी आवश्यक जानकारी भरें।';
       }
       
-      if (window.Telegram?.WebApp?.showAlert) {
-        window.Telegram.WebApp.showAlert(`⚠️ ${errorMessage}`);
-      } else {
-        alert(`⚠️ ${errorMessage}`);
-      }
+      showAlert(`⚠️ ${errorMessage}`);
       return;
     }
     
