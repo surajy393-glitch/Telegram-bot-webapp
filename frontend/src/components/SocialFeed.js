@@ -269,6 +269,41 @@ const SocialFeed = ({ user, theme }) => {
     return () => window.removeEventListener('post:created', handler);
   }, []);
 
+  // Listen for profile updates and refresh posts
+  useEffect(() => {
+    const handleProfileUpdate = (e) => {
+      const updatedUser = e.detail;
+      console.log('📝 Profile updated, refreshing posts with new avatar:', updatedUser);
+      
+      // Update posts to reflect new profile picture
+      setPosts(prevPosts => 
+        prevPosts.map(post => {
+          // Update posts from the same user
+          if (post.user && (
+            post.user.username === updatedUser.username || 
+            post.user.name === updatedUser.name ||
+            (user && (post.user.username === user.username || post.user.name === user.name))
+          )) {
+            return {
+              ...post,
+              user: {
+                ...post.user,
+                avatarUrl: updatedUser.avatarUrl || updatedUser.profilePic,
+                profilePic: updatedUser.profilePic || updatedUser.avatarUrl,
+                name: updatedUser.name,
+                username: updatedUser.username
+              }
+            };
+          }
+          return post;
+        })
+      );
+    };
+
+    window.addEventListener('profile:updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile:updated', handleProfileUpdate);
+  }, [user]);
+
   useEffect(() => {
     const loadPosts = () => {
       try {
