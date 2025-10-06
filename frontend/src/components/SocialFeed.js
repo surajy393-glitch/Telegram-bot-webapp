@@ -374,14 +374,14 @@ const SocialFeed = ({ user, theme }) => {
     
     // Add new post to the beginning of the current posts list
     setPosts(prev => {
-      const updatedPosts = [newPost, ...prev];
+      const updatedPosts = mergeById([newPost, ...prev], []);
       
       // Save user's posts to localStorage for profile display
       if (user && newPost.user && newPost.user.name === user.name) {
         const username = user.username || user.name || 'user';
         const userPostsKey = `luvhive_posts_${username}`;
         const existingUserPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
-        const updatedUserPosts = [newPost, ...existingUserPosts];
+        const updatedUserPosts = mergeById([newPost], existingUserPosts);
         localStorage.setItem(userPostsKey, JSON.stringify(updatedUserPosts));
         console.log('📝 User posts saved to localStorage for profile');
       }
