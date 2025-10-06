@@ -424,10 +424,41 @@ const createPostFlow = async ({ signal, idempotencyKey } = {}) => {
 
   let saveSuccess = false;
   
-  // Save post to user's profile with storage management
+  // Try to save to backend first
+  try {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    if (backendUrl) {
+      console.log('💾 Attempting to save post to backend...');
+      const response = await fetch(`${backendUrl}/api/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Dev-User': defaultUser.id || '123456789',
+          'X-Idempotency-Key': idempotencyKey || `post_${Date.now()}_${defaultUser.username}`
+        },
+        body: JSON.stringify({
+          content: postText,
+          media_urls: uploadedMediaUrls
+        })
+      });
+
+      if (response.ok) {
+        const savedPost = await response.json();
+        console.log('✅ Post saved to backend:', savedPost.id);
+        newPost.id = savedPost.id; // Use backend-generated ID
+        saveSuccess = true;
+      } else {
+        console.log('⚠️ Backend save failed, falling back to localStorage');
+      }
+    }
+  } catch (backendError) {
+    console.log('⚠️ Backend not available, using localStorage:', backendError.message);
+  }
+  
+  // Also save to localStorage as cache (always do this for offline support)
   try {
     const userPostsKey = `luvhive_posts_${defaultUser.username}`;
-    console.log('📝 Saving post to key:', userPostsKey);
+    console.log('📝 Saving post to localStorage key:', userPostsKey);
     let existingPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
     console.log('📝 Existing posts before:', existingPosts.length);
     
@@ -438,8 +469,7 @@ const createPostFlow = async ({ signal, idempotencyKey } = {}) => {
     
     existingPosts.unshift(newPost); // Add to beginning of array
     localStorage.setItem(userPostsKey, JSON.stringify(existingPosts));
-    console.log('📝 Posts after save:', existingPosts.length);
-    console.log('📝 Saved post data:', newPost);
+    console.log('📝 Post saved to localStorage. Total posts:', existingPosts.length);
     saveSuccess = true;
   } catch (error) {
     console.log('Storage error:', error);
