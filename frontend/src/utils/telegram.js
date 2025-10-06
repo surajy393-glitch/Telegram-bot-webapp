@@ -19,6 +19,50 @@ export const showAlert = (message) => {
 };
 
 /**
+ * Safely show a popup with buttons - with version compatibility
+ * @param {object} params - Popup parameters
+ */
+export const showPopup = (params) => {
+  try {
+    const version = getTelegramWebAppVersion();
+    
+    // Check if showPopup is supported (version 6.1 and above)
+    if (window.Telegram?.WebApp?.showPopup && 
+        typeof window.Telegram.WebApp.showPopup === 'function' &&
+        version && parseFloat(version) >= 6.1) {
+      window.Telegram.WebApp.showPopup(params);
+    } else {
+      // Fallback for older versions or unavailable showPopup
+      const message = params.message || params.title || 'Notification';
+      
+      if (params.buttons && params.buttons.length > 0) {
+        // For buttons, use confirm for yes/no type popups
+        const firstButton = params.buttons[0];
+        if (params.buttons.length === 1 || firstButton.type === 'ok' || firstButton.type === 'close') {
+          alert(message);
+          if (firstButton.callback) {
+            firstButton.callback();
+          }
+        } else {
+          const result = confirm(message);
+          const buttonIndex = result ? 0 : 1;
+          const selectedButton = params.buttons[buttonIndex];
+          if (selectedButton && selectedButton.callback) {
+            selectedButton.callback();
+          }
+        }
+      } else {
+        alert(message);
+      }
+    }
+  } catch (error) {
+    console.log('Telegram WebApp showPopup error:', error);
+    // Final fallback
+    alert(params.message || params.title || 'Notification');
+  }
+};
+
+/**
  * Safely show a confirm dialog with callback
  * @param {string} message - The confirmation message
  * @param {function} callback - Callback function with boolean result
