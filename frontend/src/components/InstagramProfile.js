@@ -161,6 +161,14 @@ const InstagramProfile = ({ user }) => {
     loadUserData(); // Refresh data
   };
 
+  const handleProfileUpdate = (updatedUser) => {
+    setCurrentUser(updatedUser);
+    // Update localStorage as well to ensure consistency
+    localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
+    setShowEditProfile(false);
+    loadUserData(); // Refresh data
+  };
+
   // Mock posts for demonstration (in real app, these would come from backend)
   const mockUserPosts = userPosts.length === 0 ? [
     {
