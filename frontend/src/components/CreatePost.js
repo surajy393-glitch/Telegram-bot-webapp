@@ -309,11 +309,14 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
     try {
       const created = await createPostFlow({ signal: abortRef.current.signal }); // ensure every fetch awaits
 
-      // 🔵 Optimistic feed update (if parent passes onPostCreated)
-      onPostCreated?.(created);
-      
-      // Emit event for cross-component updates
-      window.dispatchEvent(new CustomEvent('post:created', { detail: created }));
+      // 🔵 Only use one method to avoid duplicates
+      if (onPostCreated) {
+        // Parent component will handle the update
+        onPostCreated(created);
+      } else {
+        // Emit event for cross-component updates only if no parent callback
+        window.dispatchEvent(new CustomEvent('post:created', { detail: created }));
+      }
 
       // 🔔 Haptic/Toast (safe fallback to alert)
       try {
