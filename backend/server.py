@@ -299,22 +299,29 @@ async def get_me(user: dict = Depends(get_current_user)):
     
     if not db_user:
         return {
-            "id": user_id,
-            "display_name": user.get("first_name", "User"),
-            "username": user.get("username", f"user{user_id}"),
-            "is_onboarded": False
+            "user": {
+                "id": user_id,
+                "display_name": user.get("first_name", "User"),
+                "username": user.get("username", f"user{user_id}"),
+                "is_onboarded": False,
+                "followers_count": 0,
+                "following_count": 0,
+                "posts_count": 0
+            }
         }
     
     return {
-        "id": user_id,
-        "display_name": db_user.get("display_name"),
-        "username": db_user.get("username"),
-        "age": db_user.get("age"),
-        "avatar_file_id": db_user.get("avatar_file_id"),
-        "is_onboarded": True,
-        "followers_count": db_user.get("followers_count", 0),
-        "following_count": db_user.get("following_count", 0),
-        "posts_count": db_user.get("posts_count", 0)
+        "user": {
+            "id": user_id,
+            "display_name": db_user.get("display_name"),
+            "username": db_user.get("username"),
+            "age": db_user.get("age"),
+            "avatar_url": db_user.get("avatar_file_id"),
+            "is_onboarded": True,
+            "followers_count": db_user.get("followers_count", 0),
+            "following_count": db_user.get("following_count", 0),
+            "posts_count": db_user.get("posts_count", 0)
+        }
     }
 
 # ---------- Posts (My) ----------
