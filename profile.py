@@ -277,18 +277,17 @@ async def view_profile(update, context):
 # ===== Static DB initialization =====
 # Optional: safe to call on startup; leaves existing tables intact
 def init_profile_db() -> None:
-    try:
-        with _conn() as con, con.cursor() as cur:
-            cur.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                tg_user_id BIGINT UNIQUE NOT NULL,
-                gender TEXT,
-                age INTEGER,
-                country TEXT,
-                city TEXT,
-                language TEXT,
-                rating_up INTEGER DEFAULT 0,
+    with _conn() as con, con.cursor() as cur:
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            tg_user_id BIGINT UNIQUE NOT NULL,
+            gender TEXT,
+            age INTEGER,
+            country TEXT,
+            city TEXT,
+            language TEXT,
+            rating_up INTEGER DEFAULT 0,
             rating_down INTEGER DEFAULT 0,
             report_count INTEGER DEFAULT 0,
             dialogs_total INTEGER DEFAULT 0,
