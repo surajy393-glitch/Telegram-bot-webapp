@@ -71,6 +71,9 @@ const InstagramProfile = ({ user }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          ...(window.Telegram?.WebApp?.initData ? {
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+          } : {})
         },
         credentials: 'include'
       });
