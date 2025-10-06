@@ -401,26 +401,22 @@ async def create_post(data: PostCreate, request: Request, user: dict = Depends(g
     if not key:
         raise HTTPException(status_code=400, detail="X-Idempotency-Key required")
 
-    # 1) If exists, return the same post
-    existing_post = await db.posts.find_one({
+    profile_id = await db.users.find_one({"tg_user_id": user_id})
+    if not profile_id:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    profile_id = str(profile_id["_id"])
+
+    existing = await db.posts.find_one({
         "user_id": user_id,
         "idempotency_key": key
     })
-    if existing_post:
-        existing_post["id"] = str(existing_post["_id"])
-        del existing_post["_id"]
-        return existing_post
+    if existing:
+        existing["id"] = str(existing["_id"])
+        del existing["_id"]
+        return existing
 
-    # 2) Canonical profile resolve per request (one source of truth)
-    user_profile = await db.users.find_one({"tg_user_id": user_id})
-    if not user_profile:
-        raise HTTPException(status_code=404, detail="User profile not found")
-    
-    profile_id = str(user_profile["_id"])
-
-    # 3) Otherwise, create safely (set profile_id too)
     try:
-        post_doc = {
+        created = await db.posts.insert_one({
             "user_id": user_id,
             "profile_id": profile_id,
             "content": data.content,
@@ -429,32 +425,26 @@ async def create_post(data: PostCreate, request: Request, user: dict = Depends(g
             "likes_count": 0,
             "comments_count": 0,
             "idempotency_key": key
-        }
+        })
         
-        result = await db.posts.insert_one(post_doc)
-        
-        # Increment user's posts count
         await db.users.update_one(
             {"tg_user_id": user_id},
             {"$inc": {"posts_count": 1}}
         )
         
-        created_post = await db.posts.find_one({"_id": result.inserted_id})
-        created_post["id"] = str(created_post["_id"])
-        del created_post["_id"]
-        return created_post
-        
-    except Exception as e:
-        # Race-safe: if two requests try concurrently, return existing
-        if "duplicate" in str(e).lower() or "unique" in str(e).lower():
-            existing_post = await db.posts.find_one({
-                "user_id": user_id,
-                "idempotency_key": key
-            })
-            if existing_post:
-                existing_post["id"] = str(existing_post["_id"])
-                del existing_post["_id"]
-                return existing_post
+        result = await db.posts.find_one({"_id": created.inserted_id})
+        result["id"] = str(result["_id"])
+        del result["_id"]
+        return result
+    except:
+        existing = await db.posts.find_one({
+            "user_id": user_id,
+            "idempotency_key": key
+        })
+        if existing:
+            existing["id"] = str(existing["_id"])
+            del existing["_id"]
+            return existing
         raise
 
 @app.post("/api/upload-photo")
