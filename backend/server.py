@@ -365,6 +365,33 @@ async def get_posts(user: dict = Depends(get_current_user)):
     
     return posts
 
+@app.get("/api/profile/posts")
+async def get_profile_posts(user: dict = Depends(get_current_user)):
+    """Get posts for user's profile."""
+    user_profile = await db.users.find_one({"tg_user_id": user["id"]})
+    if not user_profile:
+        return []
+    
+    profile_id = str(user_profile["_id"])
+    
+    # Query posts by profile_id
+    posts = await db.posts.find({"profile_id": profile_id}).sort("created_at", -1).to_list(100)
+    
+    # Add user info to posts
+    for post in posts:
+        post_user = await db.users.find_one({"tg_user_id": post["user_id"]})
+        if post_user:
+            post["user"] = {
+                "id": post_user["tg_user_id"],
+                "display_name": post_user.get("display_name", "User"),
+                "username": post_user.get("username", f"user{post_user['tg_user_id']}"),
+                "avatar_file_id": post_user.get("avatar_file_id")
+            }
+        post["id"] = str(post["_id"])
+        del post["_id"]  # Remove the ObjectId field
+    
+    return posts
+
 @app.post("/api/posts")
 async def create_post(data: PostCreate, request: Request, user: dict = Depends(get_current_user)):
     """Create a new post."""
