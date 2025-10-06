@@ -4,10 +4,14 @@ import logging
 import asyncio
 import datetime
 import pytz
+from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 from telegram.error import TelegramError, TimedOut, RetryAfter, NetworkError, Forbidden
 import re  # Added re import for regex escaping
+
+# Load environment variables
+load_dotenv()
 
 # Import MS Dhoni Performance System 🏏
 from utils.performance_optimizer import dhoni_optimizer, apply_ms_dhoni_mode, get_performance_optimizer
