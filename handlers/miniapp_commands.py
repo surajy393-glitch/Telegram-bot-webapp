@@ -94,10 +94,13 @@ async def cb_miniapp_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "💕 Experience authentic connections like never before!"
     )
     
+    # Get the webapp URL from environment variable
+    webapp_url = os.environ.get("EXTERNAL_URL", "https://1e6b58ea-6ff7-4fd8-95b8-77ee1c0d7b30.preview.emergentagent.com")
+    
     keyboard = [
         [InlineKeyboardButton(
             "🚀 Enter LuvHive Now", 
-            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com/")
+            web_app=WebAppInfo(url=f"{webapp_url}/")
         )],
         [InlineKeyboardButton("⬅️ Back", callback_data="main_menu")]
     ]
