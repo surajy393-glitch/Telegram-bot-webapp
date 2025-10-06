@@ -650,7 +650,7 @@ def main():
 
     chat.init_db()
     prof.init_profile_db()
-    # ensure_metric_columns()  # Function from deleted file
+    ensure_metric_columns()
 
     # >>> PATCH START: stronger network timeouts for Replit/slow networks
     from telegram.ext import JobQueue, PicklePersistence
