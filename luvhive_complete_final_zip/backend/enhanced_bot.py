@@ -602,7 +602,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif text == BTN_PUBLIC_FEED:
         # Open webapp when Public Feed is clicked
         keyboard = [[InlineKeyboardButton("🌐 Open Social Feed", 
-            web_app=WebAppInfo(url="https://bot-web-interface.preview.emergentagent.com"))]]
+            web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         feed_text = """
@@ -708,7 +708,7 @@ async def find_partner_command(update: Update, context: ContextTypes.DEFAULT_TYP
         "💕 **Finding Partners...**\n\nThis feature is being enhanced! Use the web app for full matching experience.",
         reply_markup=InlineKeyboardMarkup([[
             InlineKeyboardButton("🌐 Open Matching", 
-                web_app=WebAppInfo(url="https://bot-web-interface.preview.emergentagent.com"))
+                web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))
         ]])
     )
 
@@ -799,7 +799,7 @@ Ready to expand your social circle?
 """
     
     keyboard = [[InlineKeyboardButton("🌐 Open Social Network", 
-        web_app=WebAppInfo(url="https://bot-web-interface.preview.emergentagent.com"))]]
+        web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup)
@@ -815,7 +815,7 @@ Use the web app for full settings control.
 """
     
     keyboard = [[InlineKeyboardButton("🌐 Open Settings", 
-        web_app=WebAppInfo(url="https://bot-web-interface.preview.emergentagent.com"))]]
+        web_app=WebAppInfo(url="https://tg-bot-profile-debug.preview.emergentagent.com"))]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup)
@@ -916,7 +916,7 @@ def main():
     # Run with polling
     logger.info("🚀 Starting Enhanced Social Platform Bot...")
     logger.info("💕 Features: Matching, Stories, Games, Premium, Social Feed")
-    logger.info("🌐 Web App: https://bot-web-interface.preview.emergentagent.com")
+    logger.info("🌐 Web App: https://tg-bot-profile-debug.preview.emergentagent.com")
     
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
