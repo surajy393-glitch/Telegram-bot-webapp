@@ -18,26 +18,62 @@ export default function MyProfile() {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
       
-      // Load user
-      const userRes = await fetch(`${backendUrl}/api/me`, {
-        headers: { 'X-Dev-User': '647778438' }
-      });
+      // Get user from localStorage first
+      const localUser = localStorage.getItem('luvhive_user');
+      let currentUser = null;
       
-      if (userRes.ok) {
-        const data = await userRes.json();
-        setUser(data.user || data);
-        setNewBio(data.user?.bio || data.bio || "");
+      if (localUser) {
+        try {
+          currentUser = JSON.parse(localUser);
+          console.log('✅ User from localStorage:', currentUser.username);
+        } catch (e) {
+          console.error('Failed to parse localStorage user:', e);
+        }
       }
       
-      // Load posts
-      const postsRes = await fetch(`${backendUrl}/api/my/posts`, {
-        headers: { 'X-Dev-User': '647778438' }
-      });
-      
-      if (postsRes.ok) {
-        const data = await postsRes.json();
-        setPosts(data.posts || []);
+      // If no user in localStorage, try backend with dev user
+      if (!currentUser) {
+        console.log('⚠️ No user in localStorage, using dev mode');
+        const userRes = await fetch(`${backendUrl}/api/me`, {
+          headers: { 'X-Dev-User': '123456789' }
+        });
+        
+        if (userRes.ok) {
+          const data = await userRes.json();
+          currentUser = data.user || data;
+        }
       }
+      
+      if (currentUser) {
+        setUser(currentUser);
+        setNewBio(currentUser.bio || "");
+        
+        // Load posts from backend using username
+        try {
+          const postsRes = await fetch(`${backendUrl}/api/profile/posts`, {
+            headers: { 
+              'X-Dev-User': '123456789',
+              'X-Username': currentUser.username || 'luvsociety'
+            }
+          });
+          
+          if (postsRes.ok) {
+            const postsData = await postsRes.json();
+            console.log('✅ Posts from backend:', postsData.length || 0);
+            setPosts(postsData || []);
+          } else {
+            console.log('⚠️ Failed to load posts from backend');
+            // Fallback to localStorage posts
+            const localPosts = localStorage.getItem(`luvhive_posts_${currentUser.username}`);
+            if (localPosts) {
+              setPosts(JSON.parse(localPosts));
+            }
+          }
+        } catch (postError) {
+          console.error('Error loading posts:', postError);
+        }
+      }
+      
     } catch (error) {
       console.error('Error loading profile:', error);
     } finally {
