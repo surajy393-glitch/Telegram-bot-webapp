@@ -340,12 +340,13 @@ export default function MyProfile() {
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-semibold text-white">{user.display_name}</span>
                         <span className="text-white/50 text-xs">
-                          {post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Just now'}
+                          {post.created_at ? new Date(post.created_at).toLocaleDateString() : 
+                           post.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'Just now'}
                         </span>
                       </div>
                       
-                      {post.text && (
-                        <p className="text-white/90 mb-3 leading-relaxed">{post.text}</p>
+                      {(post.text || post.content) && (
+                        <p className="text-white/90 mb-3 leading-relaxed">{post.text || post.content}</p>
                       )}
                       
                       {post.photo_url && (
@@ -356,6 +357,20 @@ export default function MyProfile() {
                             className="w-full h-auto"
                             onError={(e) => e.target.style.display = 'none'}
                           />
+                        </div>
+                      )}
+                      
+                      {post.images && post.images.length > 0 && (
+                        <div className="rounded-xl overflow-hidden mb-3">
+                          {post.images.map((img, idx) => (
+                            <img
+                              key={idx}
+                              src={img}
+                              alt="Post"
+                              className="w-full h-auto mb-2 last:mb-0"
+                              onError={(e) => e.target.style.display = 'none'}
+                            />
+                          ))}
                         </div>
                       )}
                       
