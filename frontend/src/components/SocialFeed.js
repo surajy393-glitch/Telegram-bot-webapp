@@ -278,7 +278,7 @@ const SocialFeed = ({ user, theme }) => {
       
       // Update posts to reflect new profile picture
       setPosts(prevPosts => 
-        prevPosts.map(post => {
+        mergeById(prevPosts.map(post => {
           // Update posts from the same user
           if (post.user && (
             post.user.username === updatedUser.username || 
