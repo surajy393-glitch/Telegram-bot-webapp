@@ -321,11 +321,16 @@ const CreatePost = ({ user, onClose, onPostCreated }) => {
       } catch {}
       (window?.toast?.success || window?.sonner?.toast?.success || alert)('Posted!');
 
-      // ✅ Feed/Home pe hi raho:
-      navigate(FEED_ROUTE, { replace: true }); // Next.js: router.replace(FEED_ROUTE)
-
-      // Clear local form state AFTER navigate (if this page persists)
-      // setText(''); setFiles([]);
+      // ✅ Close modal and go back to feed:
+      onClose?.(); // Close the create post modal first
+      
+      // Clear form state
+      setPostText('');
+      setSelectedImages([]);
+      setSelectedVideos([]);
+      setMood('happy');
+      setSelectedMusic(null);
+      setSelectedLocation('');
     } catch (err) {
       console.error(err);
       (window?.toast?.error || alert)(err?.message || 'Failed to post');
