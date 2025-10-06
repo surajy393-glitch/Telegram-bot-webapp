@@ -597,30 +597,25 @@ def _is_blocked(viewer: int, author: int) -> bool:
         return cur.fetchone() is not None
 
 def main():
-    # Initialize all DB tables (with error handling for database issues)
-    try:
-        reg.init_db()
-        reg.ensure_verification_columns()
-        reg.ensure_reports_table()
-        reg.ensure_ban_columns()
-        reg.ensure_feature_columns()
-        reg.ensure_questions_table()
-        reg.ensure_friend_requests_table()
-        reg.ensure_leaderboard_columns()
-        reg.ensure_profile_upgrade_columns()
-        reg.ensure_public_feed_columns()
-        reg.ensure_social_tables()
-        reg.ensure_secret_crush_table()
-        reg.ensure_leaderboard_columns()
-        reg.ensure_profile_upgrade_columns()
-        reg.ensure_public_feed_columns()
-        reg.ensure_blocked_users_table()
-        reg.ensure_age_pref_columns()
-        reg.ensure_forward_column()
-        log.info("✅ Database tables initialized")
-    except Exception as e:
-        log.error(f"❌ Database initialization failed: {e}")
-        log.warning("⚠️ Bot will run in LIMITED MODE - some features may not work")
+    # Initialize all DB tables
+    reg.init_db()
+    reg.ensure_verification_columns()
+    reg.ensure_reports_table()
+    reg.ensure_ban_columns()
+    reg.ensure_feature_columns()
+    reg.ensure_questions_table()
+    reg.ensure_friend_requests_table()
+    reg.ensure_leaderboard_columns()
+    reg.ensure_profile_upgrade_columns()
+    reg.ensure_public_feed_columns()
+    reg.ensure_social_tables()
+    reg.ensure_secret_crush_table()
+    reg.ensure_leaderboard_columns()
+    reg.ensure_profile_upgrade_columns()
+    reg.ensure_public_feed_columns()
+    reg.ensure_blocked_users_table()
+    reg.ensure_age_pref_columns()
+    reg.ensure_forward_column()
 
     # Initialize feed posts tables
     try:
