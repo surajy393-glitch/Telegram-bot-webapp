@@ -64,11 +64,19 @@ const MyProfile = ({ user }) => {
         if (response.ok) {
           const posts = await response.json();
           console.log('✅ Fetched posts:', posts);
-          setUserPosts(posts);
+          
+          // Transform posts to match frontend expectations
+          const transformedPosts = posts.map(post => ({
+            ...post,
+            images: post.media_urls || post.images || [], // Map media_urls to images
+            video: post.video || (post.media_urls && post.media_urls.find(url => url.includes('.mp4') || url.includes('video'))) || null
+          }));
+          
+          setUserPosts(transformedPosts);
           
           // Calculate stats from posts
-          const totalSparks = posts.reduce((sum, post) => sum + (post.likes?.length || 0), 0);
-          const totalComments = posts.reduce((sum, post) => sum + (post.comments?.length || 0), 0);
+          const totalSparks = posts.reduce((sum, post) => sum + (post.likes?.length || post.likes_count || 0), 0);
+          const totalComments = posts.reduce((sum, post) => sum + (post.comments?.length || post.comments_count || 0), 0);
           
           setStats({
             posts: posts.length,
