@@ -134,19 +134,24 @@ class BackendTester:
                 "media_urls": ["https://example.com/test-image.jpg"]
             }
             
+            # Add required X-Idempotency-Key header
+            headers_with_key = self.headers.copy()
+            headers_with_key["X-Idempotency-Key"] = f"test-post-{int(datetime.now().timestamp())}"
+            
             async with self.session.post(f"{BACKEND_URL}/posts", 
-                                       headers=self.headers, 
+                                       headers=headers_with_key, 
                                        json=post_data) as response:
                 if response.status == 200:
                     data = await response.json()
-                    if data.get("success") and data.get("post_id"):
-                        self.log_result("Post Creation API", True, f"Post created with ID: {data['post_id']}")
-                        return data["post_id"]
+                    if data.get("id"):
+                        self.log_result("Post Creation API", True, f"Post created with ID: {data['id']}")
+                        return data["id"]
                     else:
                         self.log_result("Post Creation API", False, f"Creation failed: {data}")
                         return None
                 else:
-                    self.log_result("Post Creation API", False, f"HTTP {response.status}")
+                    response_text = await response.text()
+                    self.log_result("Post Creation API", False, f"HTTP {response.status}: {response_text[:200]}")
                     return None
         except Exception as e:
             self.log_result("Post Creation API", False, f"Error: {str(e)}")
