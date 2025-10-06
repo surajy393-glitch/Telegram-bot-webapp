@@ -90,10 +90,6 @@ function App() {
           <Route path="/whats-new" element={<WhatsNew theme={theme} />} />
           <Route 
             path="/profile" 
-            element={<UserProfile user={user} theme={theme} />} 
-          />
-          <Route 
-            path="/instagram-profile" 
             element={<InstagramProfile user={user} />} 
           />
           <Route 
