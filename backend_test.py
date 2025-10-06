@@ -691,6 +691,158 @@ class BackendTester:
         except Exception as e:
             self.log_result("Status Endpoints", False, f"Error: {str(e)}")
 
+    async def test_specific_review_request(self):
+        """Test the specific endpoints mentioned in the review request"""
+        print("\n🎯 TESTING SPECIFIC REVIEW REQUEST ENDPOINTS")
+        print("=" * 60)
+        
+        # Test user 'luvsociety' with ID 123456789
+        test_user_id = 123456789
+        test_username = "luvsociety"
+        
+        # Headers for luvsociety user
+        luvsociety_headers = {
+            "X-Dev-User": str(test_user_id),
+            "X-Username": test_username,
+            "Content-Type": "application/json"
+        }
+        
+        try:
+            # 1. Test User Profile Endpoint: GET /api/me with X-Username: luvsociety header
+            print(f"\n1️⃣ Testing User Profile Endpoint for user '{test_username}'")
+            async with self.session.get(f"{BACKEND_URL}/me", headers=luvsociety_headers) as response:
+                if response.status == 200:
+                    user_data = await response.json()
+                    user_info = user_data.get("user", {})
+                    
+                    # Check if user has expected data
+                    if (user_info.get("display_name") == "Luv Society" and 
+                        user_info.get("username") == test_username and
+                        user_info.get("posts_count") == 3):
+                        self.log_result("User Profile - luvsociety", True, 
+                                      f"✅ Found user: {user_info.get('display_name')} (@{user_info.get('username')}) with {user_info.get('posts_count')} posts")
+                    else:
+                        self.log_result("User Profile - luvsociety", False, 
+                                      f"❌ User data mismatch. Expected: Luv Society (@luvsociety) with 3 posts. Got: {user_info.get('display_name')} (@{user_info.get('username')}) with {user_info.get('posts_count')} posts")
+                else:
+                    self.log_result("User Profile - luvsociety", False, f"HTTP {response.status}")
+            
+            # 2. Test Profile Posts Endpoint: GET /api/profile/posts with X-Username: luvsociety
+            print(f"\n2️⃣ Testing Profile Posts Endpoint for user '{test_username}'")
+            async with self.session.get(f"{BACKEND_URL}/profile/posts", headers=luvsociety_headers) as response:
+                if response.status == 200:
+                    posts = await response.json()
+                    
+                    if isinstance(posts, list) and len(posts) == 3:
+                        self.log_result("Profile Posts - luvsociety", True, 
+                                      f"✅ Retrieved {len(posts)} posts for user {test_username}")
+                        
+                        # Check if posts have proper user information
+                        if posts:
+                            post = posts[0]
+                            if ("user" in post and 
+                                post["user"].get("username") == test_username and
+                                "created_at" in post):
+                                self.log_result("Profile Posts - User Info", True, 
+                                              "✅ Posts include proper user information")
+                                
+                                # Check sorting (created_at descending)
+                                if len(posts) > 1:
+                                    from datetime import datetime
+                                    try:
+                                        first_time = datetime.fromisoformat(posts[0]["created_at"].replace('Z', '+00:00'))
+                                        second_time = datetime.fromisoformat(posts[1]["created_at"].replace('Z', '+00:00'))
+                                        if first_time >= second_time:
+                                            self.log_result("Profile Posts - Sorting", True, 
+                                                          "✅ Posts sorted by created_at descending")
+                                        else:
+                                            self.log_result("Profile Posts - Sorting", False, 
+                                                          "❌ Posts not sorted correctly")
+                                    except:
+                                        self.log_result("Profile Posts - Sorting", False, 
+                                                      "❌ Cannot verify sorting due to timestamp format issues")
+                            else:
+                                self.log_result("Profile Posts - User Info", False, 
+                                              "❌ Posts missing proper user information")
+                    else:
+                        self.log_result("Profile Posts - luvsociety", False, 
+                                      f"❌ Expected 3 posts, got {len(posts) if isinstance(posts, list) else 'non-list'}")
+                else:
+                    self.log_result("Profile Posts - luvsociety", False, f"HTTP {response.status}")
+            
+            # 3. Test Create Post Endpoint: POST /api/posts with X-Dev-User: 123456789
+            print(f"\n3️⃣ Testing Create Post Endpoint for user ID {test_user_id}")
+            post_data = {
+                "content": "Testing new post creation from backend!",
+                "media_urls": []
+            }
+            
+            create_headers = luvsociety_headers.copy()
+            create_headers["X-Idempotency-Key"] = f"review-test-{int(datetime.now().timestamp())}"
+            
+            async with self.session.post(f"{BACKEND_URL}/posts", 
+                                       headers=create_headers, 
+                                       json=post_data) as response:
+                if response.status == 200:
+                    new_post = await response.json()
+                    if new_post.get("id"):
+                        self.log_result("Create Post - luvsociety", True, 
+                                      f"✅ Post created successfully with ID: {new_post['id']}")
+                        new_post_id = new_post["id"]
+                        
+                        # Verify post content
+                        if new_post.get("content") == post_data["content"]:
+                            self.log_result("Create Post - Content", True, 
+                                          "✅ Post content saved correctly")
+                        else:
+                            self.log_result("Create Post - Content", False, 
+                                          f"❌ Content mismatch. Expected: '{post_data['content']}', Got: '{new_post.get('content')}'")
+                    else:
+                        self.log_result("Create Post - luvsociety", False, 
+                                      f"❌ Post creation failed: {new_post}")
+                        new_post_id = None
+                else:
+                    response_text = await response.text()
+                    self.log_result("Create Post - luvsociety", False, 
+                                  f"HTTP {response.status}: {response_text[:200]}")
+                    new_post_id = None
+            
+            # 4. Verify Post Persistence: GET /api/profile/posts again
+            print(f"\n4️⃣ Verifying Post Persistence for user '{test_username}'")
+            await asyncio.sleep(1)  # Brief delay to ensure database consistency
+            
+            async with self.session.get(f"{BACKEND_URL}/profile/posts", headers=luvsociety_headers) as response:
+                if response.status == 200:
+                    updated_posts = await response.json()
+                    
+                    if isinstance(updated_posts, list):
+                        expected_count = 4  # 3 original + 1 new
+                        if len(updated_posts) == expected_count:
+                            self.log_result("Post Persistence - Count", True, 
+                                          f"✅ Now showing {len(updated_posts)} posts (3 original + 1 new)")
+                            
+                            # Check if new post is at the top (most recent)
+                            if (updated_posts and 
+                                updated_posts[0].get("content") == "Testing new post creation from backend!"):
+                                self.log_result("Post Persistence - Order", True, 
+                                              "✅ New post appears at the top of the list")
+                            else:
+                                self.log_result("Post Persistence - Order", False, 
+                                              "❌ New post not found at top of list")
+                        else:
+                            self.log_result("Post Persistence - Count", False, 
+                                          f"❌ Expected {expected_count} posts, got {len(updated_posts)}")
+                    else:
+                        self.log_result("Post Persistence - Response", False, 
+                                      f"❌ Expected list, got {type(updated_posts)}")
+                else:
+                    self.log_result("Post Persistence - Access", False, f"HTTP {response.status}")
+            
+            print(f"\n✅ REVIEW REQUEST TESTING COMPLETED")
+            
+        except Exception as e:
+            self.log_result("Review Request Testing", False, f"Error: {str(e)}")
+
     async def run_all_tests(self):
         """Run comprehensive backend API tests"""
         print("🚀 Starting LuvHive Backend API Tests")
@@ -747,6 +899,9 @@ class BackendTester:
             # Test specific review request: Profile Posts Endpoint
             print("\n🎯 Testing Review Request - Profile Posts Endpoint:")
             await self.test_profile_posts_endpoint()
+            
+            # **NEW: Test the specific review request endpoints**
+            await self.test_specific_review_request()
             
             # Test utility endpoints
             await self.test_status_endpoints()
