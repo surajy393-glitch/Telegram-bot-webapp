@@ -12,6 +12,7 @@ const MyProfile = ({ user }) => {
   const [showSettings, setShowSettings] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBio, setEditedBio] = useState('');
+  const [uploadingPic, setUploadingPic] = useState(false);
   const [stats, setStats] = useState({
     posts: 0,
     sparks: 0,
