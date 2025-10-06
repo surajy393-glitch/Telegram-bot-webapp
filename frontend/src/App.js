@@ -137,10 +137,6 @@ function App() {
           />
           <Route path="/whats-new" element={<WhatsNew theme={theme} />} />
           <Route 
-            path="/profile" 
-            element={<MyProfile user={user} />} 
-          />
-          <Route 
             path="/discover" 
             element={<Discover user={user} theme={theme} />} 
           />
