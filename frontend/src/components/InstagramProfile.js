@@ -124,7 +124,7 @@ const InstagramProfile = ({ user }) => {
     setUserPosts(allPosts);
 
     // Load saved posts with mock data
-    const savedPostsKey = `luvhive_saved_${currentUser.username}`;
+    const savedPostsKey = `luvhive_saved_${username}`;
     let saved = JSON.parse(localStorage.getItem(savedPostsKey) || '[]');
     if (saved.length === 0) {
       saved = [
