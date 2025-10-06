@@ -171,7 +171,12 @@ const MyProfile = ({ user }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const updatedUser = { ...currentUser, avatarUrl: data.url, avatar_url: data.url };
+        const newAvatarUrl = data.photo_url || data.url;
+        const updatedUser = { 
+          ...currentUser, 
+          avatarUrl: newAvatarUrl, 
+          avatar_url: newAvatarUrl 
+        };
         setCurrentUser(updatedUser);
         localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
         alert('Profile picture updated successfully! ✨');
