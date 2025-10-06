@@ -74,7 +74,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
         avatarUrl,
         avatarVersion: (user?.avatarVersion || 0) + (newProfileImage ? 1 : 0)
       };
-      localStorage.setItem('lh_user', JSON.stringify(updated));
+      localStorage.setItem('luvhive_user', JSON.stringify(updated));
       window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
 
       (window?.toast?.success || alert)('Profile updated');
