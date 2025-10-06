@@ -133,9 +133,9 @@ from utils.db_integrity import apply_missing_constraints
 from utils.maintenance import maintenance_system
 from utils.privacy_compliance import privacy_manager
 from admin_commands import bulletproof_handlers
-from profile_metrics import ensure_metric_columns
+# from profile_metrics import ensure_metric_columns  # File deleted
 from handlers.settings_handlers import register as register_settings_handlers
-from handlers.profile_handlers import register as register_profile_handlers
+# from handlers.profile_handlers import register as register_profile_handlers  # File deleted
 from handlers.premium_handlers import register as register_premium_handlers
 from handlers.admin_handlers import register as register_admin_handlers
 from handlers.left_menu import register as register_left_menu
