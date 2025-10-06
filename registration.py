@@ -28,8 +28,13 @@ def _dsn_with_ssl(url: str) -> str:
     """Ensure SSL is enforced in connection string"""
     if not url:
         raise RuntimeError("DATABASE_URL missing")
-    # add sslmode=require if absent
-    if "sslmode=" not in url:
+    # add sslmode=require if absent - but disable for localhost
+    if "localhost" in url or "127.0.0.1" in url:
+        # Local database - don't require SSL
+        if "sslmode=" not in url:
+            sep = "&" if "?" in url else "?"
+            url = f"{url}{sep}sslmode=disable"
+    elif "sslmode=" not in url:
         sep = "&" if "?" in url else "?"
         url = f"{url}{sep}sslmode=require"
     return url
@@ -38,13 +43,18 @@ def _get_pool() -> SimpleConnectionPool:
     """Get or create connection pool with SSL enforcement"""
     global _POOL
     if _POOL is None:
-        dsn = _dsn_with_ssl(DB_URL)
-        _POOL = SimpleConnectionPool(
-            minconn=2, maxconn=15, dsn=dsn,
-            keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5,
-            connect_timeout=3, application_name="luvhive-bot"
-        )
-        log.info("✅ SSL-enabled connection pool created")
+        try:
+            dsn = _dsn_with_ssl(DB_URL)
+            _POOL = SimpleConnectionPool(
+                minconn=2, maxconn=15, dsn=dsn,
+                keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5,
+                connect_timeout=3, application_name="luvhive-bot"
+            )
+            log.info("✅ SSL-enabled connection pool created")
+        except Exception as e:
+            log.error(f"❌ Failed to create database pool: {e}")
+            log.warning("⚠️ Bot will run in LIMITED MODE without database")
+            _POOL = None
     return _POOL
 
 # --- tiny retry wrapper for transient DB hiccups ---
