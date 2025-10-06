@@ -5,13 +5,15 @@ import Settings from './Settings';
 
 const InstagramProfile = ({ user }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('posts'); // 'posts', 'saved'
+  const [activeTab, setActiveTab] = useState('posts'); // 'posts', 'saved', 'followers', 'following'
   const [userPosts, setUserPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     postsCount: 0,
     followersCount: 0,
