@@ -577,9 +577,11 @@ async function uploadOne(mediaObj, { signal } = {}) {
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50"
       style={{ pointerEvents: 'auto' }}
+      onClick={onClose}
     >
       <div 
         className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md mx-4 max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
