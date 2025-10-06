@@ -72,6 +72,7 @@ const EditProfile = ({ user, onClose, onSave }) => {
         username: username.trim(),
         bio: bio.trim(),
         avatarUrl,
+        profilePic: avatarUrl, // Also update profilePic for compatibility
         avatarVersion: (user?.avatarVersion || 0) + (newProfileImage ? 1 : 0)
       };
       localStorage.setItem('luvhive_user', JSON.stringify(updated));
