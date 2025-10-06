@@ -483,7 +483,8 @@ const SocialFeed = ({ user, theme }) => {
         try {
           // Remove post from state
           setPosts(posts => {
-            const updatedPosts = posts.filter(p => p.id !== post.id);
+            const filteredPosts = posts.filter(p => p.id !== post.id);
+            const updatedPosts = mergeById(filteredPosts, []);
             
             // Also remove from user's localStorage posts
             if (user && post.user && post.user.name === user.name) {
