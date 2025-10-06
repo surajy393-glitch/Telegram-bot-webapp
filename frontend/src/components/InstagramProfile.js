@@ -20,11 +20,44 @@ const InstagramProfile = ({ user }) => {
     followingCount: 0
   });
 
+  // Load user data on component mount
   useEffect(() => {
     if (user) {
-      loadUserData();
+      setCurrentUser(user);
+      setLoading(false);
+    } else {
+      // Try to get user from localStorage
+      const savedUser = localStorage.getItem('luvhive_user');
+      if (savedUser) {
+        try {
+          const userData = JSON.parse(savedUser);
+          setCurrentUser(userData);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
     }
   }, [user]);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadUserData();
+    }
+  }, [currentUser]);
+
+  // Live update listener for profile changes
+  useEffect(() => {
+    const onUpd = (e) => {
+      setCurrentUser(e.detail);
+      loadUserData(); // Reload data when profile updates
+    };
+    window.addEventListener('profile:updated', onUpd);
+    return () => window.removeEventListener('profile:updated', onUpd);
+  }, []);
 
   const loadUserData = () => {
     // Load user's posts
