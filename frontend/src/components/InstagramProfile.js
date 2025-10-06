@@ -120,7 +120,7 @@ const InstagramProfile = ({ user }) => {
     ];
     
     // Combine localStorage posts with mock posts (mock posts for demo)
-    const allPosts = posts.length > 0 ? posts : mockPosts;
+    const allPosts = process.env.DEMO_MODE === 'true' ? (posts.length > 0 ? posts : mockPosts) : posts;
     setUserPosts(allPosts);
 
     // Load saved posts with mock data
