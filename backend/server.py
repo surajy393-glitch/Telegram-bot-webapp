@@ -317,6 +317,34 @@ async def get_me(user: dict = Depends(get_current_user)):
         "posts_count": db_user.get("posts_count", 0)
     }
 
+# ---------- Posts (My) ----------
+@app.get("/api/my/posts")
+async def my_posts(user: dict = Depends(get_current_user)):
+    tg_id = int(user["id"])  # Telegram ID
+    # Query MongoDB posts by user_id (which is Telegram ID)
+    posts_cursor = db.posts.find({"user_id": tg_id}).sort("created_at", -1)
+    posts = await posts_cursor.to_list(length=100)
+    
+    def to_json(post):
+        # Convert MongoDB post to API format
+        return {
+            "id": str(post["_id"]),
+            "author_id": post.get("user_id"),
+            "text": post.get("content", ""),
+            "photo_url": post.get("images", [None])[0] if post.get("images") else None,
+            "video_url": post.get("video"),
+            "created_at": post.get("created_at").isoformat() if post.get("created_at") else None
+        }
+    
+    return {"ok": True, "posts": [to_json(p) for p in posts]}
+
+@app.get("/api/my/saved")
+async def my_saved(user: dict = Depends(get_current_user)):
+    tg_id = int(user["id"])
+    # For now return empty - saved posts collection not yet created
+    # TODO: Create saved_posts collection and query it
+    return {"ok": True, "posts": []}
+
 @app.post("/api/onboard")
 async def onboard_user(data: OnboardRequest, user: dict = Depends(get_current_user)):
     """Onboard a new user."""
