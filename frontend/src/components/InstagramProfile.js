@@ -59,69 +59,45 @@ const InstagramProfile = ({ user }) => {
     return () => window.removeEventListener('profile:updated', onUpd);
   }, []);
 
-  const loadUserData = () => {
+  const loadUserData = async () => {
     if (!currentUser) return;
 
-    // Load user's posts with enhanced mock data
-    const username = currentUser.username || currentUser.name || 'user';
-    const userPostsKey = `luvhive_posts_${username}`;
-    let posts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
-    
-    // Always show some posts for demo (in real app these would come from backend)
-    const mockPosts = [
-      {
-        id: 'user_post_1',
-        image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-        likes: 45,
-        comments: 12,
-        type: 'image',
-        content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨'
-      },
-      {
-        id: 'user_post_2',
-        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-        likes: 67,
-        comments: 8,
-        type: 'image',
-        content: 'Beautiful sunset today! Nature never fails to amaze me 🌅'
-      },
-      {
-        id: 'user_post_3',
-        image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-        likes: 89,
-        comments: 23,
-        type: 'image',
-        content: 'Coffee and code - perfect combination for productivity! ☕💻'
-      },
-      {
-        id: 'user_post_4',
-        image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
-        likes: 123,
-        comments: 34,
-        type: 'image',
-        content: 'Beautiful landscape! Nature is amazing 🏔️'
-      },
-      {
-        id: 'user_post_5',
-        image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop',
-        likes: 89,
-        comments: 21,
-        type: 'image',
-        content: 'Morning motivation! Ready to conquer the day 💪'
-      },
-      {
-        id: 'user_post_6',
-        image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop',
-        likes: 156,
-        comments: 45,
-        type: 'image',
-        content: 'Sunset vibes are the best! 🌅✨'
+    try {
+      // Fetch user posts from backend API
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      console.log('🔍 Fetching profile posts from backend...');
+      
+      const response = await fetch(`${backendUrl}/api/profile/posts`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const postsData = await response.json();
+        console.log('✅ Fetched posts from backend:', postsData);
+        
+        // Transform backend posts to component format
+        const transformedPosts = postsData.map(post => ({
+          id: post.id || post._id,
+          image: post.images?.[0] || post.image || post.video,
+          likes: post.likes?.length || 0,
+          comments: post.comments?.length || 0,
+          type: post.video ? 'video' : 'image',
+          content: post.content || ''
+        }));
+        
+        setUserPosts(transformedPosts);
+      } else {
+        console.error('❌ Failed to fetch posts, status:', response.status);
+        setUserPosts([]);
       }
-    ];
-    
-    // Combine localStorage posts with mock posts (mock posts for demo)
-    const allPosts = process.env.DEMO_MODE === 'true' ? (posts.length > 0 ? posts : mockPosts) : posts;
-    setUserPosts(allPosts);
+    } catch (error) {
+      console.error('❌ Error fetching profile posts:', error);
+      setUserPosts([]);
+    }
 
     // Load saved posts with mock data
     const savedPostsKey = `luvhive_saved_${username}`;
