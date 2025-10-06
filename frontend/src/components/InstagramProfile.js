@@ -67,35 +67,60 @@ const InstagramProfile = ({ user }) => {
     const userPostsKey = `luvhive_posts_${username}`;
     let posts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
     
-    // Add mock posts if none exist
-    if (posts.length === 0) {
-      posts = [
-        {
-          id: 'user_post_1',
-          image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-          likes: 45,
-          comments: 12,
-          type: 'image',
-          content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨'
-        },
-        {
-          id: 'user_post_2',
-          image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-          likes: 67,
-          comments: 8,
-          type: 'image',
-          content: 'Beautiful sunset today! Nature never fails to amaze me 🌅'
-        },
-        {
-          id: 'user_post_3',
-          image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-          likes: 89,
-          comments: 23,
-          type: 'image',
-          content: 'Coffee and code - perfect combination for productivity! ☕💻'
-        }
-      ];
-    }
+    // Always show some posts for demo (in real app these would come from backend)
+    const mockPosts = [
+      {
+        id: 'user_post_1',
+        image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
+        likes: 45,
+        comments: 12,
+        type: 'image',
+        content: 'Just joined LuvHive! Excited to connect with amazing people 🚀✨'
+      },
+      {
+        id: 'user_post_2',
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+        likes: 67,
+        comments: 8,
+        type: 'image',
+        content: 'Beautiful sunset today! Nature never fails to amaze me 🌅'
+      },
+      {
+        id: 'user_post_3',
+        image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
+        likes: 89,
+        comments: 23,
+        type: 'image',
+        content: 'Coffee and code - perfect combination for productivity! ☕💻'
+      },
+      {
+        id: 'user_post_4',
+        image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop',
+        likes: 123,
+        comments: 34,
+        type: 'image',
+        content: 'Beautiful landscape! Nature is amazing 🏔️'
+      },
+      {
+        id: 'user_post_5',
+        image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop',
+        likes: 89,
+        comments: 21,
+        type: 'image',
+        content: 'Morning motivation! Ready to conquer the day 💪'
+      },
+      {
+        id: 'user_post_6',
+        image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop',
+        likes: 156,
+        comments: 45,
+        type: 'image',
+        content: 'Sunset vibes are the best! 🌅✨'
+      }
+    ];
+    
+    // Combine localStorage posts with mock posts (mock posts for demo)
+    const allPosts = posts.length > 0 ? posts : mockPosts;
     setUserPosts(posts);
 
     // Load saved posts with mock data
