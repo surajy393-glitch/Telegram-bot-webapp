@@ -64,7 +64,8 @@ const MyProfile = ({ user }) => {
 
         if (response.ok) {
           const posts = await response.json();
-          console.log('✅ Fetched posts:', posts);
+          console.log('✅ Fetched posts from API:', posts.length, 'posts');
+          console.log('📝 First post sample:', posts[0]);
           
           // Transform posts to match frontend expectations
           const transformedPosts = posts.map(post => ({
@@ -72,6 +73,9 @@ const MyProfile = ({ user }) => {
             images: post.media_urls || post.images || [], // Map media_urls to images
             video: post.video || (post.media_urls && post.media_urls.find(url => url.includes('.mp4') || url.includes('video'))) || null
           }));
+          
+          console.log('🔄 Transformed posts:', transformedPosts.length);
+          console.log('🖼️ First transformed post images:', transformedPosts[0]?.images);
           
           setUserPosts(transformedPosts);
           
@@ -85,8 +89,10 @@ const MyProfile = ({ user }) => {
             glows: totalComments,
             vibeScore: Math.min(100, (totalSparks + totalComments) * 2)
           });
+          
+          console.log('📊 Stats updated:', {posts: posts.length, sparks: totalSparks, glows: totalComments});
         } else {
-          console.error('Failed to fetch posts:', response.status);
+          console.error('❌ Failed to fetch posts, status:', response.status);
         }
       } catch (error) {
         console.error('Error fetching posts:', error);
