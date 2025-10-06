@@ -99,60 +99,23 @@ const InstagramProfile = ({ user }) => {
       setUserPosts([]);
     }
 
-    // Load saved posts with mock data
+    // Load saved posts, followers, following from localStorage (keep existing functionality)
+    const username = currentUser.username || currentUser.name || 'user';
     const savedPostsKey = `luvhive_saved_${username}`;
-    let saved = JSON.parse(localStorage.getItem(savedPostsKey) || '[]');
-    if (saved.length === 0) {
-      saved = [
-        {
-          id: 'saved_1',
-          image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
-          likes: 156,
-          comments: 34,
-          type: 'image',
-          content: 'Amazing landscape photography tips! 📸',
-          originalUser: 'PhotoPro'
-        },
-        {
-          id: 'saved_2',
-          image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400',
-          likes: 234,
-          comments: 56,
-          type: 'image',
-          content: 'Motivational Monday vibes 💪✨',
-          originalUser: 'MotivationDaily'
-        }
-      ];
-    }
+    const saved = JSON.parse(localStorage.getItem(savedPostsKey) || '[]');
     setSavedPosts(saved);
 
-    // Load followers with mock data
     const followersKey = `luvhive_followers_${username}`;
-    let followersList = JSON.parse(localStorage.getItem(followersKey) || '[]');
-    if (followersList.length === 0) {
-      followersList = [
-        { username: 'alex_photographer', name: 'Alex Johnson', profilePic: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop' },
-        { username: 'sarah_designer', name: 'Sarah Wilson', profilePic: 'https://images.unsplash.com/photo-1494790108755-2616b612b906?w=100&h=100&fit=crop' },
-        { username: 'mike_traveler', name: 'Mike Chen', profilePic: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop' },
-        { username: 'emma_artist', name: 'Emma Davis', profilePic: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop' }
-      ];
-    }
+    const followersList = JSON.parse(localStorage.getItem(followersKey) || '[]');
     setFollowers(followersList);
 
-    // Load following with mock data
     const followingKey = `luvhive_following_${username}`;
-    let followingList = JSON.parse(localStorage.getItem(followingKey) || '[]');
-    if (followingList.length === 0) {
-      followingList = [
-        { username: 'nature_lover', name: 'Nature Lover', profilePic: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop' },
-        { username: 'tech_guru', name: 'Tech Guru', profilePic: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop' }
-      ];
-    }
+    const followingList = JSON.parse(localStorage.getItem(followingKey) || '[]');
     setFollowing(followingList);
 
-    // Update stats
+    // Update stats - posts count will be updated after backend fetch
     setStats({
-      postsCount: allPosts.length,
+      postsCount: userPosts.length,
       followersCount: followersList.length,
       followingCount: followingList.length
     });
