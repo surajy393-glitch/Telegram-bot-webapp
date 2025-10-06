@@ -297,7 +297,7 @@ const SocialFeed = ({ user, theme }) => {
             };
           }
           return post;
-        })
+        }), [])
       );
     };
 
