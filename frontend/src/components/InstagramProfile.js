@@ -164,7 +164,7 @@ const InstagramProfile = ({ user }) => {
     setFollowers(followersList);
 
     // Load following with mock data
-    const followingKey = `luvhive_following_${currentUser.username}`;
+    const followingKey = `luvhive_following_${username}`;
     let followingList = JSON.parse(localStorage.getItem(followingKey) || '[]');
     if (followingList.length === 0) {
       followingList = [
