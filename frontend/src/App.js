@@ -89,7 +89,7 @@ function App() {
           <Route path="/whats-new" element={<WhatsNew theme={theme} />} />
           <Route 
             path="/profile" 
-            element={<InstagramProfile user={user} />} 
+            element={<MyProfile user={user} />} 
           />
           <Route 
             path="/discover" 
