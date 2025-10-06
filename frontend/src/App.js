@@ -6,6 +6,7 @@ import SocialFeed from './components/SocialFeed';
 import WhatsNew from './components/WhatsNew';
 import Discover from './components/Discover';
 import RegistrationFlow from './components/RegistrationFlow';
+import MyProfile from './pages/MyProfile';
 
 function App() {
   const [user, setUser] = useState(null);
