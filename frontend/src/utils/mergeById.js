@@ -1,7 +1,7 @@
-function mergeById(existing, incoming) {
-  const map = new Map(existing.map(p => [p.id, p]));
-  for (const p of incoming) map.set(p.id, p);
-  return Array.from(map.values());
+function mergeById(a, b) {
+  const m = new Map(a.map(x => [x.id, x]));
+  for (const x of b) m.set(x.id, x);
+  return [...m.values()];
 }
 
 export default mergeById;
