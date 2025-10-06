@@ -306,7 +306,7 @@ const SocialFeed = ({ user, theme }) => {
   }, [user]);
 
   useEffect(() => {
-    const loadPosts = () => {
+    const loadPosts = async () => {
       try {
         // Create default user for fallback
         const defaultUser = user || { name: 'Test User', username: 'testuser', profilePic: '✨' };
@@ -316,8 +316,29 @@ const SocialFeed = ({ user, theme }) => {
         const userPostsKey = `luvhive_posts_${defaultUser.username}`;
         userPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
         
-        // Combine with mock posts - show mock data if no user posts
-        const allPosts = userPosts.length > 0 ? [...userPosts, ...mockPostsData] : mockPostsData;
+        // Try to load posts from backend
+        let backendPosts = [];
+        try {
+          const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+          if (backendUrl) {
+            const response = await fetch(`${backendUrl}/api/posts`, {
+              headers: {
+                ...(window.Telegram?.WebApp?.initData ? {
+                  'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+                } : {})
+              }
+            });
+            if (response.ok) {
+              backendPosts = await response.json();
+              console.log('📄 Loaded backend posts:', backendPosts.length);
+            }
+          }
+        } catch (error) {
+          console.log('Backend posts load failed:', error);
+        }
+        
+        // Combine with mock posts - show all available posts
+        const allPosts = [...userPosts, ...backendPosts, ...mockPostsData];
         
         // Merge currentUser avatar with posts user - CLIENT-SIDE FIX
         const postsWithUpdatedAvatars = allPosts.map(p => {
