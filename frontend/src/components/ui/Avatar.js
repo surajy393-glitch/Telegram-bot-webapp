@@ -54,9 +54,21 @@ export default function Avatar({ user, size = 40 }) {
           borderRadius: '50%'
         }}
         onError={(e) => {
-          // On image load error, replace with initial fallback
-          const initial = user?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || '👤';
-          e.target.outerHTML = `<div style="width: 100%; height: 100%; border-radius: 50%; background: #6366f1; display: flex; align-items: center; justify-content: center; color: white; font-size: ${size * 0.4}px; font-weight: bold;">${initial}</div>`;
+          // On image load error, replace with initial fallback - safer approach
+          if (e.target && e.target.parentElement) {
+            const initial = user?.name?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || '👤';
+            e.target.style.display = 'none';
+            
+            // Create fallback div
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.style.cssText = `width: 100%; height: 100%; border-radius: 50%; background: #6366f1; display: flex; align-items: center; justify-content: center; color: white; font-size: ${size * 0.4}px; font-weight: bold;`;
+            fallbackDiv.textContent = initial;
+            
+            // Only replace if parent exists
+            if (e.target.parentElement) {
+              e.target.parentElement.appendChild(fallbackDiv);
+            }
+          }
         }}
       />
     </div>
