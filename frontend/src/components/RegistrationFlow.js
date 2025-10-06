@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { showAlert } from '../utils/telegram';
 
 const RegistrationFlow = ({ onComplete }) => {
   const navigate = useNavigate();
