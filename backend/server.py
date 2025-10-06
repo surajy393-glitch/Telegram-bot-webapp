@@ -384,10 +384,18 @@ async def create_post(data: PostCreate, request: Request, user: dict = Depends(g
         del existing_post["_id"]
         return existing_post
 
-    # 2) Otherwise, create safely (set profile_id too)
+    # 2) Canonical profile resolve per request (one source of truth)
+    user_profile = await db.users.find_one({"tg_user_id": user_id})
+    if not user_profile:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    profile_id = str(user_profile["_id"])
+
+    # 3) Otherwise, create safely (set profile_id too)
     try:
         post_doc = {
             "user_id": user_id,
+            "profile_id": profile_id,
             "content": data.content,
             "media_urls": data.media_urls,
             "created_at": datetime.datetime.utcnow(),
