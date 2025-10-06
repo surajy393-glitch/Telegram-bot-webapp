@@ -176,7 +176,7 @@ const InstagramProfile = ({ user }) => {
 
     // Update stats
     setStats({
-      postsCount: posts.length,
+      postsCount: allPosts.length,
       followersCount: followersList.length,
       followingCount: followingList.length
     });
