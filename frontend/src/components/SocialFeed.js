@@ -317,7 +317,7 @@ const SocialFeed = ({ user, theme }) => {
         userPosts = JSON.parse(localStorage.getItem(userPostsKey) || '[]');
         
         // Combine with mock posts
-        const allPosts = [...userPosts, ...mockPostsData];
+        const allPosts = process.env.DEMO_MODE === 'true' ? [...userPosts, ...mockPostsData] : [...userPosts];
         
         // Merge currentUser avatar with posts user - CLIENT-SIDE FIX
         const postsWithUpdatedAvatars = allPosts.map(p => {
