@@ -107,7 +107,8 @@ const MyProfile = ({ user }) => {
           'Content-Type': 'application/json',
           ...(window.Telegram?.WebApp?.initData ? {
             'X-Telegram-Init-Data': window.Telegram.WebApp.initData
-          } : {})
+          } : {}),
+          'X-Dev-User': currentUser.tg_user_id || currentUser.id || '647778438'
         },
         body: JSON.stringify({
           ...currentUser,
@@ -124,6 +125,59 @@ const MyProfile = ({ user }) => {
       }
     } catch (error) {
       console.error('Error updating bio:', error);
+    }
+  };
+
+  const handlePictureUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !currentUser) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    setUploadingPic(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/upload-photo`, {
+        method: 'POST',
+        headers: {
+          ...(window.Telegram?.WebApp?.initData ? {
+            'X-Telegram-Init-Data': window.Telegram.WebApp.initData
+          } : {}),
+          'X-Dev-User': currentUser.tg_user_id || currentUser.id || '647778438'
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const updatedUser = { ...currentUser, avatarUrl: data.url, avatar_url: data.url };
+        setCurrentUser(updatedUser);
+        localStorage.setItem('luvhive_user', JSON.stringify(updatedUser));
+        alert('Profile picture updated successfully! ✨');
+      } else {
+        const error = await response.text();
+        alert('Failed to upload picture: ' + error);
+      }
+    } catch (error) {
+      console.error('Error uploading picture:', error);
+      alert('Failed to upload picture. Please try again.');
+    } finally {
+      setUploadingPic(false);
     }
   };
 
