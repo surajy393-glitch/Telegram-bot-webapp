@@ -84,8 +84,14 @@ const PostOptionsModal = ({ post, currentUser, onClose, onAction }) => {
   const visibleOptions = options.filter(option => option.show);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50">
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md mx-4 overflow-hidden animate-slide-up">
+    <div 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md mx-4 overflow-hidden animate-slide-up"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
